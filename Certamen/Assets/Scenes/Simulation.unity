@@ -443,7 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0378f3dbef3ffb044870e8b580b61d9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Rabbit: {fileID: 3234375182422381826, guid: 3d0ed32b18a4fdf48a94150f8fbaf198, type: 3}
+  Rabbit: {fileID: 1981913670933370695, guid: 75b4a4acf6e09fa42b8acf62e90da12e, type: 3}
   parentObj: {fileID: 407760744}
   startAmount: 20
   lowestX: -150
