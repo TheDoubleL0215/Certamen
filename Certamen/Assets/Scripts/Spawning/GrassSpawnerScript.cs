@@ -6,6 +6,8 @@ public class GrassSpawnerScript : MonoBehaviour
 {
     // Kiválasztjuk melyik karaktert spawnolja
     public GameObject Grass;
+    //Parent container 
+    public Transform parentObj;
     // Ettõl függ, hány fûcsomó spawnol a legelején.
     public int startAmount;
     // Megadjuk a kordinátákat, amin belül spawnol a fû
@@ -23,7 +25,7 @@ public class GrassSpawnerScript : MonoBehaviour
         for (int i = 0; i < startAmount; i++)
         {
             spawnGrass();
-        }     
+        }
     }
 
     void Update()
@@ -44,6 +46,6 @@ public class GrassSpawnerScript : MonoBehaviour
     // A bekért paraméterek szerint spawnol egy fûcsomót
     void spawnGrass()
     {
-        Instantiate(Grass, new Vector3(Random.Range(lowestX, highestX), 0, Random.Range(lowestZ, highestZ)), transform.rotation);
+        Instantiate(Grass, new Vector3(Random.Range(lowestX, highestX), 0, Random.Range(lowestZ, highestZ)), Quaternion.identity, parentObj.transform);
     }
 }

@@ -6,6 +6,8 @@ public class RabbitSpawnerScript : MonoBehaviour
 {
     // Kiválasztjuk melyik karaktert spawnolja
     public GameObject Rabbit;
+    //Parent container 
+    public Transform parentObj;
     // Ettõl függ, hány nyul spawnol a legelején.
     public int startAmount;
     // Megadjuk a kordinátákat, amin belül spawnolnak a nyulak
@@ -34,7 +36,7 @@ public class RabbitSpawnerScript : MonoBehaviour
     // A bekért paraméterek szerint spawnol egy fûcsomót
     void spawnRabbit()
     {
-        Instantiate(Rabbit, new Vector3(Random.Range(lowestX, highestX), 0.19f, Random.Range(lowestZ, highestZ)), transform.rotation);
+        Instantiate(Rabbit, new Vector3(Random.Range(lowestX, highestX), 0.19f, Random.Range(lowestZ, highestZ)), transform.rotation, parentObj.transform);
         float randomRotation = Random.Range(minRotation, maxRotation);
         transform.Rotate(Vector3.up, randomRotation);
     }
