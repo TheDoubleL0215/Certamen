@@ -22,10 +22,21 @@ public class rabbitMove : MonoBehaviour
         Ugras();
     }
 
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.P))
+        {
+            lehetUgrani = false;
+        }
+        if (Input.GetKey(KeyCode.L))
+        {
+            lehetUgrani = true;
+        }
+    }
+
     void Ugras()
     {
-        if (lehetUgrani)
-        {
+        if (lehetUgrani == true) {
             float randomHeading = Random.Range(-360f, 360f);
             float smoothedHeading = Mathf.SmoothDampAngle(transform.eulerAngles.y, randomHeading, ref headingChange, headingTurnSpeed);
             transform.rotation = Quaternion.Euler(0, smoothedHeading * 100, 0);
@@ -35,17 +46,13 @@ public class rabbitMove : MonoBehaviour
 
             // Ugrás hozzáadása
             rb.AddForce(Vector3.up * ugrasEro, ForceMode.Impulse);
-
-            lehetUgrani = false;
-
             varakozasiIdo = Random.Range(1,4);
-            Invoke("UjraUgras", varakozasiIdo);
         }
+        Invoke("UjraUgras", varakozasiIdo);
     }
 
     void UjraUgras()
     {
-            lehetUgrani = true;
             Ugras();
         
     }

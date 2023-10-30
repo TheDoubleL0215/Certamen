@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    [SerializeField] GameObject menu;
+    [SerializeField] GameObject rabbitScript;
     // Megállítja a játék idejét
     public void Pause()
     {
@@ -15,14 +15,14 @@ public class Menu : MonoBehaviour
     // Elindítja a játék idejét
     public void Play()
     {
-        menu.SetActive(false);
+     //   menu.SetActive(false);
         Time.timeScale = 1f;
     }
 
     // Megállítja a játék iejét és a menüt megjeleníti
     public void PauseMenu()
     {
-        menu.SetActive(true);
+       // menu.SetActive(true);
         Time.timeScale = 0f;
     }
 
@@ -32,8 +32,13 @@ public class Menu : MonoBehaviour
         // Escape gomb megnyomására megállítja a játék iejét és a menüt megjeleníti
         if (Input.GetKey(KeyCode.Escape))
         {
-            menu.SetActive(true);
             Time.timeScale = 0f;
+        }
+
+        if (Input.GetKey(KeyCode.P))
+        {
+           // rabbitScript.GetComponent("Rabbit Move").enabled = false;
+            //Time.timeScale = 0f;
         }
     }
 }
