@@ -53,8 +53,7 @@ public class rabbitMove : MonoBehaviour
 
     void UjraUgras()
     {
-            Ugras();
-        
+            Ugras();     
     }
 
 
