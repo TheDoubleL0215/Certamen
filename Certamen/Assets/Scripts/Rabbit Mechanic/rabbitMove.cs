@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class rabbitMove : MonoBehaviour
@@ -12,15 +14,23 @@ public class rabbitMove : MonoBehaviour
     public float varakozasiIdo = 2f; // Várakozási idõ az ugrások között
     public float headingTurnSpeed = 0.3f; // A forgatási sebesség
     private float headingChange = 0.0f;
+    
 
     private Rigidbody rb;
     public bool lehetUgrani = true;
     public bool lehetFordulni = true;
 
+    public float radius = 10f;
+    //[SerializeField] private bool headingToTarget = false;
+    //Collider firstDetectedCollider = null;
+    public rabbitMove rabbitMovement;
+    public GameObject seletedPlant;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         Ugras();
+        Detektalas();
     }
 
     void Update()
@@ -33,6 +43,12 @@ public class rabbitMove : MonoBehaviour
         {
             lehetUgrani = true;
         }
+
+    }
+    private void OnDrawGizmos()
+    {
+        Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
+
     }
 
     void Ugras()
@@ -64,5 +80,74 @@ public class rabbitMove : MonoBehaviour
         lehetFordulni = false;
     }
 
+    void Detektalas()
+    {
+        if(seletedPlant == null)
+        {
+            ////Debug.Log("Fut a Detektalas");
+            int inoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+            Collider[] colliders = Physics.OverlapSphere(transform.position, radius, inoreDetectionLayerMask);
+            //Debug.Log("Ezeket detektálta: " + colliders + "ez a hossza: " + colliders.Length);
 
+            if (colliders.Length > 0)
+            {
+                seletedPlant = colliders[0].gameObject;
+
+                //Debug.Log("FirstDetected" + seletedPlant);
+
+                //Debug.Log("Elsõ detektált objektum: " + seletedPlant.name);
+
+                MoveTowardsTarget();
+
+                ////Debug.Log("Fut CheckIfNear");
+                ////Debug.Log("ENNYI A TÁVOLSÁG:  " + Vector3.Distance(transform.position, seletedPlant.transform.position));
+
+
+            } else {
+                //Debug.Log("Nincs eredmény!");
+                Invoke("ReDetekt", 2);
+            }
+        }
+        else
+        {
+            CheckIfNearEnough();
+        }
+
+    }
+
+    void MoveTowardsTarget()
+    {
+        //Debug.Log("Fut a MoveTowards!!!!");
+
+        lehetFordulni = false;
+        transform.LookAt(seletedPlant.transform.position);
+        CheckIfNearEnough();
+
+
+    }
+
+    void ReDetekt()
+    {
+        Detektalas();
+    }
+
+    void CheckIfNearEnough()
+    {
+        //Debug.Log("Fut CheckIfNear");
+        //Debug.Log("Tavolsag: " + Vector3.Distance(transform.position, seletedPlant.transform.position));
+        if (Vector3.Distance(transform.position, seletedPlant.transform.position) < 3.5f)
+        {
+            lehetUgrani = false;
+            Destroy(seletedPlant);
+            seletedPlant = null;
+            lehetUgrani = true;
+            lehetFordulni = true;
+            Invoke("Detektalas", 1);
+        }
+        else
+        {
+            //Debug.Log("Fut CheckIfNear else ag");
+            Invoke("MoveTowardsTarget", 1);
+        }
+    }
 }

@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 183294282}
   - component: {fileID: 183294281}
   - component: {fileID: 183294283}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -548,6 +548,10 @@ PrefabInstance:
       value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 691472453, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
+      propertyPath: radius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 691472453, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: ugrasEro
       value: 5
       objectReference: {fileID: 0}
@@ -606,6 +610,10 @@ PrefabInstance:
     - target: {fileID: 704330009457881623, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: m_Name
       value: Rabbit
+      objectReference: {fileID: 0}
+    - target: {fileID: 704330009457881623, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
@@ -1334,7 +1342,7 @@ GameObject:
   - component: {fileID: 1366085706}
   - component: {fileID: 1366085707}
   - component: {fileID: 1366085708}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1349,7 +1357,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1366085702}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.11, z: -32.01}
+  m_LocalPosition: {x: 0, y: 28.4, z: -32.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1410,32 +1418,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 704330009457881623, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
   m_PrefabInstance: {fileID: 412705706}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1436140253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1436140252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7f0c5c857f5504292c457d8eaeac99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 9.92
-  searching: 1
-  rabbitMovement: {fileID: 1436140254}
---- !u!114 &1436140254 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 691472453, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
-  m_PrefabInstance: {fileID: 412705706}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1436140252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a581ead63dc67049bfb48577330a24e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1443636264
 GameObject:
   m_ObjectHideFlags: 0
@@ -1594,8 +1576,7 @@ GameObject:
   - component: {fileID: 1481496141}
   - component: {fileID: 1481496144}
   - component: {fileID: 1481496143}
-  - component: {fileID: 1481496142}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1617,20 +1598,6 @@ Transform:
   m_Father: {fileID: 1366085704}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &1481496142
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1481496140}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1481496143
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1638,7 +1605,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481496140}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2119,7 +2086,7 @@ GameObject:
   - component: {fileID: 1995701090}
   - component: {fileID: 1995701089}
   - component: {fileID: 1995701088}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: World Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2369,7 +2336,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2120309725}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1.842355, y: 1.2237619, z: 1.9237802}
