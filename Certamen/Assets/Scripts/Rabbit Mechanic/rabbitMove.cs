@@ -14,7 +14,8 @@ public class rabbitMove : MonoBehaviour
     private float headingChange = 0.0f;
 
     private Rigidbody rb;
-    private bool lehetUgrani = true;
+    public bool lehetUgrani = true;
+    public bool lehetFordulni = true;
 
     void Start()
     {
@@ -37,9 +38,11 @@ public class rabbitMove : MonoBehaviour
     void Ugras()
     {
         if (lehetUgrani == true) {
+            if (lehetFordulni) { 
             float randomHeading = Random.Range(-360f, 360f);
             float smoothedHeading = Mathf.SmoothDampAngle(transform.eulerAngles.y, randomHeading, ref headingChange, headingTurnSpeed);
             transform.rotation = Quaternion.Euler(0, smoothedHeading * 100, 0);
+            }
 
             Vector3 eloreMozgas = transform.forward * eloreSebesseg;
             rb.velocity = eloreMozgas;
@@ -54,6 +57,11 @@ public class rabbitMove : MonoBehaviour
     void UjraUgras()
     {
             Ugras();     
+    }
+
+    public void FordulasLetiltas()
+    {
+        lehetFordulni = false;
     }
 
 
