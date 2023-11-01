@@ -32,7 +32,7 @@ public class aiScript : MonoBehaviour
 
         foreach (Collider collider in colliders)
         {
-            if (collider.gameObject != gameObject && collider.gameObject.name != "World Plane")
+            if (collider.gameObject != gameObject)
             {
                 Debug.Log("Detektált objektum: " + collider.gameObject.name);
                 searching = false;

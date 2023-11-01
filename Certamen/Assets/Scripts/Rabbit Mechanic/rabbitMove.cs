@@ -55,7 +55,7 @@ public class rabbitMove : MonoBehaviour
     {
         if (lehetUgrani == true) {
             if (lehetFordulni) { 
-            float randomHeading = Random.Range(-360f, 360f);
+            float randomHeading = Random.Range(-90f, 90f); 
             float smoothedHeading = Mathf.SmoothDampAngle(transform.eulerAngles.y, randomHeading, ref headingChange, headingTurnSpeed);
             transform.rotation = Quaternion.Euler(0, smoothedHeading * 100, 0);
             }
