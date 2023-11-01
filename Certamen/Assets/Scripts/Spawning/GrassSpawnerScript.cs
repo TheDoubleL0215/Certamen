@@ -10,13 +10,13 @@ public class GrassSpawnerScript : MonoBehaviour
     public Transform parentObj;
     // Ettõl függ, hány fûcsomó spawnol a legelején.
     public int startAmount;
+    // Hány másodpercenként spawnol új fûcsomó
+    public float spawnRate = 2;
     // Megadjuk a kordinátákat, amin belül spawnol a fû
     public float lowestX;
     public float highestX;
     public float lowestZ;
     public float highestZ;
-    // Hány másodpercenként spawnol új fûcsomó
-    public float spawnRate = 2;
     // Idõ múlását mérjük
     private float timer = 0;
     void Start()

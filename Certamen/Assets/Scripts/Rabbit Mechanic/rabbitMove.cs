@@ -8,6 +8,9 @@ using Random = UnityEngine.Random;
 
 public class rabbitMove : MonoBehaviour
 {
+    public float energy;
+    public float energyLimit;
+    public float energyLoss;
     public float ugrasEro = 5f; // Az ugrás erõssége
     public float eloreSebesseg = 2f; // Az elõre mozgás sebessége
     public float maxElteresSzog = 45f; // A maximális eltérési szög az aktuális irányhoz képest
@@ -20,7 +23,7 @@ public class rabbitMove : MonoBehaviour
     public bool lehetUgrani = true;
     public bool lehetFordulni = true;
 
-    public float radius = 10f;
+    public float radius;
     //[SerializeField] private bool headingToTarget = false;
     //Collider firstDetectedCollider = null;
     public rabbitMove rabbitMovement;
@@ -29,6 +32,10 @@ public class rabbitMove : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        energy = Random.Range(75f, 90f);
+        energyLimit = Random.Range(90f, 100f);
+        energyLoss = Random.Range(5f, 10f);
+        radius = Random.Range(5f, 15f);
         Ugras();
         Detektalas();
     }
@@ -43,7 +50,14 @@ public class rabbitMove : MonoBehaviour
         {
             lehetUgrani = true;
         }
-
+        if (energy <= 0f)
+        {
+            Destroy(gameObject);
+        }
+        if(energy > energyLimit)
+        {
+            energy = energyLimit;
+        }
     }
     private void OnDrawGizmos()
     {
@@ -65,6 +79,7 @@ public class rabbitMove : MonoBehaviour
 
             // Ugrás hozzáadása
             rb.AddForce(Vector3.up * ugrasEro, ForceMode.Impulse);
+            energy -= energyLoss;
             varakozasiIdo = Random.Range(1,4);
         }
         Invoke("UjraUgras", varakozasiIdo);
@@ -137,6 +152,7 @@ public class rabbitMove : MonoBehaviour
         //Debug.Log("Tavolsag: " + Vector3.Distance(transform.position, seletedPlant.transform.position));
         if (Vector3.Distance(transform.position, seletedPlant.transform.position) < 3.5f)
         {
+            energy += 25f;
             lehetUgrani = false;
             Destroy(seletedPlant);
             seletedPlant = null;
