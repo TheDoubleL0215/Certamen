@@ -57,7 +57,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 4c23740e3cb3f8a438f2a5d1db1d43d9, type: 2}
     - target: {fileID: 919132149155446097, guid: c9bf07d381863d3459850ae12e90d427, type: 3}
       propertyPath: m_Name
-      value: Rabbit
+      value: Rabbit Prefab
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c9bf07d381863d3459850ae12e90d427, type: 3}
       propertyPath: m_TagString
