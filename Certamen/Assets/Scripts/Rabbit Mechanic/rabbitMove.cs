@@ -93,9 +93,6 @@ public class rabbitMove : MonoBehaviour
             {
                 seletedPlant = colliders[0].gameObject;
 
-                //Debug.Log("FirstDetected" + seletedPlant);
-
-                //Debug.Log("Elsõ detektált objektum: " + seletedPlant.name);
 
                 MoveTowardsTarget();
 
@@ -115,39 +112,54 @@ public class rabbitMove : MonoBehaviour
 
     }
 
-    void MoveTowardsTarget()
-    {
-        //Debug.Log("Fut a MoveTowards!!!!");
-
-        lehetFordulni = false;
-        transform.LookAt(seletedPlant.transform.position);
-        CheckIfNearEnough();
-
-
-    }
-
     void ReDetekt()
     {
         Detektalas();
     }
 
-    void CheckIfNearEnough()
+    void MoveTowardsTarget()
     {
-        //Debug.Log("Fut CheckIfNear");
-        //Debug.Log("Tavolsag: " + Vector3.Distance(transform.position, seletedPlant.transform.position));
-        if (Vector3.Distance(transform.position, seletedPlant.transform.position) < 3.5f)
+        if(seletedPlant != null)
         {
-            lehetUgrani = false;
-            Destroy(seletedPlant);
-            seletedPlant = null;
-            lehetUgrani = true;
-            lehetFordulni = true;
-            Invoke("Detektalas", 1);
+            lehetFordulni = false;
+            transform.LookAt(seletedPlant.transform.position);
+            CheckIfNearEnough();
+
         }
         else
         {
-            //Debug.Log("Fut CheckIfNear else ag");
-            Invoke("MoveTowardsTarget", 1);
+            seletedPlant = null;
+            Detektalas();
+        }
+
+
+
+    }
+
+
+    void CheckIfNearEnough()
+    {
+        if (seletedPlant != null)
+        {
+            if (Vector3.Distance(transform.position, seletedPlant.transform.position) < 3.5f)
+            {
+                lehetUgrani = false;
+                Destroy(seletedPlant);
+                seletedPlant = null;
+                lehetUgrani = true;
+                lehetFordulni = true;
+                Invoke("Detektalas", 1);
+            }
+            else
+            {
+                //Debug.Log("Fut CheckIfNear else ag");
+                Invoke("MoveTowardsTarget", 1);
+            }
+        }
+        else
+        {
+            seletedPlant = null;
+            Detektalas();
         }
     }
 }
