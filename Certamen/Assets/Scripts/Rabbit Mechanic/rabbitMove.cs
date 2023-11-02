@@ -11,11 +11,11 @@ public class rabbitMove : MonoBehaviour
     public float energy;
     public float energyLimit;
     public float energyLoss;
-    public float ugrasEro = 5f; // Az ugrás erõssége
-    public float eloreSebesseg = 2f; // Az elõre mozgás sebessége
-    public float maxElteresSzog = 45f; // A maximális eltérési szög az aktuális irányhoz képest
-    public float varakozasiIdo = 2f; // Várakozási idõ az ugrások között
-    public float headingTurnSpeed = 0.3f; // A forgatási sebesség
+    public float ugrasEro = 5f; // Az ugrï¿½s erï¿½ssï¿½ge
+    public float eloreSebesseg = 2f; // Az elï¿½re mozgï¿½s sebessï¿½ge
+    public float maxElteresSzog = 45f; // A maximï¿½lis eltï¿½rï¿½si szï¿½g az aktuï¿½lis irï¿½nyhoz kï¿½pest
+    public float varakozasiIdo = 2f; // Vï¿½rakozï¿½si idï¿½ az ugrï¿½sok kï¿½zï¿½tt
+    public float headingTurnSpeed = 0.3f; // A forgatï¿½si sebessï¿½g
     private float headingChange = 0.0f;
     
 
@@ -77,7 +77,7 @@ public class rabbitMove : MonoBehaviour
             Vector3 eloreMozgas = transform.forward * eloreSebesseg;
             rb.velocity = eloreMozgas;
 
-            // Ugrás hozzáadása
+            // Ugrï¿½s hozzï¿½adï¿½sa
             rb.AddForce(Vector3.up * ugrasEro, ForceMode.Impulse);
             energy -= energyLoss;
             varakozasiIdo = Random.Range(1,4);
@@ -102,24 +102,21 @@ public class rabbitMove : MonoBehaviour
             ////Debug.Log("Fut a Detektalas");
             int inoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
             Collider[] colliders = Physics.OverlapSphere(transform.position, radius, inoreDetectionLayerMask);
-            //Debug.Log("Ezeket detektálta: " + colliders + "ez a hossza: " + colliders.Length);
+            //Debug.Log("Ezeket detektï¿½lta: " + colliders + "ez a hossza: " + colliders.Length);
 
             if (colliders.Length > 0)
             {
                 seletedPlant = colliders[0].gameObject;
 
-                //Debug.Log("FirstDetected" + seletedPlant);
-
-                //Debug.Log("Elsõ detektált objektum: " + seletedPlant.name);
 
                 MoveTowardsTarget();
 
                 ////Debug.Log("Fut CheckIfNear");
-                ////Debug.Log("ENNYI A TÁVOLSÁG:  " + Vector3.Distance(transform.position, seletedPlant.transform.position));
+                ////Debug.Log("ENNYI A Tï¿½VOLSï¿½G:  " + Vector3.Distance(transform.position, seletedPlant.transform.position));
 
 
             } else {
-                //Debug.Log("Nincs eredmény!");
+                //Debug.Log("Nincs eredmï¿½ny!");
                 Invoke("ReDetekt", 2);
             }
         }
@@ -130,40 +127,53 @@ public class rabbitMove : MonoBehaviour
 
     }
 
-    void MoveTowardsTarget()
-    {
-        //Debug.Log("Fut a MoveTowards!!!!");
-
-        lehetFordulni = false;
-        transform.LookAt(seletedPlant.transform.position);
-        CheckIfNearEnough();
-
-
-    }
-
     void ReDetekt()
     {
         Detektalas();
     }
 
-    void CheckIfNearEnough()
+    void MoveTowardsTarget()
     {
-        //Debug.Log("Fut CheckIfNear");
-        //Debug.Log("Tavolsag: " + Vector3.Distance(transform.position, seletedPlant.transform.position));
-        if (Vector3.Distance(transform.position, seletedPlant.transform.position) < 3.5f)
+        if(seletedPlant != null)
         {
-            energy += 25f;
-            lehetUgrani = false;
-            Destroy(seletedPlant);
-            seletedPlant = null;
-            lehetUgrani = true;
-            lehetFordulni = true;
-            Invoke("Detektalas", 1);
+            lehetFordulni = false;
+            transform.LookAt(seletedPlant.transform.position);
+            CheckIfNearEnough();
+
         }
         else
         {
-            //Debug.Log("Fut CheckIfNear else ag");
-            Invoke("MoveTowardsTarget", 1);
+            seletedPlant = null;
+            Detektalas();
+        }
+
+    }
+
+
+    void CheckIfNearEnough()
+    {
+        if(seletedPlant != null)
+        {
+            if (Vector3.Distance(transform.position, seletedPlant.transform.position) < 3.5f)
+            {
+                energy += 25f
+                lehetUgrani = false;
+                Destroy(seletedPlant);
+                seletedPlant = null;
+                lehetUgrani = true;
+                lehetFordulni = true;
+                Invoke("Detektalas", 1);
+            }
+            else
+            {
+                //Debug.Log("Fut CheckIfNear else ag");
+                Invoke("MoveTowardsTarget", 1);
+            }
+        }
+        else
+        {
+            seletedPlant = null;
+            Detektalas();
         }
     }
 }
