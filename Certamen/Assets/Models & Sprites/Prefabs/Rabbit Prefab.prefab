@@ -115,6 +115,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a581ead63dc67049bfb48577330a24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rabbitPrefab: {fileID: 4574519043655508798}
+  radius: 20
+  energy: 0
+  energyLimit: 0
+  energyLoss: 0
   ugrasEro: 5
   eloreSebesseg: 5
   maxElteresSzog: 45
@@ -122,6 +127,5 @@ MonoBehaviour:
   headingTurnSpeed: 1
   lehetUgrani: 1
   lehetFordulni: 1
-  radius: 20
   rabbitMovement: {fileID: 0}
   seletedPlant: {fileID: 0}

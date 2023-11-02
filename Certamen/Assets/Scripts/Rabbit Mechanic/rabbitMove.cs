@@ -8,33 +8,28 @@ using Random = UnityEngine.Random;
 
 public class rabbitMove : MonoBehaviour
 {
+    public float radius;
     public float energy;
     public float energyLimit;
     public float energyLoss;
-    public float ugrasEro = 5f; // Az ugr�s er�ss�ge
-    public float eloreSebesseg = 2f; // Az el�re mozg�s sebess�ge
-    public float maxElteresSzog = 45f; // A maxim�lis elt�r�si sz�g az aktu�lis ir�nyhoz k�pest
-    public float varakozasiIdo = 2f; // V�rakoz�si id� az ugr�sok k�z�tt
-    public float headingTurnSpeed = 0.3f; // A forgat�si sebess�g
+    public float ugrasEro = 5f;
+    public float eloreSebesseg = 2f;
+    public float maxElteresSzog = 45f;
+    public float varakozasiIdo = 2f;
+    public float headingTurnSpeed = 0.3f;
     private float headingChange = 0.0f;
-    
-
     private Rigidbody rb;
     public bool lehetUgrani = true;
     public bool lehetFordulni = true;
-
-    public float radius;
-    //[SerializeField] private bool headingToTarget = false;
-    //Collider firstDetectedCollider = null;
     public rabbitMove rabbitMovement;
     public GameObject seletedPlant;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        energy = Random.Range(75f, 90f);
+        energy = Random.Range(70f, 90f);
         energyLimit = Random.Range(90f, 100f);
-        energyLoss = Random.Range(5f, 10f);
+        energyLoss = Random.Range(5f, 20f);
         radius = Random.Range(5f, 15f);
         Ugras();
         Detektalas();
@@ -54,7 +49,7 @@ public class rabbitMove : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        if(energy > energyLimit)
+        if (energy > energyLimit)
         {
             energy = energyLimit;
         }
@@ -67,27 +62,28 @@ public class rabbitMove : MonoBehaviour
 
     void Ugras()
     {
-        if (lehetUgrani == true) {
-            if (lehetFordulni) { 
-            float randomHeading = Random.Range(-90f, 90f); 
-            float smoothedHeading = Mathf.SmoothDampAngle(transform.eulerAngles.y, randomHeading, ref headingChange, headingTurnSpeed);
-            transform.rotation = Quaternion.Euler(0, smoothedHeading * 100, 0);
+        if (lehetUgrani == true)
+        {
+            if (lehetFordulni)
+            {
+                float randomHeading = Random.Range(-90f, 90f);
+                float smoothedHeading = Mathf.SmoothDampAngle(transform.eulerAngles.y, randomHeading, ref headingChange, headingTurnSpeed);
+                transform.rotation = Quaternion.Euler(0, smoothedHeading * 100, 0);
             }
 
             Vector3 eloreMozgas = transform.forward * eloreSebesseg;
             rb.velocity = eloreMozgas;
 
-            // Ugr�s hozz�ad�sa
             rb.AddForce(Vector3.up * ugrasEro, ForceMode.Impulse);
             energy -= energyLoss;
-            varakozasiIdo = Random.Range(1,4);
+            varakozasiIdo = Random.Range(1, 4);
         }
         Invoke("UjraUgras", varakozasiIdo);
     }
 
     void UjraUgras()
     {
-            Ugras();     
+        Ugras();
     }
 
     public void FordulasLetiltas()
@@ -97,26 +93,18 @@ public class rabbitMove : MonoBehaviour
 
     void Detektalas()
     {
-        if(seletedPlant == null)
+        if (seletedPlant == null)
         {
-            ////Debug.Log("Fut a Detektalas");
             int inoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
             Collider[] colliders = Physics.OverlapSphere(transform.position, radius, inoreDetectionLayerMask);
-            //Debug.Log("Ezeket detekt�lta: " + colliders + "ez a hossza: " + colliders.Length);
 
             if (colliders.Length > 0)
             {
                 seletedPlant = colliders[0].gameObject;
-
-
                 MoveTowardsTarget();
-
-                ////Debug.Log("Fut CheckIfNear");
-                ////Debug.Log("ENNYI A T�VOLS�G:  " + Vector3.Distance(transform.position, seletedPlant.transform.position));
-
-
-            } else {
-                //Debug.Log("Nincs eredm�ny!");
+            }
+            else
+            {
                 Invoke("ReDetekt", 2);
             }
         }
@@ -134,7 +122,7 @@ public class rabbitMove : MonoBehaviour
 
     void MoveTowardsTarget()
     {
-        if(seletedPlant != null)
+        if (seletedPlant != null)
         {
             lehetFordulni = false;
             transform.LookAt(seletedPlant.transform.position);
@@ -152,11 +140,11 @@ public class rabbitMove : MonoBehaviour
 
     void CheckIfNearEnough()
     {
-        if(seletedPlant != null)
+        if (seletedPlant != null)
         {
             if (Vector3.Distance(transform.position, seletedPlant.transform.position) < 3.5f)
             {
-                energy += 25f
+                energy += 25f;
                 lehetUgrani = false;
                 Destroy(seletedPlant);
                 seletedPlant = null;
@@ -166,7 +154,6 @@ public class rabbitMove : MonoBehaviour
             }
             else
             {
-                //Debug.Log("Fut CheckIfNear else ag");
                 Invoke("MoveTowardsTarget", 1);
             }
         }

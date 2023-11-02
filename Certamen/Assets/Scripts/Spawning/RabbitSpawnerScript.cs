@@ -7,6 +7,8 @@ public class RabbitSpawnerScript : MonoBehaviour
     // Kiválasztjuk melyik karaktert spawnolja
     public GameObject Rabbit;
     //Parent container 
+    public GameObject nameTag;
+    public Transform nameTagParent;
     public Transform parentObj;
     // Ettõl függ, hány nyul spawnol a legelején.
     public int startAmount;
@@ -28,16 +30,15 @@ public class RabbitSpawnerScript : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        
-    }
-
     // A bekért paraméterek szerint spawnol egy fûcsomót
     void spawnRabbit()
     {
-        Instantiate(Rabbit, new Vector3(Random.Range(lowestX, highestX), 0.19f, Random.Range(lowestZ, highestZ)), transform.rotation, parentObj.transform);
+        Vector3 position = new Vector3(Random.Range(lowestX, highestX), 0.19f, Random.Range(lowestZ, highestZ));
+        GameObject RabbitObj = Instantiate(Rabbit, position, Quaternion.identity, parentObj);
+
         float randomRotation = Random.Range(minRotation, maxRotation);
         transform.Rotate(Vector3.up, randomRotation);
+        GameObject nameTagObj = Instantiate(nameTag, position, Quaternion.identity, nameTagParent);
+        nameTagObj.GetComponent<AnimalStats>().target = RabbitObj.transform;
     }
 }
