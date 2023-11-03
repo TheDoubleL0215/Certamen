@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.7640362, g: 0.6080183, b: 0.49883005, a: 1}
+  m_IndirectSpecularColor: {r: 0.7640305, g: 0.60801613, b: 0.49883032, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1667,7 +1667,6 @@ GameObject:
   - component: {fileID: 1994986920}
   - component: {fileID: 1994986923}
   - component: {fileID: 1994986922}
-  - component: {fileID: 1994986921}
   - component: {fileID: 1994986925}
   - component: {fileID: 1994986924}
   m_Layer: 5
@@ -1686,7 +1685,7 @@ RectTransform:
   m_GameObject: {fileID: 1994986919}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.099999994, y: 0.099999994, z: 0.099999994}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 249594720}
@@ -1697,18 +1696,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.000061035156, y: 0}
   m_SizeDelta: {x: 65, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1994986921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1994986919}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0343f17e20aea746bdee62a22214ae9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1994986922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1763,7 +1750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96ed336c1c95ecd42bf99cd80e8ae1c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 3760545794418604420, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
 --- !u!223 &1994986925
 Canvas:
   m_ObjectHideFlags: 0
@@ -1776,10 +1763,10 @@ Canvas:
   m_RenderMode: 2
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
+  m_OverridePixelPerfect: 1
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0

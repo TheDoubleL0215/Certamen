@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class AnimalStats : MonoBehaviour
 {
     public Transform target; // Nyúl Transform komponense
-    private rabbitMove rabbitMoveScript; // Deklaráljuk az osztály szintjén
+    private rabbitBehaviour rabbitMoveScript; // Deklaráljuk az osztály szintjén
 
     private void Start()
     {
-        rabbitMoveScript = target.GetComponent<rabbitMove>(); // Inicializáljuk a Start metódusban
+        rabbitMoveScript = target.GetComponent<rabbitBehaviour>(); // Inicializáljuk a Start metódusban
     }
 
     private void Update()
@@ -21,7 +21,7 @@ public class AnimalStats : MonoBehaviour
             string statText = "Energia: " + rabbitMoveScript.energy + "\n" +
                 "Energia Limit: " + rabbitMoveScript.energyLimit + "\n" +
                 "Energia Veszteség: " + rabbitMoveScript.energyLoss + "\n" +
-                "Sebesség: " + rabbitMoveScript.eloreSebesseg + "\n" +
+                "Sebesség: " + rabbitMoveScript.forwardForce + "\n" +
                 "Látósugár: " + rabbitMoveScript.radius;
 
             // Most állítsd be a szöveget a Text komponensen

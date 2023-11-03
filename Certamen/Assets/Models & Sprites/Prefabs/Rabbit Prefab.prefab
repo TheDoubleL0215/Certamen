@@ -103,7 +103,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.02, y: 0.03, z: 0.03}
   m_Center: {x: 0, y: 0.01, z: 0.0026060888}
---- !u!114 &833514479
+--- !u!114 &-7618743590216702980
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,20 +112,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4574519043655508798}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a581ead63dc67049bfb48577330a24e, type: 3}
+  m_Script: {fileID: 11500000, guid: 7359a9834b8b17f4f90c74bc479f5c16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rabbitPrefab: {fileID: 4574519043655508798}
-  radius: 20
   energy: 0
   energyLimit: 0
   energyLoss: 0
-  ugrasEro: 5
-  eloreSebesseg: 5
-  maxElteresSzog: 45
-  varakozasiIdo: 3
-  headingTurnSpeed: 1
-  lehetUgrani: 1
-  lehetFordulni: 1
-  rabbitMovement: {fileID: 0}
-  seletedPlant: {fileID: 0}
+  radius: 0
+  jumpForce: 5
+  forwardForce: 5
+  selectedPlant: {fileID: 0}
