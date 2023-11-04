@@ -5,6 +5,7 @@ using System.Drawing;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class rabbitBehaviour : MonoBehaviour
@@ -22,15 +23,29 @@ public class rabbitBehaviour : MonoBehaviour
     private bool turning = true; // Ez szabélyozza a random fordulások ki- és bekapcsolását. 
     [SerializeField] private GameObject selectedPlant; // A kiválasztott növény GameObject-je.
 
+
+    [Header("Energy Bar")]
+    //floater energy kijelzése
     [SerializeField] energyBar energiaBar;
 
-    [SerializeField] getRadius radiusGetter;
+
+    [Header("Energy Value")]
+    //floater energyValue kijelzése
+    public GameObject energyValueObject;
+    [SerializeField] private energyValueChanger changeEnergyValue;
+
+    [Header("Radius Value")]
+    //floater rádiusz kijelzése
+    public GameObject radiusValueObject;
+    [SerializeField] private getRadius radiusGetter;
+
 
 
     private void Awake()
     {
         energiaBar = GetComponentInChildren<energyBar>();
-        radiusGetter = GetComponentInChildren<getRadius>();
+        radiusGetter = radiusValueObject.GetComponent<getRadius>();
+        changeEnergyValue = energyValueObject.GetComponent<energyValueChanger>();
     }
 
     void Start()
@@ -42,6 +57,7 @@ public class rabbitBehaviour : MonoBehaviour
         energyLoss = Random.Range(5f, 20f);
         radius = Random.Range(10, 20); // érzékelõ sugara
         energiaBar.EnergyBarUpdate(energyLimit, energy);
+        changeEnergyValue.SetEnergyValueOnFloater(energyLimit, energy);
         radiusGetter.RadiusStatSetter(radius);
         StartCoroutine(JumpMovement()); //Cooroutine indítása
 
@@ -79,10 +95,12 @@ public class rabbitBehaviour : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             energy -= energyLoss;
             energiaBar.EnergyBarUpdate(energyLimit, energy);
+            changeEnergyValue.SetEnergyValueOnFloater(energyLimit, energy);
 
             if (energy <= 0f)
             {
                 Destroy(gameObject);
+
             }
             if (energy > energyLimit)
             {
@@ -130,6 +148,7 @@ public class rabbitBehaviour : MonoBehaviour
                 Destroy(selectedPlant);
                 energy += 25f;
                 energiaBar.EnergyBarUpdate(energyLimit, energy);
+                changeEnergyValue.SetEnergyValueOnFloater(energyLimit, energy);
                 selectedPlant = null;
                 turning = true;
             }

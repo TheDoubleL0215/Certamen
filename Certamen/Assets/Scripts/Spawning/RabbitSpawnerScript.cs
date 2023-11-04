@@ -38,7 +38,5 @@ public class RabbitSpawnerScript : MonoBehaviour
 
         float randomRotation = Random.Range(minRotation, maxRotation);
         transform.Rotate(Vector3.up, randomRotation);
-        GameObject nameTagObj = Instantiate(nameTag, position, Quaternion.identity, nameTagParent);
-        nameTagObj.GetComponent<AnimalStats>().target = RabbitObj.transform;
     }
 }
