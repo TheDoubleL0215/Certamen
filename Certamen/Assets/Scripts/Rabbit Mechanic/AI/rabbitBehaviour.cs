@@ -16,14 +16,22 @@ public class rabbitBehaviour : MonoBehaviour
     public float energyLoss;
 
     Rigidbody rb; // RigidBody komponens.
-    public float radius; // Az érzékelésének a rádiusza.
+    public float radius = 0f; // Az érzékelésének a rádiusza.
     public float jumpForce = 5f; // Az ugrás magassága.
     public float forwardForce = 5f; // Az ugrás hossza.
     private bool turning = true; // Ez szabélyozza a random fordulások ki- és bekapcsolását. 
     [SerializeField] private GameObject selectedPlant; // A kiválasztott növény GameObject-je.
 
+    [SerializeField] energyBar energiaBar;
+
+    [SerializeField] getRadius radiusGetter;
 
 
+    private void Awake()
+    {
+        energiaBar = GetComponentInChildren<energyBar>();
+        radiusGetter = GetComponentInChildren<getRadius>();
+    }
 
     void Start()
     {
@@ -33,7 +41,8 @@ public class rabbitBehaviour : MonoBehaviour
         energyLimit = Random.Range(90f, 100f);
         energyLoss = Random.Range(5f, 20f);
         radius = Random.Range(10, 20); // érzékelõ sugara
-
+        energiaBar.EnergyBarUpdate(energyLimit, energy);
+        radiusGetter.RadiusStatSetter(radius);
         StartCoroutine(JumpMovement()); //Cooroutine indítása
 
     }
@@ -69,6 +78,7 @@ public class rabbitBehaviour : MonoBehaviour
 
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             energy -= energyLoss;
+            energiaBar.EnergyBarUpdate(energyLimit, energy);
 
             if (energy <= 0f)
             {
@@ -119,6 +129,7 @@ public class rabbitBehaviour : MonoBehaviour
             {
                 Destroy(selectedPlant);
                 energy += 25f;
+                energiaBar.EnergyBarUpdate(energyLimit, energy);
                 selectedPlant = null;
                 turning = true;
             }
