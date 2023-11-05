@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.7640305, g: 0.60801613, b: 0.49883032, a: 1}
+  m_IndirectSpecularColor: {r: 0.7640362, g: 0.6080183, b: 0.49883005, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1522,8 +1522,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
   parentObj: {fileID: 328867090}
-  startAmount: 100
-  spawnRate: 1
+  startAmount: 200
+  spawnRate: 0.25
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -1559,7 +1559,7 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   parentObj: {fileID: 407760744}
-  startAmount: 20
+  startAmount: 50
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -1751,6 +1751,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7618743590216702980, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
+      propertyPath: Rabbit
+      value: 
+      objectReference: {fileID: 436914071}
     - target: {fileID: -7618743590216702980, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: energyValueObject
       value: 
