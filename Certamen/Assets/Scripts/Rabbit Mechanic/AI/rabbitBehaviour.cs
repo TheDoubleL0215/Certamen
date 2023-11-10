@@ -18,7 +18,7 @@ public class rabbitBehaviour : MonoBehaviour
     public float energyLoss; // ugrásonkénti energia veszteség
     public float radius = 0f; // Az érzékelésének a rádiusza.
     public float maturity = 0f; // érettség, szaporodásban van szerepe
-    public float maturityLimit; // ezt az értéket elérve, végbe megy a szaporodás
+    public float maturityLimit = 20f; // ezt az értéket elérve, végbe megy a szaporodás
     public int fertility; // ez határozza meg, hány kölyke lehet a nyúlnak
     public float birthEnergyLimit; // ez a szint a minimum egy utódhoz
 
@@ -69,8 +69,8 @@ public class rabbitBehaviour : MonoBehaviour
             energyLimit = Random.Range(90f, 100f);
             energyLoss = Random.Range(15f, 20f);
             energy = Random.Range(energyLimit - 25f, energyLimit);
+            maturityLimit = 20f;
             radius = Random.Range(15f, 25f);
-            maturityLimit = Random.Range(20, 25);
             fertility = Random.Range(2, 4);
             birthEnergyLimit = Random.Range(75f, energyLimit);
         }
@@ -96,7 +96,7 @@ public class rabbitBehaviour : MonoBehaviour
                     Reproduction(heirEnergy);
                 }
                 maturity = 0f; //nullázódik a maturity
-                energy = energy / fertility; // a szülõ energiáját elosszuk annyival, ahány utóda születik
+                energy = energy / fertility+1; // a szülõ energiáját elosszuk annyival, ahány utóda születik
             }
         }
     }
@@ -223,7 +223,6 @@ public class rabbitBehaviour : MonoBehaviour
         newRabbitScript.energy = heirEnergy;
         newRabbitScript.energyLoss = Random.Range(energyLoss-2f, energyLoss+2f);
         newRabbitScript.energyLimit = Random.Range(energyLimit - 5f, energyLimit + 5f);
-        newRabbitScript.maturityLimit = Random.Range(maturityLimit - 5f, maturityLimit + 5f);
         newRabbitScript.fertility = Random.Range(fertility - 1, fertility + 1);
         newRabbitScript.birthEnergyLimit = Random.Range(birthEnergyLimit - 5f, birthEnergyLimit + 5f);
         newRabbitScript.radius = Random.Range(radius - 1f, radius + 1f);
