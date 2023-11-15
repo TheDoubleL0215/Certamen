@@ -1556,7 +1556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Rabbit: {fileID: 436914071}
-  nameTag: {fileID: 0}
+  nameTag: {fileID: 1789781662}
   nameTagParent: {fileID: 407760744}
   parentObj: {fileID: 407760744}
   startAmount: 50
