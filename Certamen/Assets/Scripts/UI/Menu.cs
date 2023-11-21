@@ -7,16 +7,17 @@ public class Menu : MonoBehaviour
 {
     // A MenuObjectet fogja megjeleníteni
     public GameObject MenuObject;
+    public GameObject StatisticsObject;
     // Ezzel eszközöljük a várakozást
     private float WaitTime = 0;
 
     // Az elején meghívjuk a "PauseMenu()" ciklust
     void Start()
     {
-        PauseMenu();
+        Detect();
     }
 
-    void PauseMenu()
+    void Detect()
     {
         // Mikor belépünk a ciklusba 0 lesz a várakozás idõ
         WaitTime = 0;
@@ -27,6 +28,7 @@ public class Menu : MonoBehaviour
             if (MenuObject.activeInHierarchy == false)
             {
                 MenuObject.SetActive(true);
+                StatisticsObject.SetActive(false);
                 // A játék idejét lelassítja
                 Time.timeScale = 0.1f;
                 // Megnöveli a várakozás idõt, a bugok elkerülése végett
@@ -45,14 +47,39 @@ public class Menu : MonoBehaviour
                 }
             }
         }
+        if (Input.GetKey(KeyCode.G))
+        {
+            // ...ha nem volt megjelenítve a menü, megjeleníti
+            if (StatisticsObject.activeInHierarchy == false)
+            {
+                StatisticsObject.SetActive(true);
+                MenuObject.SetActive(false);
+                // A játék idejét lelassítja
+                Time.timeScale = 0.1f;
+                // Megnöveli a várakozás idõt, a bugok elkerülése végett
+                WaitTime = 0.05f;
+            }
+            // ...ha meg volt jelenítve a menü, eltünteti
+            else
+            {
+                if (StatisticsObject.activeInHierarchy == true)
+                {
+                    StatisticsObject.SetActive(false);
+                    // Játék sebességét visszaállítja
+                    Time.timeScale = 1f;
+                    // Várakozási idõ megnövekszik (azért 10x több mint mikor megállítjuk, mert az idõ is 10x gyorsabb)
+                    WaitTime = 0.5f;
+                }
+            }
+        }
 
         // Meghívja a "callPauseMenu()" függvényt
-        Invoke("callPauseMenu", WaitTime);
+        Invoke("callDetect", WaitTime);
     }
 
     // Ez a függvény újból és újból meghívja a "PauseMenu()" függvényt
-    void callPauseMenu()
+    void callDetect()
     {
-        Invoke("PauseMenu", WaitTime);
+        Invoke("Detect", WaitTime);
     }
 }

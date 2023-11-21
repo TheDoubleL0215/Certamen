@@ -11,7 +11,9 @@ public class GrassSpawnerScript : MonoBehaviour
     // Ettõl függ, hány fûcsomó spawnol a legelején.
     public int startAmount;
     // Hány másodpercenként spawnol új fûcsomó
-    public float spawnRate = 2;
+    public float spawnRateTime;
+    // Ennyi fûcsomó spawnol egy adott spawnolásnál
+    public float spawnRatePerSpawning;
     // Megadjuk a kordinátákat, amin belül spawnol a fû
     public float lowestX;
     public float highestX;
@@ -32,13 +34,16 @@ public class GrassSpawnerScript : MonoBehaviour
     {
         // Csak abban esetben hívja meg a 'spawnGrass()' függvényt, ha a 'timer'
         // megegyezik a 'spawnRate'-ben meadottal.
-        if (timer < spawnRate)
+        if (timer < spawnRateTime)
         {
             timer = timer + Time.deltaTime;
         }
         else
         {
-            spawnGrass();
+            for (int i = 0; i < spawnRatePerSpawning; i++)
+            {
+                spawnGrass();
+            }
             timer = 0;
         }
     }
