@@ -10,23 +10,27 @@ using Random = UnityEngine.Random;
 
 public class rabbitBehaviour : MonoBehaviour
 {
-    //VÁLTOZÓK
+    //VÁLTOZÓK//
+    [Header("ID")]
     public int id; // egyéni azonosító
-    public int fatherId = 0; // örökölt azonosító
+    public int fatherId; // örökölt azonosító
+    [Header("Energy")]
     public float energy; // energiaszint
     public float energyLimit; //energia maximum
     public float energyLoss; // ugrásonkénti energia veszteség
-    public float radius = 0f; // Az érzékelésének a rádiusza.
-    public float maturity = 0f; // érettség, szaporodásban van szerepe
-    public float maturityLimit = 20f; // ezt az értéket elérve, végbe megy a szaporodás
+    [Header("Reproduction")]
     public int fertility; // ez határozza meg, hány kölyke lehet a nyúlnak
     public float birthEnergyLimit; // ez a szint a minimum egy utódhoz
-
-    public GameObject Rabbit; // ezt az objektumot fogjuk klónozno szapodrodásnál
-    
-    Rigidbody rb; // RigidBody komponens.
-    public float jumpForce = 5f; // Az ugrás magassága.
+    public float maturity; // érettség, szaporodásban van szerepe
+    public float maturityLimit; // ezt az értéket elérve, végbe megy a szaporodás
+    [Header("Other")]
+    public float radius; // Az érzékelésének a rádiusza.
+    public float age; // nyúl életkora
+    public float lifeTime; // ha eléri ezt, megdöglik
+    public GameObject Rabbit; // ezt az objektumot fogjuk klónozni szapodrodásnál 
+    public float jumpForce; // Az ugrás magassága.
     public float forwardForce; // Az ugrás hossza.
+    Rigidbody rb; // RigidBody komponens.
 
 
     private bool turning = true; // Ez szabélyozza a random fordulások ki- és bekapcsolását. 
@@ -60,21 +64,13 @@ public class rabbitBehaviour : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>(); //rb inicializálás
-
         id = Random.Range(10000, 99999); // ázonosító "sorsolása"
-        if (fatherId == 0)
+        maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak érettsége véletlen
+        age = 0f;
+        if(fatherId != 0)
         {
-            //ÉRTÉKADÁS
-            forwardForce = Random.Range(4f, 5f);
-            energyLimit = Random.Range(90f, 100f);
-            energyLoss = Random.Range(15f, 20f);
-            energy = Random.Range(energyLimit - 25f, energyLimit);
-            maturityLimit = 20f;
-            radius = Random.Range(15f, 25f);
-            fertility = Random.Range(2, 4);
-            birthEnergyLimit = Random.Range(75f, energyLimit);
+            maturity = 0f; // ha már egy született és nem spawnolt nyúl, akkor alapból 0 az érettsége
         }
-        maturity = 0; //alapból 0 az érettség
         energiaBar.EnergyBarUpdate(energyLimit, energy);
         changeEnergyValue.SetEnergyValueOnFloater(energyLimit, energy);
         radiusGetter.RadiusStatSetter(radius);
@@ -83,14 +79,15 @@ public class rabbitBehaviour : MonoBehaviour
 
     void Update()
     {
-        // folyamatosan növeljük az érettséget
+        // folyamatosan növeljük az érettséget és a kort
         maturity += Time.deltaTime;
+        age += Time.deltaTime;
         // ha az érettség eléri a mehatározott szintet
         if (maturity >= maturityLimit)
         {
             if(energy >= birthEnergyLimit) // csak abban az esetben születik utód, ha van elég energiája a szülõnek
             {
-                float heirEnergy = energy / fertility; // "heirEnergy" értéke lesz majd az utódok energiája mikor megsszületnek
+                float heirEnergy = energy / fertility+1; // "heirEnergy" értéke lesz majd az utódok energiája mikor megsszületnek
                 for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
                 {
                     Reproduction(heirEnergy);
@@ -99,6 +96,12 @@ public class rabbitBehaviour : MonoBehaviour
                 energy = energy / fertility+1; // a szülõ energiáját elosszuk annyival, ahány utóda születik
             }
         }
+        // elöregedett nyulak elpusztulnak
+        if(age >= lifeTime)
+        {
+            Destroy(gameObject);
+        }
+
     }
 
     private IEnumerator JumpMovement()
@@ -133,9 +136,8 @@ public class rabbitBehaviour : MonoBehaviour
             if (energy <= 0f)
             {
                 Destroy(gameObject);
-
             }
-            if (energy > energyLimit)
+            if (energy >= energyLimit)
             {
                 energy = energyLimit;
             }
@@ -179,7 +181,7 @@ public class rabbitBehaviour : MonoBehaviour
             else
             {
                 Destroy(selectedPlant);
-                energy += Random.Range(50f, 75f);
+                energy += 50f;
                 energiaBar.EnergyBarUpdate(energyLimit, energy);
                 changeEnergyValue.SetEnergyValueOnFloater(energyLimit, energy);
                 selectedPlant = null;
@@ -199,7 +201,6 @@ public class rabbitBehaviour : MonoBehaviour
     //ÚJ EGYED SZÜLETÉSE
     void Reproduction(float heirEnergy)
     {
-        print(heirEnergy);
         GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
 
         // Definiáld a pályaterület határait
@@ -221,12 +222,6 @@ public class rabbitBehaviour : MonoBehaviour
         rabbitBehaviour newRabbitScript = newRabbit.GetComponent<rabbitBehaviour>();
         newRabbitScript.fatherId = id;
         newRabbitScript.energy = heirEnergy;
-        newRabbitScript.energyLoss = Random.Range(energyLoss-2f, energyLoss+2f);
-        newRabbitScript.energyLimit = Random.Range(energyLimit - 5f, energyLimit + 5f);
-        newRabbitScript.fertility = Random.Range(fertility - 1, fertility + 1);
-        newRabbitScript.birthEnergyLimit = Random.Range(birthEnergyLimit - 5f, birthEnergyLimit + 5f);
-        newRabbitScript.radius = Random.Range(radius - 1f, radius + 1f);
-        newRabbitScript.forwardForce = Random.Range(forwardForce - 1f, forwardForce + 1f);
     }
 
 
