@@ -849,6 +849,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &903556528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 903556529}
+  m_Layer: 0
+  m_Name: Foxes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &903556529
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903556528}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.77, y: 0, z: 43.137253}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &942533503
@@ -1042,6 +1073,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997062785}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1008029481
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4935322602234406003, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_Name
+      value: Fox
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.113167286
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.7859399
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.000995378
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707777540200021705, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
 --- !u!1 &1074730436
 GameObject:
   m_ObjectHideFlags: 0
@@ -1219,7 +1307,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1299920231}
   - component: {fileID: 1299920230}
-  - component: {fileID: 1299920232}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -1240,10 +1327,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
-  parentObj: {fileID: 328867090}
-  startAmount: 200
-  spawnRateTime: 1
-  spawnRatePerSpawning: 3
+  grassParentObj: {fileID: 328867090}
+  grassStartAmount: 200
+  grassSpawnRateTime: 1
+  grassSpawnRatePerSpawning: 5
+  Rabbit: {fileID: 436914071}
+  nameTag: {fileID: 1789781662}
+  nameTagParent: {fileID: 407760744}
+  rabbitParentObj: {fileID: 407760744}
+  rabbitStartAmount: 25
+  Fox: {fileID: 1763761513}
+  foxParentObj: {fileID: 903556529}
+  foxStartAmount: 5
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -1263,27 +1358,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1299920232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1299920229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0378f3dbef3ffb044870e8b580b61d9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Rabbit: {fileID: 436914071}
-  nameTag: {fileID: 1789781662}
-  nameTagParent: {fileID: 407760744}
-  parentObj: {fileID: 407760744}
-  startAmount: 49
-  lowestX: -150
-  highestX: 150
-  lowestZ: -150
-  highestZ: 150
 --- !u!1 &1366085702
 GameObject:
   m_ObjectHideFlags: 0
@@ -1669,6 +1743,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1655114668}
   m_CullTransparentMesh: 1
+--- !u!1 &1763761513 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4935322602234406003, guid: 03c1a6374c90227459bd9095950a671a, type: 3}
+  m_PrefabInstance: {fileID: 1008029481}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1789781662 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5156174949277862581, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
@@ -2041,7 +2120,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5156174949248904948, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5156174949248904948, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: m_LocalPosition.x
