@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour
 {
     // A MenuObjectet fogja megjeleníteni
+    public GameObject StatsPanel;
     public GameObject MenuObject;
     public GameObject StatisticsObject;
     // Ezzel eszközöljük a várakozást
@@ -29,6 +30,7 @@ public class Menu : MonoBehaviour
             {
                 MenuObject.SetActive(true);
                 StatisticsObject.SetActive(false);
+                StatsPanel.SetActive(false);
                 // A játék idejét lelassítja
                 Time.timeScale = 0.1f;
                 // Megnöveli a várakozás idõt, a bugok elkerülése végett
@@ -40,6 +42,7 @@ public class Menu : MonoBehaviour
                 if (MenuObject.activeInHierarchy == true)
                 {
                     MenuObject.SetActive(false);
+                    StatsPanel.SetActive(true);
                     // Játék sebességét visszaállítja
                     Time.timeScale = 1f;
                     // Várakozási idõ megnövekszik (azért 10x több mint mikor megállítjuk, mert az idõ is 10x gyorsabb)
@@ -54,6 +57,7 @@ public class Menu : MonoBehaviour
             {
                 StatisticsObject.SetActive(true);
                 MenuObject.SetActive(false);
+                StatsPanel.SetActive(false);
                 // A játék idejét lelassítja
                 Time.timeScale = 0.1f;
                 // Megnöveli a várakozás idõt, a bugok elkerülése végett
@@ -65,6 +69,7 @@ public class Menu : MonoBehaviour
                 if (StatisticsObject.activeInHierarchy == true)
                 {
                     StatisticsObject.SetActive(false);
+                    StatsPanel.SetActive(true);
                     // Játék sebességét visszaállítja
                     Time.timeScale = 1f;
                     // Várakozási idõ megnövekszik (azért 10x több mint mikor megállítjuk, mert az idõ is 10x gyorsabb)

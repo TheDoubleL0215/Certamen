@@ -7,6 +7,7 @@ public class Statistics : MonoBehaviour
 {
     public Text grassCountText;
     public Text rabbitCountText;
+
     public RectTransform chartPanel;
     public GameObject chartPointPrefab;
 
@@ -22,7 +23,6 @@ public class Statistics : MonoBehaviour
     private bool chartNeedsUpdate = false; // Flag to determine if the chart needs updating
 
     private const int maxDataPoints = 1000; // Maximum number of data points to keep
-
 
     private void Update()
     {
@@ -107,11 +107,6 @@ public class Statistics : MonoBehaviour
             float xPosition = i * widthPerPoint;
             float yPosition = rabbitEvolution[i] * 10 - 500;
 
-            // Instantiate a single chart point for each data point
-            GameObject chartPoint = Instantiate(chartPointPrefab, chartPanel);
-            RectTransform rectTransform = chartPoint.GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = new Vector2(xPosition - 900, yPosition);
-            chartPoints.Add(chartPoint);
 
             // Draw lines between points (except for the first point)
             if (i > 0)
@@ -120,10 +115,10 @@ public class Statistics : MonoBehaviour
                 line.transform.SetParent(chartPanel, false);
 
                 RectTransform lineRectTransform = line.AddComponent<RectTransform>();
-                lineRectTransform.sizeDelta = new Vector2(widthPerPoint * 2, 2f); // Set line length and thickness
+                lineRectTransform.sizeDelta = new Vector2(widthPerPoint * 2, 10f); // Set line length and thickness
 
                 Image lineImage = line.AddComponent<Image>();
-                lineImage.color = Color.black; // Set line color
+                lineImage.color = Color.white; // Set line color
 
                 // Position the line between two points
                 Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rabbitEvolution[i - 1] * 10 - 500);
@@ -136,6 +131,14 @@ public class Statistics : MonoBehaviour
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 lineRectTransform.rotation = Quaternion.Euler(0, 0, angle);
             }
+
+            // Instantiate a single chart point for each data point
+            GameObject chartPoint = Instantiate(chartPointPrefab, chartPanel);
+            RectTransform rectTransform = chartPoint.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(xPosition - 900, yPosition);
+            chartPoints.Add(chartPoint);
+
+            
         }
     }
 }
