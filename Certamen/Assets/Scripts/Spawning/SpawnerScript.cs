@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrassSpawnerScript : MonoBehaviour
+public class SpawnerScript : MonoBehaviour
 {
     [Header("Grass")]
     // Kiválasztjuk melyik karaktert spawnolja
@@ -96,6 +96,14 @@ public class GrassSpawnerScript : MonoBehaviour
 
         float randomRotation = Random.Range(minRotation, maxRotation);
         transform.Rotate(Vector3.up, randomRotation);
+
+        rabbitBehaviour RabbitBehaviour = RabbitObj.GetComponent<rabbitBehaviour>();
+
+        // Enable the script component if it exists
+        if (RabbitBehaviour != null)
+        {
+            RabbitBehaviour.enabled = true;
+        }
     }
 
     void spawnFox()
