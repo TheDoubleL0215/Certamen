@@ -5,7 +5,7 @@ using UnityEngine;
 public class facingToCamera : MonoBehaviour
 
 {
-    [SerializeField] private Camera camera;
+    [SerializeField] private new Camera camera;
 
     void Start()
     {
