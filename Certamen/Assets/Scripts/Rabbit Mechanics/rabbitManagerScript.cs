@@ -47,9 +47,9 @@ public class rabbitManagerScript : MonoBehaviour
 
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-        hungerLevel -= hungerLoss / 10;
+        hungerLevel -= hungerLoss / 1000;
 
-        if(hungerLevel == 0){
+        if(hungerLevel <= 0){
             Destroy(gameObject);
         }
 
@@ -65,9 +65,6 @@ public class rabbitManagerScript : MonoBehaviour
                 FoodMovement();
                 break;
         }
-
-        
-
         
     }
 
@@ -83,42 +80,48 @@ public class rabbitManagerScript : MonoBehaviour
             }
             rb.AddForce(Vector3.up * 100);
     }
-    void FoodMovement(){
-        if(agent.remainingDistance <= agent.stoppingDistance) //done with path
+    void FoodMovement()
+    {
+        if (agent.enabled)
         {
-            if (selectedPlant == null)
+            if (agent.remainingDistance <= agent.stoppingDistance) //done with path
             {
-                int inoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
-                Collider[] colliders = Physics.OverlapSphere(transform.position, radius, inoreDetectionLayerMask);
-
-                if (colliders.Length > 0)
+                if (selectedPlant == null)
                 {
-                    GameObject detectedPlant = colliders[0].gameObject;
+                    int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius, ignoreDetectionLayerMask);
 
-                    if (detectedPlant.CompareTag("Grass"))
+                    if (colliders.Length > 0)
                     {
-                        selectedPlant = detectedPlant;
-                        Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
-                        agent.SetDestination(selectedPlant.transform.position);
-                        //Debug.Log("Növény kiválasztva: " + selectedPlant);
+                        GameObject detectedPlant = colliders[0].gameObject;
+
+                        if (detectedPlant.CompareTag("Grass"))
+                        {
+                            selectedPlant = detectedPlant;
+                            Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
+                            agent.SetDestination(selectedPlant.transform.position);
+                            //Debug.Log("Növény kiválasztva: " + selectedPlant);
+                        }
+                    }
+                    else
+                    {
+                        IdleMovement();
                     }
                 }
                 else
                 {
-                    IdleMovement();
+                    if (Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
+                    {
+                        Destroy(selectedPlant);
+                        hungerLevel += 30f;
+                        selectedPlant = null;
+                        state = State.Idle;
+                    }
                 }
-
             }
-            else{
-                if (Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f){
-                    Destroy(selectedPlant);
-                    hungerLevel += 30f;
-                    selectedPlant = null;
-                    state = State.Idle;
-                }
-            }      
         }
     }
+
 
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
@@ -151,7 +154,6 @@ public class rabbitManagerScript : MonoBehaviour
         return false;
     }
 
-    
     #if UNITY_EDITOR
     private void OnDrawGizmos()
     {

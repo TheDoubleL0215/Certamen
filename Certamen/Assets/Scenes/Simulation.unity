@@ -1261,6 +1261,10 @@ PrefabInstance:
       value: Fox Prefab
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_TagString
       value: Fox
       objectReference: {fileID: 0}
@@ -1732,7 +1736,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
   grassParentObj: {fileID: 328867090}
-  grassStartAmount: 300
+  grassStartAmount: 200
   grassSpawnRateTime: 1
   grassSpawnRatePerSpawning: 5
   Rabbit: {fileID: 1834399286}
@@ -1742,7 +1746,7 @@ MonoBehaviour:
   rabbitStartAmount: 30
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
-  foxStartAmount: 10
+  foxStartAmount: 5
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -2175,11 +2179,16 @@ MonoBehaviour:
   range: 0
   radius: 0
   agent: {fileID: 1834399288}
-  centrePoint: {fileID: 903556529}
+  centrePoint: {fileID: 1834399303}
   selectedPlant: {fileID: 0}
   hungerLevel: 100
-  hungerLoss: 1
+  hungerLoss: 30
   state: 0
+--- !u!4 &1834399303 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+  m_PrefabInstance: {fileID: 8084336114410446032}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1851492552
 GameObject:
   m_ObjectHideFlags: 0
