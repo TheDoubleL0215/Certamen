@@ -1263,7 +1263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_Name
-      value: 01foxFinal
+      value: Fox Prefab
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_TagString
@@ -1737,14 +1737,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
   grassParentObj: {fileID: 328867090}
-  grassStartAmount: 200
+  grassStartAmount: 300
   grassSpawnRateTime: 1
   grassSpawnRatePerSpawning: 5
   Rabbit: {fileID: 436914071}
   nameTag: {fileID: 1789781662}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 25
+  rabbitStartAmount: 50
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
   foxStartAmount: 5
@@ -2434,19 +2434,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   fatherId: 0
-  energy: 100
-  energyLimit: 100
+  energy: 150
+  energyLimit: 150
   energyLoss: 10
   fertility: 2
   birthEnergyLimit: 80
   maturity: 0
-  maturityLimit: 20
+  maturityLimit: 25
   radius: 30
   age: 0
   lifeTime: 60
   Fox: {fileID: 1982462649}
-  jumpForce: 5
-  forwardForce: 5
+  jumpForce: 4
+  forwardForce: 10
   selectedRabbit: {fileID: 0}
 --- !u!65 &1982462654
 BoxCollider:
@@ -2664,6 +2664,18 @@ PrefabInstance:
     - target: {fileID: 5156174948529180426, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5156174949248904907, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
+      propertyPath: fertility
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5156174949248904907, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
+      propertyPath: energyLoss
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5156174949248904907, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
+      propertyPath: maturityLimit
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5156174949248904948, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: m_RootOrder

@@ -43,7 +43,7 @@ public class FoxManager : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>(); //rb inicializálás
         id = Random.Range(10000, 99999); // ázonosító "sorsolása"
-        maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak érettsége véletlen
+        maturity = Random.Range(5f, maturityLimit); // lespawnolt nyulak érettsége véletlen
         age = 0f;
         if (fatherId != 0)
         {
