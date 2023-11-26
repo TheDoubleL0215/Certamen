@@ -1747,7 +1747,7 @@ MonoBehaviour:
   rabbitStartAmount: 50
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
-  foxStartAmount: 5
+  foxStartAmount: 10
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -2671,7 +2671,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5156174949248904907, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: energyLoss
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5156174949248904907, guid: 2441821ddb2e8c1409052d63a5eb3c17, type: 3}
       propertyPath: maturityLimit

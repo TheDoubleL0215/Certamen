@@ -10,45 +10,45 @@ using Random = UnityEngine.Random;
 
 public class rabbitBehaviour : MonoBehaviour
 {
-    //V�LTOZ�K//
+    //VÁLTOZÓK//
     [Header("ID")]
-    public int id; // egy�ni azonos�t�
-    public int fatherId; // �r�k�lt azonos�t�
+    public int id; // egyéni azonosító
+    public int fatherId; // örökölt azonosító
     [Header("Energy")]
     public float energy; // energiaszint
     public float energyLimit; //energia maximum
-    public float energyLoss; // ugr�sonk�nti energia vesztes�g
+    public float energyLoss; // ugrásonkénti energia veszteség
     [Header("Reproduction")]
-    public int fertility; // ez hat�rozza meg, h�ny k�lyke lehet a ny�lnak
-    public float birthEnergyLimit; // ez a szint a minimum egy ut�dhoz
-    public float maturity; // �retts�g, szaporod�sban van szerepe
-    public float maturityLimit; // ezt az �rt�ket el�rve, v�gbe megy a szaporod�s
+    public int fertility; // ez határozza meg, hány kölyke lehet a nyúlnak
+    public float birthEnergyLimit; // ez a szint a minimum egy utódhoz
+    public float maturity; // érettség, szaporodásban van szerepe
+    public float maturityLimit; // ezt az értéket elérve, végbe megy a szaporodás
     [Header("Other")]
-    public float radius; // Az �rz�kel�s�nek a r�diusza.
-    public float age; // ny�l �letkora
-    public float lifeTime; // ha el�ri ezt, megd�glik
-    public GameObject Rabbit; // ezt az objektumot fogjuk kl�nozni szapodrod�sn�l 
-    public float jumpForce; // Az ugr�s magass�ga.
-    public float forwardForce; // Az ugr�s hossza.
+    public float radius; // Az érzékelésének a rádiusza.
+    public float age; // nyúl életkora
+    public float lifeTime; // ha eléri ezt, megdöglik
+    public GameObject Rabbit; // ezt az objektumot fogjuk klónozni szapodrodásnál 
+    public float jumpForce; // Az ugrás magassága.
+    public float forwardForce; // Az ugrás hossza.
     Rigidbody rb; // RigidBody komponens.
 
 
-    private bool turning = true; // Ez szab�lyozza a random fordul�sok ki- �s bekapcsol�s�t. 
-    [SerializeField] private GameObject selectedPlant; // A kiv�lasztott n�v�ny GameObject-je.
+    private bool turning = true; // Ez szabélyozza a random fordulások ki- és bekapcsolását. 
+    [SerializeField] private GameObject selectedPlant; // A kiválasztott növény GameObject-je.
 
 
     [Header("Energy Bar")]
-    //floater energy kijelz�se
+    //floater energy kijelzése
     [SerializeField] energyBar energiaBar;
 
 
     [Header("Energy Value")]
-    //floater energyValue kijelz�se
+    //floater energyValue kijelzése
     public GameObject energyValueObject;
     [SerializeField] private energyValueChanger changeEnergyValue;
 
     [Header("Radius Value")]
-    //floater r�diusz kijelz�se
+    //floater rádiusz kijelzése
     public GameObject radiusValueObject;
     [SerializeField] private getRadius radiusGetter;
 
@@ -63,40 +63,40 @@ public class rabbitBehaviour : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>(); //rb inicializ�l�s
-        id = Random.Range(10000, 99999); // �zonos�t� "sorsol�sa"
-        maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak �retts�ge v�letlen
+        rb = GetComponent<Rigidbody>(); //rb inicializálás
+        id = Random.Range(10000, 99999); // ázonosító "sorsolása"
+        maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak érettsége véletlen
         age = 0f;
         if (fatherId != 0)
         {
-            maturity = 0f; // ha m�r egy sz�letett �s nem spawnolt ny�l, akkor alapb�l 0 az �retts�ge
+            maturity = 0f; // ha már egy született és nem spawnolt nyúl, akkor alapból 0 az érettsége
         }
         energiaBar.EnergyBarUpdate(energyLimit, energy);
         changeEnergyValue.SetEnergyValueOnFloater(energyLimit, energy);
         radiusGetter.RadiusStatSetter(radius);
-        StartCoroutine(JumpMovement()); //Cooroutine ind�t�sa
+        StartCoroutine(JumpMovement()); //Cooroutine indítása
     }
 
     void Update()
     {
-        // folyamatosan n�velj�k az �retts�get �s a kort
+        // folyamatosan növeljük az érettséget és a kort
         maturity += Time.deltaTime;
         age += Time.deltaTime;
-        // ha az �retts�g el�ri a mehat�rozott szintet
+        // ha az érettség eléri a mehatározott szintet
         if (maturity >= maturityLimit)
         {
-            if (energy >= birthEnergyLimit) // csak abban az esetben sz�letik ut�d, ha van el�g energi�ja a sz�l�nek
+            if (energy >= birthEnergyLimit) // csak abban az esetben születik utód, ha van elég energiája a szülőnek
             {
-                float heirEnergy = energy / fertility + 1; // "heirEnergy" �rt�ke lesz majd az ut�dok energi�ja mikor megssz�letnek
-                for (int i = 0; i < fertility; i++) // "fertility" v�ltoz� �rt�keszer megh�vja a "Reproduction()" f�ggv�nyt
+                float heirEnergy = energy / fertility + 1; // "heirEnergy" értéke lesz majd az utódok energiája mikor megsszületnek
+                for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
                 {
                     Reproduction(heirEnergy);
                 }
-                maturity = 0f; //null�z�dik a maturity
-                energy = energy / fertility + 1; // a sz�l� energi�j�t elosszuk annyival, ah�ny ut�da sz�letik
+                maturity = 0f; //nullázódik a maturity
+                energy = energy / fertility + 1; // a szülő energiáját elosszuk annyival, ahány utóda születik
             }
         }
-        // el�regedett nyulak elpusztulnak
+        // elöregedett nyulak elpusztulnak
         if (age >= lifeTime)
         {
             Destroy(gameObject);
@@ -108,11 +108,11 @@ public class rabbitBehaviour : MonoBehaviour
     {
         while (true)
         {
-            Detect(); // Az �rz�kel�si folyamat megkezd�se
+            Detect(); // Az érzékelési folyamat megkezdése
 
             if (turning)
             {
-                // random fordul�s kezel�se
+                // random fordulás kezelése
                 float randomHeading = Random.Range(-90f, 90f);
                 transform.rotation = Quaternion.Euler(0f, randomHeading, 0f);
             }
@@ -152,17 +152,20 @@ public class rabbitBehaviour : MonoBehaviour
     {
         if (selectedPlant == null)
         {
-            int inoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
-            Collider[] colliders = Physics.OverlapSphere(transform.position, radius, inoreDetectionLayerMask);
+            int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+            Collider[] colliders = Physics.OverlapSphere(transform.position, radius, ignoreDetectionLayerMask);
 
             if (colliders.Length > 0)
             {
-                turning = false;
-                selectedPlant = colliders[0].gameObject;
-                //Debug.Log("N�v�ny kiv�lasztva: " + selectedPlant);
-                MoveTowardsTarget();
-            }
+                GameObject detectedPlant = colliders[0].gameObject;
 
+                if (detectedPlant.CompareTag("Grass"))
+                {
+                    turning = false;
+                    selectedPlant = detectedPlant;
+                    MoveTowardsTarget();
+                }
+            }
         }
         else
         {
@@ -198,27 +201,27 @@ public class rabbitBehaviour : MonoBehaviour
 
     }
 
-    //�J EGYED SZ�LET�SE
+    //ÚJ EGYED SZÜLETÉSE
     void Reproduction(float heirEnergy)
     {
-        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); //kl�nozzuk a Rabbit objektumot
+        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
 
-        // Defini�ld a p�lyater�let hat�rait
+        // Definiáld a pályaterület határait
         float minX = -75f;
         float maxX = 75f;
         float minZ = -75f;
         float maxZ = 75f;
 
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // T�vols�g a sz�l� ny�lt�l
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő nyúltól
         Vector3 newPosition = transform.position + offset;
 
-        // Korl�tozd a kis ny�l poz�ci�j�t a p�lya hat�rai k�z�tt
+        // Korlátozd a kis nyúl pozícióját a pálya határai között
         newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
         newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
 
         newRabbit.transform.position = newPosition;
 
-        // Az �j egyed meg�r�kli a sz�l� �rt�keit kisebb m�dosul�sokkal
+        // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
         rabbitBehaviour newRabbitScript = newRabbit.GetComponent<rabbitBehaviour>();
         newRabbitScript.fatherId = id;
         newRabbitScript.energy = heirEnergy;
