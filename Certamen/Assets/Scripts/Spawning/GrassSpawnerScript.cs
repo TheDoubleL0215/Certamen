@@ -28,7 +28,7 @@ public class GrassSpawnerScript : MonoBehaviour
     public int rabbitStartAmount;
     // Megadjuk a kordinátákat, amin belül spawnol a fû
 
-    [Header("Fow")]
+    [Header("Fox")]
     public GameObject Fox;
     //Parent container 
     public Transform foxParentObj;
@@ -111,5 +111,13 @@ public class GrassSpawnerScript : MonoBehaviour
 
         // Instantiate the fox with the desired rotation
         GameObject FoxObj = Instantiate(Fox, position, rotation, foxParentObj);
+
+        FoxManager foxManager = FoxObj.GetComponent<FoxManager>();
+
+        // Enable the script component if it exists
+        if (foxManager != null)
+        {
+            foxManager.enabled = true;
+        }
     }
 }

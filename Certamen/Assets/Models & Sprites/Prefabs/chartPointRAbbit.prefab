@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8919820841882066174}
   - component: {fileID: 5785292062421751040}
   m_Layer: 5
-  m_Name: chartPointPrefab
+  m_Name: chartPointRAbbit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
