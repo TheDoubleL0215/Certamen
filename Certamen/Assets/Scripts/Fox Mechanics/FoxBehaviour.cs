@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class FoxManager : MonoBehaviour
+public class FoxBehaviour : MonoBehaviour
 {
 
     [Header("ID")]
@@ -156,8 +156,11 @@ public class FoxManager : MonoBehaviour
             }
             else
             {
-                rabbitBehaviour rabbitScript = selectedRabbit.GetComponent<rabbitBehaviour>();
-                energy += rabbitScript.energy;
+                rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
+                if (rabbitScript != null)
+                {
+                    energy += rabbitScript.hungerLevel;
+                }
                 Destroy(selectedRabbit);
                 selectedRabbit = null;
                 turning = true;
@@ -190,7 +193,7 @@ public class FoxManager : MonoBehaviour
         newFox.transform.position = newPosition;
 
         // Az új egyed megörökli a szülõ értékeit kisebb módosulásokkal
-        FoxManager newFoxScript = newFox.GetComponent<FoxManager>();
+        FoxBehaviour newFoxScript = newFox.GetComponent<FoxBehaviour>();
         newFoxScript.fatherId = id;
         newFoxScript.energy = heirEnergy;
     }

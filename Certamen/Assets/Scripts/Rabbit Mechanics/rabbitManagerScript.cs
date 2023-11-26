@@ -20,6 +20,7 @@ public class rabbitManagerScript : MonoBehaviour
     [SerializeField] private GameObject selectedPlant;
 
     public float hungerLevel = 100f;
+    public float hungerLoss = 5f;
     public enum State{
         Idle,
         Hunger,
@@ -46,7 +47,7 @@ public class rabbitManagerScript : MonoBehaviour
 
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-        hungerLevel -= 0.005f;
+        hungerLevel -= hungerLoss / 10;
 
         if(hungerLevel == 0){
             Destroy(gameObject);
@@ -84,33 +85,39 @@ public class rabbitManagerScript : MonoBehaviour
     }
     void FoodMovement(){
         if(agent.remainingDistance <= agent.stoppingDistance) //done with path
+        {
+            if (selectedPlant == null)
             {
-                if (selectedPlant == null){
-                    int inoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
-                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius, inoreDetectionLayerMask);
-                    
-                    if (colliders.Length > 0){
-                        selectedPlant = colliders[0].gameObject;
+                int inoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+                Collider[] colliders = Physics.OverlapSphere(transform.position, radius, inoreDetectionLayerMask);
+
+                if (colliders.Length > 0)
+                {
+                    GameObject detectedPlant = colliders[0].gameObject;
+
+                    if (detectedPlant.CompareTag("Grass"))
+                    {
+                        selectedPlant = detectedPlant;
                         Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
                         agent.SetDestination(selectedPlant.transform.position);
                         //Debug.Log("Növény kiválasztva: " + selectedPlant);
-                    }else{
-                        IdleMovement();
-                    }
-
-                }else{
-                    if (Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f){
-                        Destroy(selectedPlant);
-                        hungerLevel += 30f;
-                        selectedPlant = null;
-                        state = State.Idle;
                     }
                 }
+                else
+                {
+                    IdleMovement();
+                }
 
-
-                
             }
-
+            else{
+                if (Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f){
+                    Destroy(selectedPlant);
+                    hungerLevel += 30f;
+                    selectedPlant = null;
+                    state = State.Idle;
+                }
+            }      
+        }
     }
 
 

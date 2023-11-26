@@ -120,7 +120,7 @@ public class SpawnerScript : MonoBehaviour
         // Instantiate the fox with the desired rotation
         GameObject FoxObj = Instantiate(Fox, position, rotation, foxParentObj);
 
-        FoxManager foxManager = FoxObj.GetComponent<FoxManager>();
+        FoxBehaviour foxManager = FoxObj.GetComponent<FoxBehaviour>();
 
         // Enable the script component if it exists
         if (foxManager != null)
