@@ -16,6 +16,8 @@ public class Statistics : MonoBehaviour
     public RectTransform foxChartPanel;
     public GameObject rabbitChartPointPrefab;
     public GameObject foxChartPointPrefab;
+    public GameObject spiralPointPrefab;
+    public RectTransform spiralPanel;
 
     private int grassObjectCount = 0;
     private int rabbitObjectCount = 0;
@@ -28,6 +30,7 @@ public class Statistics : MonoBehaviour
 
     private List<GameObject> chartPoints = new List<GameObject>(); // Store chart points
     private List<GameObject> foxChartPoints = new List<GameObject>(); // Store chart points
+    private List<RectTransform> spiralPointsList = new List<RectTransform>();
 
     private bool chartNeedsUpdate = false; // Flag to determine if the chart needs updating
 
@@ -66,7 +69,7 @@ public class Statistics : MonoBehaviour
             foxObjectCount = GameObject.FindGameObjectsWithTag("Fox").Length;
             foxCountText.text = "Rókák száma: " + foxObjectCount;
             StoreFoxCount();
-            
+
             rabbitObjectCount = GameObject.FindGameObjectsWithTag("Rabbit").Length;
             rabbitCountText.text = "Nyulak száma: " + rabbitObjectCount;
             StoreRabbitCount();
@@ -99,8 +102,66 @@ public class Statistics : MonoBehaviour
         chartNeedsUpdate = true;
     }
 
+    void UpdateSpiralDiagram()
+    {
+        float x, y;
+        y = foxObjectCount; // Adjust as needed
+        x = rabbitObjectCount; // Adjust as needed
+
+        if (x != 0)
+        {
+            x *= 15f;
+        }
+        if (y != 0)
+        {
+            y *= 30f;
+        }
+
+        // Create and position a point at the calculated position on the spiral
+        GameObject spiralPoint = Instantiate(spiralPointPrefab, spiralPanel);
+
+        RectTransform rectTransform = spiralPoint.GetComponent<RectTransform>();
+        rectTransform.anchoredPosition = new Vector2(x - 900, y - 500);
+        spiralPointsList.Add(rectTransform);
+
+        // Draw lines between points (except for the first point)
+        if (spiralPanel.childCount > 1)
+        {
+            GameObject line = new GameObject("SpiralLine");
+            line.transform.SetParent(spiralPanel, false);
+
+            RectTransform lineRectTransform = line.AddComponent<RectTransform>();
+            lineRectTransform.sizeDelta = new Vector2(2f, 2f); // Set line thickness
+
+            Image lineImage = line.AddComponent<Image>();
+            lineImage.color = Color.green; // Set line color
+
+            // Get the current and previous points
+            RectTransform prevPoint = spiralPointsList[spiralPointsList.Count - 2];
+            RectTransform currentPoint = spiralPoint.GetComponent<RectTransform>();
+
+            // Set line position
+            Vector2 startPoint = prevPoint.anchoredPosition;
+            Vector2 endPoint = currentPoint.anchoredPosition;
+
+            // Calculate midpoint and distance
+            Vector2 midPoint = (startPoint + endPoint) / 2f;
+            float distance = Vector2.Distance(startPoint, endPoint);
+
+            // Set line position and length
+            lineRectTransform.anchoredPosition = midPoint;
+            lineRectTransform.sizeDelta = new Vector2(distance, 2f);
+
+            // Set line rotation
+            Vector2 direction = (endPoint - startPoint).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            lineRectTransform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+    }
+
     void UpdateChart()
     {
+        UpdateSpiralDiagram();
         //RABBIT CHART//
         // Clear all previous chart points and lines
         foreach (var chartPoint in chartPoints)

@@ -8,7 +8,10 @@ public class Menu : MonoBehaviour
     // A MenuObjectet fogja megjeleníteni
     public GameObject StatsPanel;
     public GameObject MenuObject;
-    public GameObject StatisticsObject;
+    public GameObject ChartsObject;
+    public GameObject SpiralObject;
+    public GameObject DecorObject;
+
     // Ezzel eszközöljük a várakozást
     private float WaitTime = 0;
 
@@ -29,8 +32,10 @@ public class Menu : MonoBehaviour
             if (MenuObject.activeInHierarchy == false)
             {
                 MenuObject.SetActive(true);
-                StatisticsObject.SetActive(false);
+                ChartsObject.SetActive(false);
                 StatsPanel.SetActive(false);
+                SpiralObject.SetActive(false);
+                DecorObject.SetActive(false);
                 // A játék idejét lelassítja
                 Time.timeScale = 0.1f;
                 // Megnöveli a várakozás idõt, a bugok elkerülése végett
@@ -50,12 +55,14 @@ public class Menu : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKey(KeyCode.G))
+        if (Input.GetKey(KeyCode.C))
         {
             // ...ha nem volt megjelenítve a menü, megjeleníti
-            if (StatisticsObject.activeInHierarchy == false)
+            if (ChartsObject.activeInHierarchy == false)
             {
-                StatisticsObject.SetActive(true);
+                ChartsObject.SetActive(true);
+                DecorObject.SetActive(true);
+                SpiralObject.SetActive(false);
                 MenuObject.SetActive(false);
                 StatsPanel.SetActive(false);
                 // A játék idejét lelassítja
@@ -66,9 +73,41 @@ public class Menu : MonoBehaviour
             // ...ha meg volt jelenítve a menü, eltünteti
             else
             {
-                if (StatisticsObject.activeInHierarchy == true)
+                if (ChartsObject.activeInHierarchy == true)
                 {
-                    StatisticsObject.SetActive(false);
+                    ChartsObject.SetActive(false);
+                    DecorObject.SetActive(false);
+                    StatsPanel.SetActive(true);
+                    // Játék sebességét visszaállítja
+                    Time.timeScale = 1f;
+                    // Várakozási idõ megnövekszik (azért 10x több mint mikor megállítjuk, mert az idõ is 10x gyorsabb)
+                    WaitTime = 0.5f;
+                }
+            }
+        }
+
+        if (Input.GetKey(KeyCode.V))
+        {
+            // ...ha nem volt megjelenítve a menü, megjeleníti
+            if (SpiralObject.activeInHierarchy == false)
+            {
+                SpiralObject.SetActive(true);
+                DecorObject.SetActive(true);
+                MenuObject.SetActive(false);
+                StatsPanel.SetActive(false);
+                ChartsObject.SetActive(false);
+                // A játék idejét lelassítja
+                Time.timeScale = 0.1f;
+                // Megnöveli a várakozás idõt, a bugok elkerülése végett
+                WaitTime = 0.05f;
+            }
+            // ...ha meg volt jelenítve a menü, eltünteti
+            else
+            {
+                if (SpiralObject.activeInHierarchy == true)
+                {
+                    SpiralObject.SetActive(false);
+                    DecorObject.SetActive(false);
                     StatsPanel.SetActive(true);
                     // Játék sebességét visszaállítja
                     Time.timeScale = 1f;
