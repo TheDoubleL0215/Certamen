@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.AI;
 using Vector3 = UnityEngine.Vector3;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 public class rabbitManagerScript : MonoBehaviour
 {
@@ -14,10 +15,15 @@ public class rabbitManagerScript : MonoBehaviour
     public float forwardForce = 5f; 
     public float range; //radius
     public float radius = 0f;
+
+    public float speed = 3f;
+
+    public float groundDistance = 0.5f;
     
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
+
 
     public float hungerLevel = 100f;
     public enum State{
@@ -29,9 +35,12 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Start()
     {
+
+
         rb = GetComponent<Rigidbody>();
 
         agent = GetComponent<NavMeshAgent>();
+
         // Define radius
         radius = Random.Range(10, 20); // érzékelõ sugara
         state = State.Idle;
@@ -41,10 +50,6 @@ public class rabbitManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 eloreMozgas = transform.forward * forwardForce;
-        rb.velocity = eloreMozgas;
-
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
         hungerLevel -= 0.005f;
 
@@ -80,7 +85,6 @@ public class rabbitManagerScript : MonoBehaviour
                     agent.SetDestination(point);
                 }
             }
-            rb.AddForce(Vector3.up * 100);
     }
     void FoodMovement(){
         if(agent.remainingDistance <= agent.stoppingDistance) //done with path
