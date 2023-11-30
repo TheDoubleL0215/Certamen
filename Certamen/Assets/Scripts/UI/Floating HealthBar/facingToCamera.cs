@@ -3,14 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class facingToCamera : MonoBehaviour
-
 {
-    [SerializeField] private new Camera camera;
-
-    void Start()
-    {
-        
-    }
+     public new Camera camera;
 
     // Update is called once per frame
     void Update()

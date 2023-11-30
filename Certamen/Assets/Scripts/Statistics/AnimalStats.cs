@@ -18,14 +18,14 @@ public class AnimalStats : MonoBehaviour
         if (target != null)
         {
             transform.position = target.position;
-            string statText = "Energia: " + rabbitMoveScript.energy + "\n" +
-                "Energia Limit: " + rabbitMoveScript.energyLimit + "\n" +
-                "Energia Veszteség: " + rabbitMoveScript.energyLoss + "\n" +
-                "Sebesség: " + rabbitMoveScript.forwardForce + "\n" +
-                "Látósugár: " + rabbitMoveScript.radius;
+            //string statText = "Energia: " + rabbitMoveScript.energy + "\n" +
+                //"Energia Limit: " + rabbitMoveScript.energyLimit + "\n" +
+               // "Energia Veszteség: " + rabbitMoveScript.energyLoss + "\n" +
+                //"Sebesség: " + rabbitMoveScript.forwardForce + "\n" +
+               // "Látósugár: " + rabbitMoveScript.radius;
 
             // Most állítsd be a szöveget a Text komponensen
-            GetComponent<Text>().text = statText;
+            //GetComponent<Text>().text = statText;
             // Hozz létre egy forgatási célpontot, amely mindig a kamera pozíciójában van
             Vector3 cameraPosition = Camera.main.transform.position;
 
