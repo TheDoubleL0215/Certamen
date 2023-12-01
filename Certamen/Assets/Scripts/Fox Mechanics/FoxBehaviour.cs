@@ -12,27 +12,26 @@ public class FoxBehaviour : MonoBehaviour
 {
 
     [Header("ID")]
-    public int id; // egyéni azonosító
-    public int fatherId; // örökölt azonosító
+    public int id; // egyï¿½ni azonosï¿½tï¿½
+    public int fatherId; // ï¿½rï¿½kï¿½lt azonosï¿½tï¿½
 
     [Header("Energy")]
     public float energy; // energiaszint
     public float energyLimit; //energia maximum
-    public float energyLoss; // ugrásonkénti energia veszteség
+    public float energyLoss; // ugrï¿½sonkï¿½nti energia vesztesï¿½g
 
     [Header("Reproduction")]
-    public int fertility; // ez határozza meg, hány kölyke lehet a nyúlnak
-    public float birthEnergyLimit; // ez a szint a minimum egy utódhoz
-    public float maturity; // érettség, szaporodásban van szerepe
-    public float maturityLimit; // ezt az értéket elérve, végbe megy a szaporodás
+    public int fertility; // ez hatï¿½rozza meg, hï¿½ny kï¿½lyke lehet a nyï¿½lnak
+    public float birthEnergyLimit; // ez a szint a minimum egy utï¿½dhoz
+    public float maturity; // ï¿½rettsï¿½g, szaporodï¿½sban van szerepe
+    public float maturityLimit; // ezt az ï¿½rtï¿½ket elï¿½rve, vï¿½gbe megy a szaporodï¿½s
 
     [Header("Other")]
-    public float radius; // Az érzékelésének a rádiusza.
-    public float age; // nyúl életkora
-    public float lifeTime; // ha eléri ezt, megdöglik
-    public GameObject Fox; // ezt az objektumot fogjuk klónozni szapodrodásnál 
-    public float jumpForce; // Az ugrás magassága.
-    public float forwardForce; // Az ugrás hossza.
+    public float radius; // Az ï¿½rzï¿½kelï¿½sï¿½nek a rï¿½diusza.
+    public float age; // nyï¿½l ï¿½letkora
+    public float lifeTime; // ha elï¿½ri ezt, megdï¿½glik
+    public GameObject Fox; // ezt az objektumot fogjuk klï¿½nozni szapodrodï¿½snï¿½l 
+    public float forwardForce; // Az ugrï¿½s hossza.
     Rigidbody rb; // RigidBody komponens.
 
     private bool turning = true;
@@ -41,13 +40,14 @@ public class FoxBehaviour : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>(); //rb inicializálás
-        id = Random.Range(10000, 99999); // ázonosító "sorsolása"
-        maturity = Random.Range(5f, maturityLimit); // lespawnolt nyulak érettsége véletlen
+        rb = GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; //rb inicializï¿½lï¿½s
+        id = Random.Range(10000, 99999); // ï¿½zonosï¿½tï¿½ "sorsolï¿½sa"
+        maturity = Random.Range(5f, maturityLimit); // lespawnolt nyulak ï¿½rettsï¿½ge vï¿½letlen
         age = 0f;
         if (fatherId != 0)
         {
-            maturity = 0f; // ha már egy született és nem spawnolt nyúl, akkor alapból 0 az érettsége
+            maturity = 0f; // ha mï¿½r egy szï¿½letett ï¿½s nem spawnolt nyï¿½l, akkor alapbï¿½l 0 az ï¿½rettsï¿½ge
         }
    
         StartCoroutine(JumpMovement());
@@ -58,21 +58,21 @@ public class FoxBehaviour : MonoBehaviour
     {
         maturity += Time.deltaTime;
         age += Time.deltaTime;
-        // ha az érettség eléri a mehatározott szintet
+        // ha az ï¿½rettsï¿½g elï¿½ri a mehatï¿½rozott szintet
         if (maturity >= maturityLimit)
         {
-            if (energy >= birthEnergyLimit) // csak abban az esetben születik utód, ha van elég energiája a szülõnek
+            if (energy >= birthEnergyLimit) // csak abban az esetben szï¿½letik utï¿½d, ha van elï¿½g energiï¿½ja a szï¿½lï¿½nek
             {
-                float heirEnergy = energy / fertility + 1; // "heirEnergy" értéke lesz majd az utódok energiája mikor megsszületnek
-                for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
+                float heirEnergy = energy / fertility + 1; // "heirEnergy" ï¿½rtï¿½ke lesz majd az utï¿½dok energiï¿½ja mikor megsszï¿½letnek
+                for (int i = 0; i < fertility; i++) // "fertility" vï¿½ltozï¿½ ï¿½rtï¿½keszer meghï¿½vja a "Reproduction()" fï¿½ggvï¿½nyt
                 {
                     Reproduction(heirEnergy);
                 }
-                maturity = 0f; //nullázódik a maturity
-                energy = energy / fertility + 1; // a szülõ energiáját elosszuk annyival, ahány utóda születik
+                maturity = 0f; //nullï¿½zï¿½dik a maturity
+                energy = energy / fertility + 1; // a szï¿½lï¿½ energiï¿½jï¿½t elosszuk annyival, ahï¿½ny utï¿½da szï¿½letik
             }
         }
-        // elöregedett nyulak elpusztulnak
+        // elï¿½regedett nyulak elpusztulnak
         if (age >= lifeTime)
         {
             Destroy(gameObject);
@@ -82,11 +82,11 @@ public class FoxBehaviour : MonoBehaviour
     {
         while (true)
         {
-            Detect(); // Az érzékelési folyamat megkezdése
+            Detect(); // Az ï¿½rzï¿½kelï¿½si folyamat megkezdï¿½se
 
             if (turning)
             {
-                // random fordulás kezelése
+                // random fordulï¿½s kezelï¿½se
                 float randomHeading = Random.Range(-90f, 90f);
                 transform.rotation = Quaternion.Euler(0f, randomHeading, 0f);
             }
@@ -101,8 +101,6 @@ public class FoxBehaviour : MonoBehaviour
 
             Vector3 eloreMozgas = transform.forward * forwardForce;
             rb.velocity = eloreMozgas;
-
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             energy -= energyLoss;
             
             if (energy <= 0f)
@@ -175,24 +173,24 @@ public class FoxBehaviour : MonoBehaviour
 
     void Reproduction(float heirEnergy)
     {
-        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
+        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //klï¿½nozzuk a Rabbit objektumot
 
-        // Definiáld a pályaterület határait
+        // Definiï¿½ld a pï¿½lyaterï¿½let hatï¿½rait
         float minX = -75f;
         float maxX = 75f;
         float minZ = -75f;
         float maxZ = 75f;
 
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülõ nyúltól
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Tï¿½volsï¿½g a szï¿½lï¿½ nyï¿½ltï¿½l
         Vector3 newPosition = transform.position + offset;
 
-        // Korlátozd a kis nyúl pozícióját a pálya határai között
+        // Korlï¿½tozd a kis nyï¿½l pozï¿½ciï¿½jï¿½t a pï¿½lya hatï¿½rai kï¿½zï¿½tt
         newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
         newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
 
         newFox.transform.position = newPosition;
 
-        // Az új egyed megörökli a szülõ értékeit kisebb módosulásokkal
+        // Az ï¿½j egyed megï¿½rï¿½kli a szï¿½lï¿½ ï¿½rtï¿½keit kisebb mï¿½dosulï¿½sokkal
         FoxBehaviour newFoxScript = newFox.GetComponent<FoxBehaviour>();
         newFoxScript.fatherId = id;
         newFoxScript.energy = heirEnergy;
