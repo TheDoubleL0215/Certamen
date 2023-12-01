@@ -34,7 +34,6 @@ public class FoxBehaviour : MonoBehaviour
     public float forwardForce; // Az ugr�s hossza.
     Rigidbody rb; // RigidBody komponens.
 
-    private bool turning = true;
     [SerializeField] private GameObject selectedRabbit;
     // Start is called before the first frame update
 
@@ -50,7 +49,6 @@ public class FoxBehaviour : MonoBehaviour
             maturity = 0f; // ha m�r egy sz�letett �s nem spawnolt ny�l, akkor alapb�l 0 az �retts�ge
         }
    
-        StartCoroutine(JumpMovement());
     }
 
     // Update is called once per frame
@@ -76,98 +74,6 @@ public class FoxBehaviour : MonoBehaviour
         if (age >= lifeTime)
         {
             Destroy(gameObject);
-        }
-    }
-    private IEnumerator JumpMovement()
-    {
-        while (true)
-        {
-            Detect(); // Az �rz�kel�si folyamat megkezd�se
-
-            if (turning)
-            {
-                // random fordul�s kezel�se
-                float randomHeading = Random.Range(-90f, 90f);
-                transform.rotation = Quaternion.Euler(0f, randomHeading, 0f);
-            }
-            else
-            {
-                if (selectedRabbit != null)
-                {
-                    transform.LookAt(selectedRabbit.transform.position);
-                }
-            }
-
-
-            Vector3 eloreMozgas = transform.forward * forwardForce;
-            rb.velocity = eloreMozgas;
-            energy -= energyLoss;
-            
-            if (energy <= 0f)
-            {
-                Destroy(gameObject);
-            }
-            if (energy >= energyLimit)
-            {
-                energy = energyLimit;
-            }
-
-            float waiting = Random.Range(1.5f, 3f);
-
-            yield return new WaitForSeconds(waiting);
-        }
-    }
-
-    void Detect()
-    {
-        if (selectedRabbit == null)
-        {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-
-            foreach (Collider collider in colliders)
-            {
-                if (collider.CompareTag("Rabbit"))
-                {
-                    turning = false;
-                    selectedRabbit = collider.gameObject;
-                    //Debug.Log("Rabbit selected: " + selectedRabbit.name);
-                    MoveTowardsTarget();
-                    break; // Exit the loop after finding the first rabbit
-                }
-            }
-        }
-        else
-        {
-            MoveTowardsTarget();
-        }
-    }
-
-
-
-    void MoveTowardsTarget()
-    {
-        if (selectedRabbit != null)
-        {
-            if (Vector3.Distance(transform.position, selectedRabbit.transform.position) > 10f)
-            {
-                transform.LookAt(selectedRabbit.transform.position);
-            }
-            else
-            {
-                rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
-                if (rabbitScript != null)
-                {
-                    energy += rabbitScript.hungerLevel;
-                }
-                Destroy(selectedRabbit);
-                selectedRabbit = null;
-                turning = true;
-            }
-        }
-        else
-        {
-            turning = true;
-            selectedRabbit = null;
         }
     }
 
@@ -196,10 +102,4 @@ public class FoxBehaviour : MonoBehaviour
         newFoxScript.energy = heirEnergy;
     }
 
-    #if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
-        }
-    #endif
 }

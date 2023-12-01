@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine.AI;
 using Vector3 = UnityEngine.Vector3;
 
-public class foxManagerScript : MonoBehaviour
+public class foxmanager : MonoBehaviour
 {
     Rigidbody rb; 
     public float forwardForce = 10f; 
