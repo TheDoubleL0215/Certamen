@@ -7,9 +7,22 @@ public class energyBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
 
-    public void EnergyBarUpdate(float maxEnergy, float energy)
+    public GameObject gameObjectSelf;
+    public rabbitManagerScript rabbi;
+    private float hungerLevel;
+
+
+    void Awake(){
+        rabbi = gameObjectSelf.GetComponent<rabbitManagerScript>();
+    }
+
+    void Update(){
+        EnergyBarUpdate(100, rabbi.hungerLevel);
+    }
+
+    public void EnergyBarUpdate(float maxHunger, float hungerLevel)
     {
-        slider.value = energy / maxEnergy;
+        slider.value = hungerLevel / maxHunger;
     }
 
 }

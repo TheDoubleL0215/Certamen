@@ -131,6 +131,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 8084336114442433538}
+  gameObjectSelf: {fileID: 0}
+  rabbi: {fileID: 0}
+  hungerLevel: 0
 --- !u!1 &8084336114598939633
 GameObject:
   m_ObjectHideFlags: 0
@@ -405,6 +408,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 8084336115447393720}
+  gameObjectSelf: {fileID: 0}
+  rabbi: {fileID: 0}
 --- !u!1 &8084336115541600697
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,7 +663,6 @@ GameObject:
   - component: {fileID: 8084336115967683306}
   - component: {fileID: 8084336115967683305}
   - component: {fileID: 8084336115967683304}
-  - component: {fileID: 8084336115967683303}
   - component: {fileID: 8084336115967683311}
   m_Layer: 6
   m_Name: Rabbit Prefab
@@ -804,27 +808,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &8084336115967683303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8084336115967683302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cf9065b1cacb724e8f13534b58c2850, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpForce: 5
-  forwardForce: 5
-  range: 0
-  radius: 15
-  agent: {fileID: 8084336115967683304}
-  centrePoint: {fileID: 8084336115967683310}
-  selectedPlant: {fileID: 0}
-  hungerLevel: 100
-  state: 0
 --- !u!114 &8084336115967683311
 MonoBehaviour:
   m_ObjectHideFlags: 0

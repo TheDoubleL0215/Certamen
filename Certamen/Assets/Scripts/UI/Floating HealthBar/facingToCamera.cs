@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class facingToCamera : MonoBehaviour
 {
-    [SerializeField] private new Camera camera;
+     public new Camera camera;
 
     // Update is called once per frame
     void Update()

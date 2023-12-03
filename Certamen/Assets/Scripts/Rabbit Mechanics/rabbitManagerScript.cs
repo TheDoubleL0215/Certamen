@@ -6,33 +6,44 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.AI;
 using Vector3 = UnityEngine.Vector3;
+using System.Runtime.CompilerServices;
 
 public class rabbitManagerScript : MonoBehaviour
 {
     Rigidbody rb; 
     public float jumpForce = 5f; // Az ugrás magassága.
     public float forwardForce = 5f; 
+    public float moveSpeed = 5f;
     public float range; //radius
     public float radius = 0f;
+    public Vector3 newDirection;
+
+    public float speed = 3f;
+
+    public float groundDistance = 0.5f;
     
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
-
     public float hungerLevel = 100f;
     public float hungerLoss = 5f;
     public enum State{
         Idle,
         Hunger,
     }
-
-    [SerializeField] private State state;
+    [SerializeField] public State state;
+    public State CurrentState
+    {
+        get { return state; }
+    }
 
     void Start()
     {
+
         rb = GetComponent<Rigidbody>();
 
         agent = GetComponent<NavMeshAgent>();
+
         // Define radius
         radius = Random.Range(10, 20); // érzékelõ sugara
         state = State.Idle;
@@ -42,10 +53,9 @@ public class rabbitManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 eloreMozgas = transform.forward * forwardForce;
-        rb.velocity = eloreMozgas;
-
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        if(hungerLevel > 100){
+            hungerLevel = 100;
+        }
 
         hungerLevel -= hungerLoss / 1000;
 
@@ -62,6 +72,7 @@ public class rabbitManagerScript : MonoBehaviour
             state = State.Idle;
         }
 
+
         switch (state){
             case State.Idle:
                 IdleMovement();
@@ -70,8 +81,10 @@ public class rabbitManagerScript : MonoBehaviour
                 FoodMovement();
                 break;
         }
+
         
     }
+
 
     void IdleMovement(){
         if(agent.remainingDistance <= agent.stoppingDistance) //done with path
@@ -83,8 +96,9 @@ public class rabbitManagerScript : MonoBehaviour
                     agent.SetDestination(point);
                 }
             }
-            rb.AddForce(Vector3.up * 100);
     }
+
+
     void FoodMovement()
     {
         if (agent.enabled)
