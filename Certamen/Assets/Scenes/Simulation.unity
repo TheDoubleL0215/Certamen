@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.7640362, g: 0.6080183, b: 0.49883005, a: 1}
+  m_IndirectSpecularColor: {r: 0.7640305, g: 0.60801613, b: 0.49883032, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2046,16 +2046,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8adf0ed05117c4996d1a1549da54aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grassSpawn: 1
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
   grassParentObj: {fileID: 328867090}
   grassStartAmount: 200
   grassSpawnRateTime: 10
   grassSpawnRatePerSpawning: 2
+  rabbitSpawn: 1
   Rabbit: {fileID: 1834399286}
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
   rabbitStartAmount: 10
+  foxSpawn: 1
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
   foxStartAmount: 5

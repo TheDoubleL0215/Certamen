@@ -6,6 +6,7 @@ public class SpawnerScript : MonoBehaviour
 {
     [Header("Grass")]
     // Kiválasztjuk melyik karaktert spawnolja
+    [SerializeField] private bool grassSpawn;
     public GameObject Grass;
     //Parent container 
     public Transform grassParentObj;
@@ -19,6 +20,7 @@ public class SpawnerScript : MonoBehaviour
 
 
     [Header("Rabbit")]
+    [SerializeField] private bool rabbitSpawn;
     public GameObject Rabbit;
     //Parent container 
     public GameObject nameTag;
@@ -29,6 +31,7 @@ public class SpawnerScript : MonoBehaviour
     // Megadjuk a kordinátákat, amin belül spawnol a fû
 
     [Header("Fox")]
+    [SerializeField] private bool foxSpawn;
     public GameObject Fox;
     //Parent container 
     public Transform foxParentObj;
@@ -51,17 +54,23 @@ public class SpawnerScript : MonoBehaviour
     void Start()
     {
         // 'startAmount'-szor spawnol egy füvet a 'spawnGrass()' függvényt meghívva
-        for (int i = 0; i < grassStartAmount; i++)
-        {
-            spawnGrass();
+        if(grassSpawn){
+            for (int i = 0; i < grassStartAmount; i++)
+            {
+                spawnGrass();
+            }
         }
-        for (int i = 0; i < rabbitStartAmount; i++)
-        {
-            spawnRabbit();
+        if(rabbitSpawn){
+            for (int i = 0; i < rabbitStartAmount; i++)
+            {
+                spawnRabbit();
+            }
         }
-        for (int i = 0; i < foxStartAmount; i++)
-        {
-            spawnFox();
+        if(foxSpawn){
+            for (int i = 0; i < foxStartAmount; i++)
+            {
+                spawnFox();
+            }
         }
     }
 
