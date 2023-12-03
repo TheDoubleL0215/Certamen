@@ -53,8 +53,13 @@ public class rabbitManagerScript : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if(hungerLevel < 90){
+        if (hungerLevel <= 90)
+        {
             state = State.Hunger;
+        }
+        else
+        {
+            state = State.Idle;
         }
 
         switch (state){

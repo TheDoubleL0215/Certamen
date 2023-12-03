@@ -2374,7 +2374,7 @@ MonoBehaviour:
   centrePoint: {fileID: 1834399303}
   selectedPlant: {fileID: 0}
   hungerLevel: 100
-  hungerLoss: 30
+  hungerLoss: 40
   state: 0
 --- !u!4 &1834399303 stripped
 Transform:
@@ -2657,20 +2657,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   fatherId: 0
-  energy: 150
-  energyLimit: 150
-  energyLoss: 10
   fertility: 2
-  birthEnergyLimit: 80
   maturity: 0
   maturityLimit: 25
-  radius: 30
   age: 0
   lifeTime: 60
   Fox: {fileID: 1982462649}
-  jumpForce: 4
-  forwardForce: 10
-  selectedRabbit: {fileID: 0}
 --- !u!65 &1982462654
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2697,9 +2689,78 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
+--- !u!4 &1982462658 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
+  m_PrefabInstance: {fileID: 910896463}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1982462659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982462649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ac96046205134a449c33a6d621310bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpForce: 5
+  forwardForce: 5
+  range: 0
+  radius: 0
+  agent: {fileID: 1982462661}
+  centrePoint: {fileID: 1982462658}
+  selectedRabbit: {fileID: 0}
+  hungerLevel: 100
+  hungerLoss: 40
+  state: 0
+--- !u!95 &1982462660
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982462649}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d9467c2424b4f85408fee63d933b598b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+--- !u!195 &1982462661
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982462649}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.18
+  m_Speed: 5.8
+  m_Acceleration: 10
+  avoidancePriority: 50
+  m_AngularSpeed: 1000
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.03
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 0
 --- !u!1 &1995701087
 GameObject:
   m_ObjectHideFlags: 0
@@ -2883,6 +2944,10 @@ PrefabInstance:
     - target: {fileID: 8084336115967683302, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_Name
       value: Rabbit Prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683305, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_RootOrder
