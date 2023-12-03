@@ -27,6 +27,7 @@ public class rabbitBehaviour : MonoBehaviour
     {
         id = Random.Range(10000, 99999); // ázonosító "sorsolása"
         maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak érettsége véletlen
+        //maturity = 0f;
         age = 0f;
         if (fatherId != 0)
         {

@@ -11,17 +11,8 @@ using System.Runtime.CompilerServices;
 public class rabbitManagerScript : MonoBehaviour
 {
     Rigidbody rb; 
-    public float jumpForce = 5f; // Az ugrás magassága.
-    public float forwardForce = 5f; 
-    public float moveSpeed = 5f;
     public float range; //radius
     public float radius = 0f;
-    public Vector3 newDirection;
-
-    public float speed = 3f;
-
-    public float groundDistance = 0.5f;
-    
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
@@ -54,17 +45,17 @@ public class rabbitManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(hungerLevel > 100){
-            hungerLevel = 100;
+        if(hungerLevel > 150){
+            hungerLevel = 150;
         }
 
-        hungerLevel -= hungerLoss / 1000;
+        hungerLevel -= Time.deltaTime * hungerLoss;
 
-        if(hungerLevel <= 0){
+        if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if (hungerLevel <= 90)
+        if (hungerLevel <= 120)
         {
             state = State.Hunger;
         }
@@ -114,12 +105,15 @@ public class rabbitManagerScript : MonoBehaviour
                     //Debug.Log(colliders.Length);
                     for (int i = 0; i < colliders.Length; i++)
                     {
-                        GameObject detectedPlant = colliders[i].gameObject;
-
-                        if (detectedPlant.CompareTag("Grass"))
+                        if (selectedPlant == null)
                         {
-                            selectedPlant = detectedPlant;
-                            //Debug.Log(selectedPlant.name);
+                            GameObject detectedPlant = colliders[i].gameObject;
+
+                            if (detectedPlant.CompareTag("Grass"))
+                            {
+                                selectedPlant = detectedPlant;
+                                //Debug.Log(selectedPlant.name);
+                            }
                         }
                     }
 
@@ -135,7 +129,7 @@ public class rabbitManagerScript : MonoBehaviour
                     if (Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
                     {
                         Destroy(selectedPlant);
-                        hungerLevel += 30f;
+                        hungerLevel += 50f;
                         selectedPlant = null;
                         state = State.Idle;
                     }

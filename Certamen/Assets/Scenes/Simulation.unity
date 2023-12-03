@@ -2049,16 +2049,16 @@ MonoBehaviour:
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
   grassParentObj: {fileID: 328867090}
   grassStartAmount: 200
-  grassSpawnRateTime: 10
-  grassSpawnRatePerSpawning: 2
+  grassSpawnRateTime: 1
+  grassSpawnRatePerSpawning: 5
   Rabbit: {fileID: 1834399286}
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 10
+  rabbitStartAmount: 30
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
-  foxStartAmount: 5
+  foxStartAmount: 10
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -2564,19 +2564,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d3e8611b0888b4c8403d6bbade8883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 5
-  forwardForce: 5
-  moveSpeed: 5
   range: 5
   radius: 20
-  newDirection: {x: 0, y: 0, z: 0}
-  speed: 3
-  groundDistance: 0.5
   agent: {fileID: 1834399288}
   centrePoint: {fileID: 1834399303}
   selectedPlant: {fileID: 0}
-  hungerLevel: 100
-  hungerLoss: 30
+  hungerLevel: 150
+  hungerLoss: 10
   state: 0
 --- !u!4 &1834399303 stripped
 Transform:
@@ -2874,7 +2868,7 @@ MonoBehaviour:
   fatherId: 0
   fertility: 2
   maturity: 0
-  maturityLimit: 25
+  maturityLimit: 30
   age: 0
   lifeTime: 60
   Fox: {fileID: 1982462649}
@@ -2934,7 +2928,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
---- !u!114 &1982462663
+--- !u!114 &1982462666
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2943,18 +2937,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1982462649}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8330074fdf7cd5e46849a1953407c4fa, type: 3}
+  m_Script: {fileID: 11500000, guid: ca0102447e7d5664aa9864f3b198d6d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   forwardForce: 10
   range: 5
-  radius: 30
+  radius: 40
   newDirection: {x: 0, y: 0, z: 0}
   agent: {fileID: 1982462659}
   centrePoint: {fileID: 1982462658}
   selectedRabbit: {fileID: 0}
-  hungerLevel: 90
-  hungerLoss: 30
+  hungerLevel: 100
+  hungerLoss: 10
   state: 0
 --- !u!1 &1995701087
 GameObject:
@@ -3250,7 +3244,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.91642
+      value: -115.7
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3258,7 +3252,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 44.793785
+      value: -53.7
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3287,6 +3281,10 @@ PrefabInstance:
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: maturityLimit
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 8084336116124669200, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_Color.b

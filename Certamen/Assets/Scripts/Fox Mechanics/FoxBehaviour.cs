@@ -28,7 +28,8 @@ public class FoxBehaviour : MonoBehaviour
     void Start()
     {
         id = Random.Range(10000, 99999); // �zonos�t� "sorsol�sa"
-        maturity = Random.Range(5f, maturityLimit); // lespawnolt nyulak �retts�ge v�letlen
+        maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak érettsége véletlen
+        //maturity = 0f;
         age = 0f;
         if (fatherId != 0)
         {
