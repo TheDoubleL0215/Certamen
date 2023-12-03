@@ -27,11 +27,14 @@ public class rabbitManagerScript : MonoBehaviour
     [SerializeField] private GameObject selectedPlant;
     public float hungerLevel = 100f;
     public float hungerLoss = 5f;
+
     public enum State{
         Idle,
         Hunger,
     }
+
     [SerializeField] public State state;
+
     public State CurrentState
     {
         get { return state; }
@@ -44,8 +47,6 @@ public class rabbitManagerScript : MonoBehaviour
 
         agent = GetComponent<NavMeshAgent>();
 
-        // Define radius
-        radius = Random.Range(10, 20); // érzékelõ sugara
         state = State.Idle;
         
     }
@@ -67,6 +68,7 @@ public class rabbitManagerScript : MonoBehaviour
         {
             state = State.Hunger;
         }
+
         else
         {
             state = State.Idle;
@@ -107,28 +109,29 @@ public class rabbitManagerScript : MonoBehaviour
             {
                 if (selectedPlant == null)
                 {
-                    int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
-                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius, ignoreDetectionLayerMask);
-
-                    if (colliders.Length > 0)
+                    //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+                    //Debug.Log(colliders.Length);
+                    for (int i = 0; i < colliders.Length; i++)
                     {
-                        GameObject detectedPlant = colliders[0].gameObject;
+                        GameObject detectedPlant = colliders[i].gameObject;
 
                         if (detectedPlant.CompareTag("Grass"))
                         {
                             selectedPlant = detectedPlant;
-                            Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
-                            agent.SetDestination(selectedPlant.transform.position);
-                            //Debug.Log("Növény kiválasztva: " + selectedPlant);
+                            //Debug.Log(selectedPlant.name);
                         }
                     }
-                    else
+
+                    if (selectedPlant == null)
                     {
                         IdleMovement();
                     }
                 }
                 else
                 {
+                    Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.green, 3.0f);
+                    agent.SetDestination(selectedPlant.transform.position);
                     if (Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
                     {
                         Destroy(selectedPlant);

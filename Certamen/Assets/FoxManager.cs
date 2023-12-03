@@ -6,35 +6,41 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.AI;
 using Vector3 = UnityEngine.Vector3;
+using System.Runtime.CompilerServices;
 
-public class foxManager : MonoBehaviour
+public class FoxManager : MonoBehaviour
 {
     Rigidbody rb; 
     public float forwardForce = 10f; 
     public float range; //radius
     public float radius = 0f;
-    
+
+    public Vector3 newDirection;
+
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedRabbit;
 
     public float hungerLevel = 120f;
     public float hungerLoss = 5f;
+
     public enum State{
         Idle,
         Hunger,
     }
 
-    [SerializeField] private State state;
+    [SerializeField] public State state;
+
+    public State CurrentState
+    {
+        get { return state; }
+    }
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
         agent = GetComponent<NavMeshAgent>();
         // Define radius
-        radius = Random.Range(15, 25); // érzékelõ sugara
         state = State.Idle;
         
     }
@@ -42,8 +48,10 @@ public class foxManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 eloreMozgas = transform.forward * forwardForce;
-        rb.velocity = eloreMozgas;
+        if (hungerLevel > 100)
+        {
+            hungerLevel = 100;
+        }
 
         hungerLevel -= hungerLoss / 1000;
 
@@ -53,6 +61,10 @@ public class foxManager : MonoBehaviour
 
         if(hungerLevel < 90){
             state = State.Hunger;
+        }
+        else
+        {
+            state = State.Idle;
         }
 
         switch (state){
@@ -76,7 +88,6 @@ public class foxManager : MonoBehaviour
                     agent.SetDestination(point);
                 }
             }
-            rb.AddForce(Vector3.up * 100);
     }
     void FoodMovement()
     {
@@ -86,30 +97,40 @@ public class foxManager : MonoBehaviour
             {
                 if (selectedRabbit == null)
                 {
-                    int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
-                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius, ignoreDetectionLayerMask);
+                    //Debug.Log("Nincs kiválasztott nyúl.");
+                    //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
 
-                    if (colliders.Length > 0)
+                    for (int i = 0; i < colliders.Length; i++)
                     {
-                        GameObject detectedRabbit = colliders[0].gameObject;
+                        GameObject detectedRabbit = colliders[i].gameObject;
+                        //Debug.Log(detectedRabbit);
 
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
                             selectedRabbit = detectedRabbit;
-                            Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
-                            agent.SetDestination(selectedRabbit.transform.position);
+                            //Debug.Log("Sikerült!", selectedRabbit);
+                            //Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f); //so you can see with gizmos
+                            //agent.SetDestination(selectedRabbit.transform.position);
                         }
                     }
-                    else
+                        
+                    if (selectedRabbit == null)
                     {
+                        //Debug.Log("Nem érzékel nyulat");
                         IdleMovement();
-                    }
+                    }                   
                 }
                 else
                 {
-                    if (Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
+                    Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
+                    agent.SetDestination(selectedRabbit.transform.position);
+                    //Debug.Log("Rajta az ügyön");
+                    if (Vector3.Distance(transform.position, selectedRabbit.transform.position) < 10f)
                     {
                         Destroy(selectedRabbit);
+                        Debug.Log("Hamm megettem");
+                        Debug.Log("Hamm megettem");
                         hungerLevel += 30f;
                         selectedRabbit = null;
                         state = State.Idle;
