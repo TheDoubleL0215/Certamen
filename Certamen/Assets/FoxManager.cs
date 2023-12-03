@@ -26,7 +26,8 @@ public class FoxManager : MonoBehaviour
 
     public enum State{
         Idle,
-        Hunger,
+        Scout,
+        Chase,
     }
 
     [SerializeField] public State state;
@@ -59,10 +60,16 @@ public class FoxManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if(hungerLevel < 90){
-            state = State.Hunger;
+        if(selectedRabbit == null && hungerLevel < 90){
+            state = State.Scout;
         }
-        else
+
+        if (selectedRabbit != null && hungerLevel < 90)
+        {
+            state = State.Chase;
+        }
+
+        if (hungerLevel >= 90)
         {
             state = State.Idle;
         }
@@ -71,8 +78,11 @@ public class FoxManager : MonoBehaviour
             case State.Idle:
                 IdleMovement();
                 break;
-            case State.Hunger:
-                FoodMovement();
+            case State.Scout:
+                Scouting();
+                break;
+            case State.Chase:
+                Chasing();
                 break;
         }
         
@@ -89,19 +99,19 @@ public class FoxManager : MonoBehaviour
                 }
             }
     }
-    void FoodMovement()
+    void Scouting()
     {
         if (agent.enabled)
         {
             if (agent.remainingDistance <= agent.stoppingDistance) //done with path
             {
-                if (selectedRabbit == null)
-                {
-                    //Debug.Log("Nincs kiválasztott nyúl.");
-                    //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
-                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+                //Debug.Log("Nincs kiválasztott nyúl.");
+                //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+                Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
 
-                    for (int i = 0; i < colliders.Length; i++)
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    if (selectedRabbit == null)
                     {
                         GameObject detectedRabbit = colliders[i].gameObject;
                         //Debug.Log(detectedRabbit);
@@ -109,38 +119,32 @@ public class FoxManager : MonoBehaviour
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
                             selectedRabbit = detectedRabbit;
-                            //Debug.Log("Sikerült!", selectedRabbit);
-                            //Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f); //so you can see with gizmos
-                            //agent.SetDestination(selectedRabbit.transform.position);
                         }
                     }
+                }
                         
-                    if (selectedRabbit == null)
-                    {
-                        //Debug.Log("Nem érzékel nyulat");
-                        IdleMovement();
-                    }                   
-                }
-                else
+                if (selectedRabbit == null)
                 {
-                    Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
-                    agent.SetDestination(selectedRabbit.transform.position);
-                    //Debug.Log("Rajta az ügyön");
-                    if (Vector3.Distance(transform.position, selectedRabbit.transform.position) < 10f)
-                    {
-                        Destroy(selectedRabbit);
-                        Debug.Log("Hamm megettem");
-                        Debug.Log("Hamm megettem");
-                        hungerLevel += 30f;
-                        selectedRabbit = null;
-                        state = State.Idle;
-                    }
-                }
+                    //Debug.Log("Nem érzékel nyulat");
+                    IdleMovement();
+                }                   
             }
+           
         }
     }
 
-
+    void Chasing()
+    {
+        Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
+        agent.SetDestination(selectedRabbit.transform.position);
+        if (Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
+        {
+            Destroy(selectedRabbit);
+            hungerLevel += 50f;
+            selectedRabbit = null;
+            state = State.Idle;
+        }
+    }
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
@@ -151,19 +155,6 @@ public class FoxManager : MonoBehaviour
         { 
             //the 1.0f is the max distance from the random point to a point on the navmesh, might want to increase if range is big
             //or add a for loop like in the documentation
-            result = hit.position;
-            return true;
-        }
-
-        result = Vector3.zero;
-        return false;
-    }
-
-    bool FoodPoint(Vector3 center, float range, out Vector3 result){
-
-        NavMeshHit hit;
-        if (selectedRabbit != null && NavMesh.SamplePosition(selectedRabbit.transform.position, out hit, 1.0f, NavMesh.AllAreas))
-        {
             result = hit.position;
             return true;
         }

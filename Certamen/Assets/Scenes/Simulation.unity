@@ -2055,10 +2055,10 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 1
+  rabbitStartAmount: 10
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
-  foxStartAmount: 1
+  foxStartAmount: 5
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -2922,7 +2922,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.73
-  m_Speed: 33.72
+  m_Speed: 20.48
   m_Acceleration: 12.51
   avoidancePriority: 50
   m_AngularSpeed: 120
