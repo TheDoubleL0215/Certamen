@@ -1380,6 +1380,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: -5708123466369436382, guid: 20019def736ca274bb1f516d411dd5e0, type: 3}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_Name
       value: Fox Prefab
@@ -2027,6 +2031,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1299920231}
   - component: {fileID: 1299920230}
+  - component: {fileID: 1299920232}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -2050,12 +2055,12 @@ MonoBehaviour:
   grassParentObj: {fileID: 328867090}
   grassStartAmount: 200
   grassSpawnRateTime: 1
-  grassSpawnRatePerSpawning: 10
+  grassSpawnRatePerSpawning: 5
   Rabbit: {fileID: 1834399286}
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 50
+  rabbitStartAmount: 25
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
   foxStartAmount: 10
@@ -2078,6 +2083,35 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1299920232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299920229}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a8adf0ed05117c4996d1a1549da54aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
+  grassParentObj: {fileID: 328867090}
+  grassStartAmount: 100
+  grassSpawnRateTime: 1
+  grassSpawnRatePerSpawning: 5
+  Rabbit: {fileID: 1834399286}
+  nameTag: {fileID: 0}
+  nameTagParent: {fileID: 407760744}
+  rabbitParentObj: {fileID: 407760744}
+  rabbitStartAmount: 10
+  Fox: {fileID: 1982462649}
+  foxParentObj: {fileID: 903556529}
+  foxStartAmount: 5
+  lowestX: -150
+  highestX: 150
+  lowestZ: 50
+  highestZ: 150
 --- !u!1 &1366085702
 GameObject:
   m_ObjectHideFlags: 0
@@ -2866,11 +2900,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   fatherId: 0
-  fertility: 2
+  fertility: 3
   maturity: 0
   maturityLimit: 20
   age: 0
-  lifeTime: 50
+  lifeTime: 80
   Fox: {fileID: 1982462649}
 --- !u!4 &1982462658 stripped
 Transform:
@@ -2887,10 +2921,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.73
-  m_Speed: 20.48
-  m_Acceleration: 12.51
+  m_Speed: 15
+  m_Acceleration: 10
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 100
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -2912,7 +2946,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 5
-  radius: 40
+  radius: 30
   agent: {fileID: 1982462659}
   centrePoint: {fileID: 1982462658}
   selectedRabbit: {fileID: 0}
@@ -3253,7 +3287,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: lifeTime
-      value: 100
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: fertility
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: maturityLimit

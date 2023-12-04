@@ -52,16 +52,16 @@ public class FoxManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if(selectedRabbit == null && hungerLevel < 90){
+        if(selectedRabbit == null && hungerLevel < 70){
             state = State.Scout;
         }
 
-        if (selectedRabbit != null && hungerLevel < 90)
+        if (selectedRabbit != null && hungerLevel < 70)
         {
             state = State.Chase;
         }
 
-        if (hungerLevel >= 90)
+        if (hungerLevel >= 70)
         {
             state = State.Idle;
         }

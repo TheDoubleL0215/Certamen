@@ -52,6 +52,7 @@ public class rabbitBehaviour : MonoBehaviour
         // elöregedett nyulak elpusztulnak
         if (age >= lifeTime)
         {
+            print("Búcsúzik a matuzsálem Nyúl!");
             Destroy(gameObject);
         }
 

@@ -54,6 +54,7 @@ public class FoxBehaviour : MonoBehaviour
         // el�regedett nyulak elpusztulnak
         if (age >= lifeTime)
         {
+            print("Búcsúzik a matuzsálem Róka!");
             Destroy(gameObject);
         }
     }

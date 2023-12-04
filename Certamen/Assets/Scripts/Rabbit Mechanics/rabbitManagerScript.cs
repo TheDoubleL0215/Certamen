@@ -55,14 +55,18 @@ public class rabbitManagerScript : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (hungerLevel <= 120)
+        if (hungerLevel <= 100)
         {
             state = State.Hunger;
         }
 
         else
         {
-            state = State.Idle;
+            if (hungerLevel >= 130 && state == State.Hunger)
+            {
+                state = State.Idle;
+                print("Zabagép teljesítmény elérve!");
+            }
         }
 
 
@@ -130,7 +134,7 @@ public class rabbitManagerScript : MonoBehaviour
                     if (selectedPlant.activeSelf && Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
                     {
                         Destroy(selectedPlant);
-                        hungerLevel += 40f;
+                        hungerLevel += 30f;
                         selectedPlant = null;
                         state = State.Idle;
                     }
