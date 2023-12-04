@@ -113,6 +113,7 @@ public class rabbitManagerScript : MonoBehaviour
                             {
                                 selectedPlant = detectedPlant;
                                 //Debug.Log(selectedPlant.name);
+                                break;
                             }
                         }
                     }
@@ -126,10 +127,15 @@ public class rabbitManagerScript : MonoBehaviour
                 {
                     Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.green, 3.0f);
                     agent.SetDestination(selectedPlant.transform.position);
-                    if (Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
+                    if (selectedPlant.activeSelf && Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
                     {
                         Destroy(selectedPlant);
-                        hungerLevel += 50f;
+                        hungerLevel += 40f;
+                        selectedPlant = null;
+                        state = State.Idle;
+                    }
+                    else if (!selectedPlant.activeSelf) // If the selected rabbit doesn't exist anymore
+                    {
                         selectedPlant = null;
                         state = State.Idle;
                     }

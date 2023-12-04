@@ -79,6 +79,8 @@ public class FoxBehaviour : MonoBehaviour
 
         // Az �j egyed meg�r�kli a sz�l� �rt�keit kisebb m�dosul�sokkal
         FoxBehaviour newFoxScript = newFox.GetComponent<FoxBehaviour>();
+        FoxManager newFoxManager = newFox.GetComponent<FoxManager>();
         newFoxScript.fatherId = id;
+        newFoxManager.hungerLevel = 80f;
     }
 }

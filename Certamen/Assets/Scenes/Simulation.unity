@@ -2050,12 +2050,12 @@ MonoBehaviour:
   grassParentObj: {fileID: 328867090}
   grassStartAmount: 200
   grassSpawnRateTime: 1
-  grassSpawnRatePerSpawning: 5
+  grassSpawnRatePerSpawning: 10
   Rabbit: {fileID: 1834399286}
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 30
+  rabbitStartAmount: 50
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
   foxStartAmount: 10
@@ -2868,39 +2868,10 @@ MonoBehaviour:
   fatherId: 0
   fertility: 2
   maturity: 0
-  maturityLimit: 30
+  maturityLimit: 20
   age: 0
-  lifeTime: 60
+  lifeTime: 50
   Fox: {fileID: 1982462649}
---- !u!65 &1982462654
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982462649}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 0.43627182, y: 1.1311954, z: 1.9116302}
-  m_Center: {x: 0.000000014901161, y: 0.54661626, z: -0.16683531}
---- !u!54 &1982462655
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982462649}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 80
-  m_CollisionDetection: 0
 --- !u!4 &1982462658 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
@@ -2940,10 +2911,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca0102447e7d5664aa9864f3b198d6d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardForce: 10
   range: 5
   radius: 40
-  newDirection: {x: 0, y: 0, z: 0}
   agent: {fileID: 1982462659}
   centrePoint: {fileID: 1982462658}
   selectedRabbit: {fileID: 0}
@@ -3281,6 +3250,10 @@ PrefabInstance:
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: lifeTime
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: maturityLimit

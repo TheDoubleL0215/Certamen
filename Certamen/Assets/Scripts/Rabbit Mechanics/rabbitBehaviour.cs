@@ -79,6 +79,8 @@ public class rabbitBehaviour : MonoBehaviour
 
         // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
         rabbitBehaviour newRabbitScript = newRabbit.GetComponent<rabbitBehaviour>();
+        rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
         newRabbitScript.fatherId = id;
+        newRabbitManager.hungerLevel = 110f;
     }
 }

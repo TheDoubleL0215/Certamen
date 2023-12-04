@@ -11,11 +11,8 @@ using System.Runtime.CompilerServices;
 public class FoxManager : MonoBehaviour
 {
     Rigidbody rb; 
-    public float forwardForce = 10f; 
-    public float range; //radius
+    public float range;
     public float radius = 0f;
-
-    public Vector3 newDirection;
 
     public NavMeshAgent agent;
     public Transform centrePoint; 
@@ -114,6 +111,7 @@ public class FoxManager : MonoBehaviour
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
                             selectedRabbit = detectedRabbit;
+                            break;
                         }
                     }
                 }
@@ -132,10 +130,10 @@ public class FoxManager : MonoBehaviour
     {
         Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
         agent.SetDestination(selectedRabbit.transform.position);
-        if (Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
+        if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
         {
             rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
-            hungerLevel += rabbitScript.hungerLevel * 0.5f;
+            hungerLevel += rabbitScript.hungerLevel * 0.75f;
             if (hungerLevel > 100)
             {
                 hungerLevel = 100;
