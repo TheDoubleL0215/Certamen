@@ -2055,7 +2055,7 @@ MonoBehaviour:
   grassParentObj: {fileID: 328867090}
   grassStartAmount: 200
   grassSpawnRateTime: 1
-  grassSpawnRatePerSpawning: 5
+  grassSpawnRatePerSpawning: 7
   Rabbit: {fileID: 1834399286}
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
@@ -2063,7 +2063,7 @@ MonoBehaviour:
   rabbitStartAmount: 25
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
-  foxStartAmount: 10
+  foxStartAmount: 15
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -2946,7 +2946,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 5
-  radius: 30
+  radius: 40
   agent: {fileID: 1982462659}
   centrePoint: {fileID: 1982462658}
   selectedRabbit: {fileID: 0}

@@ -62,10 +62,10 @@ public class rabbitManagerScript : MonoBehaviour
 
         else
         {
-            if (hungerLevel >= 130 && state == State.Hunger)
+            if (hungerLevel >= 120 && state == State.Hunger)
             {
                 state = State.Idle;
-                print("Zabagép teljesítmény elérve!");
+                print("Zabagï¿½p teljesï¿½tmï¿½ny elï¿½rve!");
             }
         }
 

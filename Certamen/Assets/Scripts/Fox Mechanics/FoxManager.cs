@@ -52,16 +52,16 @@ public class FoxManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if(selectedRabbit == null && hungerLevel < 70){
+        if(selectedRabbit == null && hungerLevel < 75){
             state = State.Scout;
         }
 
-        if (selectedRabbit != null && hungerLevel < 70)
+        if (selectedRabbit != null && hungerLevel < 75)
         {
             state = State.Chase;
         }
 
-        if (hungerLevel >= 70)
+        if (hungerLevel >= 80)
         {
             state = State.Idle;
         }
@@ -133,7 +133,7 @@ public class FoxManager : MonoBehaviour
         if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
         {
             rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
-            hungerLevel += rabbitScript.hungerLevel * 0.75f;
+            hungerLevel += rabbitScript.hungerLevel;
             if (hungerLevel > 100)
             {
                 hungerLevel = 100;
