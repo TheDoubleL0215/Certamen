@@ -110,8 +110,11 @@ public class FoxManager : MonoBehaviour
 
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
-                            selectedRabbit = detectedRabbit;
-                            break;
+                            rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
+                            if(detRabbitScript.hungerLevel > 50f){
+                                selectedRabbit = detectedRabbit;
+                                break;
+                            }
                         }
                     }
                 }
