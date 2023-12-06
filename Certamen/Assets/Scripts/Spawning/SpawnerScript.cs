@@ -5,17 +5,17 @@ using UnityEngine;
 public class SpawnerScript : MonoBehaviour
 {
     [Header("Grass")]
-    // Kiválasztjuk melyik karaktert spawnolja
+    // Kivï¿½lasztjuk melyik karaktert spawnolja
     public GameObject Grass;
     //Parent container 
     public Transform grassParentObj;
-    // Ettõl függ, hány fûcsomó spawnol a legelején.
+    // Ettï¿½l fï¿½gg, hï¿½ny fï¿½csomï¿½ spawnol a legelejï¿½n.
     public int grassStartAmount;
-    // Hány másodpercenként spawnol új fûcsomó
+    // Hï¿½ny mï¿½sodpercenkï¿½nt spawnol ï¿½j fï¿½csomï¿½
     public float grassSpawnRateTime;
-    // Ennyi fûcsomó spawnol egy adott spawnolásnál
+    // Ennyi fï¿½csomï¿½ spawnol egy adott spawnolï¿½snï¿½l
     public float grassSpawnRatePerSpawning;
-    // Kiválasztjuk melyik karaktert spawnolja
+    // Kivï¿½lasztjuk melyik karaktert spawnolja
 
 
     [Header("Rabbit")]
@@ -24,33 +24,33 @@ public class SpawnerScript : MonoBehaviour
     public GameObject nameTag;
     public Transform nameTagParent;
     public Transform rabbitParentObj;
-    // Ettõl függ, hány nyul spawnol a legelején.
+    // Ettï¿½l fï¿½gg, hï¿½ny nyul spawnol a legelejï¿½n.
     public int rabbitStartAmount;
-    // Megadjuk a kordinátákat, amin belül spawnol a fû
+    // Megadjuk a kordinï¿½tï¿½kat, amin belï¿½l spawnol a fï¿½
 
     [Header("Fox")]
     public GameObject Fox;
     //Parent container 
     public Transform foxParentObj;
-    // Ettõl függ, hány nyul spawnol a legelején.
+    // Ettï¿½l fï¿½gg, hï¿½ny nyul spawnol a legelejï¿½n.
     public int foxStartAmount;
-    // Megadjuk a kordinátákat, amin belül spawnol a fû
+    // Megadjuk a kordinï¿½tï¿½kat, amin belï¿½l spawnol a fï¿½
 
     [Header("Positioning")]
     public float lowestX;
     public float highestX;
     public float lowestZ;
     public float highestZ;
-    // Megadott fokokon belül véletlen irány a kezdésnél
+    // Megadott fokokon belï¿½l vï¿½letlen irï¿½ny a kezdï¿½snï¿½l
     private float minRotation = 0f;
     private float maxRotation = 90f;
-    // Idõ múlását mérjük
+    // Idï¿½ mï¿½lï¿½sï¿½t mï¿½rjï¿½k
 
     [Header("Timer")]
     private float grassTimer = 0;
     void Start()
     {
-        // 'startAmount'-szor spawnol egy füvet a 'spawnGrass()' függvényt meghívva
+        // 'startAmount'-szor spawnol egy fï¿½vet a 'spawnGrass()' fï¿½ggvï¿½nyt meghï¿½vva
         for (int i = 0; i < grassStartAmount; i++)
         {
             spawnGrass();
@@ -67,7 +67,7 @@ public class SpawnerScript : MonoBehaviour
 
     void Update()
     {
-        // Csak abban esetben hívja meg a 'spawnGrass()' függvényt, ha a 'timer'
+        // Csak abban esetben hï¿½vja meg a 'spawnGrass()' fï¿½ggvï¿½nyt, ha a 'timer'
         // megegyezik a 'spawnRate'-ben meadottal.
         if (grassTimer >= grassSpawnRateTime)
         {
@@ -83,7 +83,7 @@ public class SpawnerScript : MonoBehaviour
         }
     }
 
-    // A bekért paraméterek szerint spawnol egy fûcsomót
+    // A bekï¿½rt paramï¿½terek szerint spawnol egy fï¿½csomï¿½t
     void spawnGrass()
     {
         Instantiate(Grass, new Vector3(Random.Range(lowestX, highestX), 0, Random.Range(lowestZ, highestZ)), Quaternion.identity, grassParentObj.transform);

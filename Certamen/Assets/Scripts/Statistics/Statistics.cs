@@ -82,18 +82,18 @@ public class Statistics : MonoBehaviour
         if (grassObjectCount != GameObject.FindGameObjectsWithTag("Grass").Length)
         {
             grassObjectCount = GameObject.FindGameObjectsWithTag("Grass").Length;
-            grassCountText.text = "F�csom�k sz�ma: " + grassObjectCount;
+            grassCountText.text = "Fűcsomók száma: " + grassObjectCount;
             chartNeedsUpdate = true; // Update chart if counts changed
         }
 
         if (foxObjectCount != GameObject.FindGameObjectsWithTag("Fox").Length || rabbitObjectCount != GameObject.FindGameObjectsWithTag("Rabbit").Length)
         {
             foxObjectCount = GameObject.FindGameObjectsWithTag("Fox").Length;
-            foxCountText.text = "R�k�k sz�ma: " + foxObjectCount;
+            foxCountText.text = "Rókák száma: " + foxObjectCount;
             StoreFoxCount();
 
             rabbitObjectCount = GameObject.FindGameObjectsWithTag("Rabbit").Length;
-            rabbitCountText.text = "Nyulak sz�ma: " + rabbitObjectCount;
+            rabbitCountText.text = "Nyulak száma: " + rabbitObjectCount;
             StoreRabbitCount();
         }
     }

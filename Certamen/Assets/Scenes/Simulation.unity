@@ -3247,7 +3247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -115.7
+      value: 40.8
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3255,7 +3255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -53.7
+      value: 24.8
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3287,7 +3287,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: lifeTime
-      value: 180
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: fertility
