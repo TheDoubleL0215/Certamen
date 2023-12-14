@@ -18,10 +18,13 @@ public class rabbitManagerScript : MonoBehaviour
     [SerializeField] private GameObject selectedPlant;
     public float hungerLevel = 100f;
     public float hungerLoss = 5f;
+    
+    public int detectedFoxes;
 
     public enum State{
         Idle,
         Hunger,
+        Escape
     }
 
     [SerializeField] public State state;
@@ -55,7 +58,7 @@ public class rabbitManagerScript : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (hungerLevel <= 100)
+        if (hungerLevel <= 100 && state != State.Escape)
         {
             state = State.Hunger;
         }
@@ -65,17 +68,22 @@ public class rabbitManagerScript : MonoBehaviour
             if (hungerLevel >= 120 && state == State.Hunger)
             {
                 state = State.Idle;
-                print("Zabag�p teljes�tm�ny el�rve!");
+                print("You are a chowhound! Achievement earned!");
             }
         }
 
 
         switch (state){
             case State.Idle:
+                DetectingPredators();
                 IdleMovement();
                 break;
             case State.Hunger:
+                DetectingPredators();
                 FoodMovement();
+                break;
+            case State.Escape:
+                DetectingPredators();
                 break;
         }
 
@@ -148,7 +156,29 @@ public class rabbitManagerScript : MonoBehaviour
         }
     }
 
+    void EscapeMovement(int foxNumber) {
+        print("Escaping...");
+    }
 
+    void DetectingPredators(){
+        Collider[] objects = Physics.OverlapSphere(transform.position, radius);
+
+        for (int i = 0; i < objects.Length; i++)
+        {
+            GameObject detectedObject = objects[i].gameObject;
+            if (detectedObject.CompareTag("Fox"))
+            {
+                detectedFoxes++;
+                // Debug.Log(detectedFoxes);
+                break;
+            }
+        }
+        if(detectedFoxes > 0){
+            state = State.Escape;
+            EscapeMovement(detectedFoxes);
+            detectedFoxes = 0;
+        }
+    }
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
@@ -180,11 +210,11 @@ public class rabbitManagerScript : MonoBehaviour
         return false;
     }
 
-    #if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
-    }
-    #endif
+   // #if UNITY_EDITOR
+    // private void OnDrawGizmos()
+    //{
+   //     Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
+    //}
+   // #endif
 
 }

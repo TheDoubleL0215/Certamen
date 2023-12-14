@@ -2605,6 +2605,7 @@ MonoBehaviour:
   selectedPlant: {fileID: 0}
   hungerLevel: 150
   hungerLoss: 10
+  foxNumber: 0
   state: 0
 --- !u!4 &1834399303 stripped
 Transform:
@@ -2953,6 +2954,19 @@ MonoBehaviour:
   hungerLevel: 100
   hungerLoss: 10
   state: 0
+--- !u!65 &1982462669
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982462649}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.4362718, y: 1.1311953, z: 1.91163}
+  m_Center: {x: 0.00000001490116, y: 0.5466162, z: -0.1668353}
 --- !u!1 &1995701087
 GameObject:
   m_ObjectHideFlags: 0
