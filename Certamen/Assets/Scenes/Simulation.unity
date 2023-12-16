@@ -2060,7 +2060,7 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 30
+  rabbitStartAmount: 40
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
   foxStartAmount: 10
@@ -2598,14 +2598,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d3e8611b0888b4c8403d6bbade8883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 5
-  radius: 20
+  id: 0
+  fatherId: 0
+  fertility: 4
+  maturity: 0
+  maturityLimit: 16
   agent: {fileID: 1834399288}
   centrePoint: {fileID: 1834399303}
   selectedPlant: {fileID: 0}
+  Rabbit: {fileID: 1834399286}
   hungerLevel: 100
   hungerLoss: 10
+  hungerLimit: 100
+  hungerMax: 150
+  satiety: 120
+  resourceFromGrass: 30
+  speed: 10
+  acceleration: 10
+  range: 5
+  radius: 20
   detectedFoxes: 0
+  age: 0
   state: 1
 --- !u!4 &1834399303 stripped
 Transform:
@@ -2887,26 +2900,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
   m_PrefabInstance: {fileID: 910896463}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1982462650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982462649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 328db14a75743ff42a352bfc0e2d2470, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  fatherId: 0
-  fertility: 3
-  maturity: 0
-  maturityLimit: 20
-  age: 0
-  lifeTime: 80
-  Fox: {fileID: 1982462649}
 --- !u!4 &1982462658 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
@@ -2946,13 +2939,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca0102447e7d5664aa9864f3b198d6d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 5
-  radius: 40
+  id: 0
+  fatherId: 0
+  fertility: 4
+  maturity: 0
+  maturityLimit: 16
   agent: {fileID: 1982462659}
   centrePoint: {fileID: 1982462658}
   selectedRabbit: {fileID: 0}
+  Fox: {fileID: 0}
   hungerLevel: 75
   hungerLoss: 10
+  hungerLimit: 75
+  hungerMax: 100
+  satiety: 80
+  rabbitHungerLimit: 50
+  speed: 15
+  acceleration: 15
+  range: 5
+  radius: 40
+  age: 0
   state: 1
 --- !u!65 &1982462669
 BoxCollider:
@@ -3328,6 +3334,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: maturityLimit
       value: 16
       objectReference: {fileID: 0}
@@ -3377,4 +3387,5 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8084336115967683305, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+    - {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}

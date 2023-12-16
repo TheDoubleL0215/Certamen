@@ -96,14 +96,6 @@ public class SpawnerScript : MonoBehaviour
 
         float randomRotation = Random.Range(minRotation, maxRotation);
         transform.Rotate(Vector3.up, randomRotation);
-
-        rabbitBehaviour RabbitBehaviour = RabbitObj.GetComponent<rabbitBehaviour>();
-
-        // Enable the script component if it exists
-        if (RabbitBehaviour != null)
-        {
-            RabbitBehaviour.enabled = true;
-        }
     }
 
     void spawnFox()
@@ -120,12 +112,6 @@ public class SpawnerScript : MonoBehaviour
         // Instantiate the fox with the desired rotation
         GameObject FoxObj = Instantiate(Fox, position, rotation, foxParentObj);
 
-        FoxBehaviour foxManager = FoxObj.GetComponent<FoxBehaviour>();
-
-        // Enable the script component if it exists
-        if (foxManager != null)
-        {
-            foxManager.enabled = true;
-        }
+        
     }
 }

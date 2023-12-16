@@ -10,19 +10,49 @@ using System.Runtime.CompilerServices;
 
 public class rabbitManagerScript : MonoBehaviour
 {
-    Rigidbody rb; 
-    public float range; //radius
-    public float radius = 0f;
+    Rigidbody rb;
+
+    [Header("ID")]
+    public int id; // egyéni azonosító
+    public int fatherId; // örökölt azonosító
+    //public string name;
+    public string rabbitName { get; set; }
+
+    [Header("Reproduction")]
+    public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
+    public float maturity = 0f; // érettség, szaporodásban van szerepe
+    public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
+
+
+    [Header("Components")]
+
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
+    public GameObject Rabbit;
+
+    [Header("Hunger")]
+
     public float hungerLevel = 100f;
     public float hungerLoss = 5f;
+    public float hungerLimit = 100f;
+    public float hungerMax = 150f;
+    public float satiety = 120f;
+    public float resourceFromGrass = 30f;
     
-    public int detectedFoxes;
+    [Header("Movement")]
 
+    public float speed = 10f;
+    public float acceleration = 10f;
+    public float range = 5f; //radius
+    public float radius = 20f;
+
+    [Header("Escaping Mechanics")]
+    public int detectedFoxes;
     private List<Vector3> foxPositions = new List<Vector3>();
 
+    [Header("Other")]
+    public float age; // nyúl életkora
     public enum State{
         Idle,
         Hunger,
@@ -38,39 +68,69 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Start()
     {
-
         rb = GetComponent<Rigidbody>();
-
         agent = GetComponent<NavMeshAgent>();
+        state = State.Hunger;
 
-        state = State.Idle;
-        
+        id = Random.Range(10000, 99999);
+        age = 0f;
+        maturity = 0f;
+
+        if(fatherId == 0){
+            rabbitName = "R" + GetRandomLetter();
+
+            fertility = Random.Range(2, 4);
+            maturityLimit = Random.Range(15f, 17f);
+            //maturity = Random.Range(0f, maturityLimit);
+
+            hungerLevel = Random.Range(85f, 150f);
+            hungerLoss = Random.Range(10f, 15f);
+            hungerLimit = Random.Range(95f, 85f);
+            hungerMax = Random.Range(145f, 155f);
+            satiety = Random.Range(115f, 125f);
+
+            speed = Random.Range(8f, 12f);
+            acceleration = Random.Range(8f, 12f);
+            radius = Random.Range(18f, 22f);
+        }
+
+        gameObject.name = rabbitName;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(hungerLevel > 150){
-            hungerLevel = 150;
+        hungerLevel -= Time.deltaTime * hungerLoss;
+        maturity += Time.deltaTime;
+        age += Time.deltaTime;
+
+        if (maturity >= maturityLimit)
+        {
+            for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
+            {
+                Reproduction();
+            }
+            maturity = 0f; //nullázódik a maturity
         }
 
-        hungerLevel -= Time.deltaTime * hungerLoss;
+        if(hungerLevel > hungerMax){
+            hungerLevel = hungerMax;
+        }
 
         if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if (hungerLevel <= 100 && state != State.Escape)
+        if (hungerLevel <= hungerLimit && state != State.Escape)
         {
             state = State.Hunger;
         }
 
         else
         {
-            if (hungerLevel >= 120 && state == State.Hunger)
+            if (hungerLevel >= satiety && state == State.Hunger)
             {
                 state = State.Idle;
-                print("You are a chowhound! Achievement earned!");
             }
         }
 
@@ -89,9 +149,48 @@ public class rabbitManagerScript : MonoBehaviour
                 break;
         }
 
-        
     }
 
+    void Reproduction()
+    {
+        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
+
+        Random.InitState(System.DateTime.Now.Millisecond);
+
+        // Definiáld a pályaterület határait
+        float minX = -75f;
+        float maxX = 75f;
+        float minZ = -75f;
+        float maxZ = 75f;
+
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő nyúltól
+        Vector3 newPosition = transform.position + offset;
+
+        // Korlátozd a kis nyúl pozícióját a pálya határai között
+        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+        newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
+
+        newRabbit.transform.position = newPosition;
+
+        // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
+        rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
+
+        newRabbitManager.fatherId = id;
+        newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
+        newRabbitManager.hungerLevel = 90f;
+
+        newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-1, 1);
+        newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f, 2f);
+
+        newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-5f, 5f);
+        newRabbitManager.hungerLoss = newRabbitManager.hungerLoss += Random.Range(-1f, 1f);
+        newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-5f, 5f);
+        newRabbitManager.satiety = newRabbitManager.satiety += Random.Range(-5f, 5f);
+
+        newRabbitManager.speed = newRabbitManager.speed += Random.Range(-2f, 2f);
+        newRabbitManager.acceleration = newRabbitManager.acceleration += Random.Range(-2f, 2f);
+        newRabbitManager.radius = newRabbitManager.radius += Random.Range(-2f, 2f);
+    }
 
     void IdleMovement(){
         if(agent.remainingDistance <= agent.stoppingDistance) //done with path
@@ -144,7 +243,7 @@ public class rabbitManagerScript : MonoBehaviour
                     if (selectedPlant.activeSelf && Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
                     {
                         Destroy(selectedPlant);
-                        hungerLevel += 30f;
+                        hungerLevel += resourceFromGrass;
                         selectedPlant = null;
                         state = State.Idle;
                     }
@@ -255,18 +354,14 @@ public class rabbitManagerScript : MonoBehaviour
         return false;
     }
 
-    bool FoodPoint(Vector3 center, float range, out Vector3 result){
-
-        NavMeshHit hit;
-        if (selectedPlant != null && NavMesh.SamplePosition(selectedPlant.transform.position, out hit, 1.0f, NavMesh.AllAreas))
-        {
-            result = hit.position;
-            return true;
-        }
-
-        result = Vector3.zero;
-        return false;
+    char GetRandomLetter()
+    {
+        const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // All possible letters
+        System.Random random = new System.Random();
+        int index = random.Next(letters.Length);
+        return letters[index];
     }
+
 
    #if UNITY_EDITOR
     private void OnDrawGizmos()

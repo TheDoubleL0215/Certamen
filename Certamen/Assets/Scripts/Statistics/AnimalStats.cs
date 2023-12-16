@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class AnimalStats : MonoBehaviour
 {
-    public Transform target; // Nyúl Transform komponense
-    private rabbitBehaviour rabbitMoveScript; // Deklaráljuk az osztály szintjén
+    public Transform target; // Nyï¿½l Transform komponense
+    private rabbitManagerScript rabbitMoveScript; // Deklarï¿½ljuk az osztï¿½ly szintjï¿½n
 
     private void Start()
     {
-        rabbitMoveScript = target.GetComponent<rabbitBehaviour>(); // Inicializáljuk a Start metódusban
+        rabbitMoveScript = target.GetComponent<rabbitManagerScript>(); // Inicializï¿½ljuk a Start metï¿½dusban
     }
 
     private void Update()
@@ -20,16 +20,16 @@ public class AnimalStats : MonoBehaviour
             transform.position = target.position;
             //string statText = "Energia: " + rabbitMoveScript.energy + "\n" +
                 //"Energia Limit: " + rabbitMoveScript.energyLimit + "\n" +
-               // "Energia Veszteség: " + rabbitMoveScript.energyLoss + "\n" +
-                //"Sebesség: " + rabbitMoveScript.forwardForce + "\n" +
-               // "Látósugár: " + rabbitMoveScript.radius;
+               // "Energia Vesztesï¿½g: " + rabbitMoveScript.energyLoss + "\n" +
+                //"Sebessï¿½g: " + rabbitMoveScript.forwardForce + "\n" +
+               // "Lï¿½tï¿½sugï¿½r: " + rabbitMoveScript.radius;
 
-            // Most állítsd be a szöveget a Text komponensen
+            // Most ï¿½llï¿½tsd be a szï¿½veget a Text komponensen
             //GetComponent<Text>().text = statText;
-            // Hozz létre egy forgatási célpontot, amely mindig a kamera pozíciójában van
+            // Hozz lï¿½tre egy forgatï¿½si cï¿½lpontot, amely mindig a kamera pozï¿½ciï¿½jï¿½ban van
             Vector3 cameraPosition = Camera.main.transform.position;
 
-            // Fordítsd el az objektumot a kamera felé
+            // Fordï¿½tsd el az objektumot a kamera felï¿½
             transform.LookAt(2 * transform.position - cameraPosition);
         }
         else
