@@ -6,35 +6,39 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.AI;
 using Vector3 = UnityEngine.Vector3;
+using System.Runtime.CompilerServices;
 
-public class foxmanager : MonoBehaviour
+public class FoxManager : MonoBehaviour
 {
     Rigidbody rb; 
-    public float forwardForce = 10f; 
-    public float range; //radius
+    public float range;
     public float radius = 0f;
-    
+
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedRabbit;
 
     public float hungerLevel = 120f;
     public float hungerLoss = 5f;
+
     public enum State{
         Idle,
-        Hunger,
+        Scout,
+        Chase,
     }
 
-    [SerializeField] private State state;
+    [SerializeField] public State state;
+
+    public State CurrentState
+    {
+        get { return state; }
+    }
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
         agent = GetComponent<NavMeshAgent>();
         // Define radius
-        radius = Random.Range(15, 25); // érzékelõ sugara
         state = State.Idle;
         
     }
@@ -42,25 +46,35 @@ public class foxmanager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 eloreMozgas = transform.forward * forwardForce;
-        rb.velocity = eloreMozgas;
+        hungerLevel -= Time.deltaTime * hungerLoss;
 
-        hungerLevel -= hungerLoss / 1000;
-
-        if(hungerLevel <= 0){
+        if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if(hungerLevel < 90){
-            state = State.Hunger;
+        if(selectedRabbit == null && hungerLevel < 75){
+            state = State.Scout;
+        }
+
+        if (selectedRabbit != null && hungerLevel < 75)
+        {
+            state = State.Chase;
+        }
+
+        if (hungerLevel >= 80)
+        {
+            state = State.Idle;
         }
 
         switch (state){
             case State.Idle:
                 IdleMovement();
                 break;
-            case State.Hunger:
-                FoodMovement();
+            case State.Scout:
+                Scouting();
+                break;
+            case State.Chase:
+                Chasing();
                 break;
         }
         
@@ -76,50 +90,62 @@ public class foxmanager : MonoBehaviour
                     agent.SetDestination(point);
                 }
             }
-            rb.AddForce(Vector3.up * 100);
     }
-    void FoodMovement()
+    void Scouting()
     {
         if (agent.enabled)
         {
             if (agent.remainingDistance <= agent.stoppingDistance) //done with path
             {
-                if (selectedRabbit == null)
-                {
-                    int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
-                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius, ignoreDetectionLayerMask);
+                //Debug.Log("Nincs kiválasztott nyúl.");
+                //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+                Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
 
-                    if (colliders.Length > 0)
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    if (selectedRabbit == null)
                     {
-                        GameObject detectedRabbit = colliders[0].gameObject;
+                        GameObject detectedRabbit = colliders[i].gameObject;
+                        //Debug.Log(detectedRabbit);
 
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
-                            selectedRabbit = detectedRabbit;
-                            Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
-                            agent.SetDestination(selectedRabbit.transform.position);
+                            rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
+                            if(detRabbitScript.hungerLevel > 50f){
+                                selectedRabbit = detectedRabbit;
+                                break;
+                            }
                         }
                     }
-                    else
-                    {
-                        IdleMovement();
-                    }
                 }
-                else
+                        
+                if (selectedRabbit == null)
                 {
-                    if (Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
-                    {
-                        Destroy(selectedRabbit);
-                        hungerLevel += 30f;
-                        selectedRabbit = null;
-                        state = State.Idle;
-                    }
-                }
+                    //Debug.Log("Nem érzékel nyulat");
+                    IdleMovement();
+                }                   
             }
+           
         }
     }
 
-
+    void Chasing()
+    {
+        Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
+        agent.SetDestination(selectedRabbit.transform.position);
+        if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
+        {
+            rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
+            hungerLevel += rabbitScript.hungerLevel;
+            if (hungerLevel > 100)
+            {
+                hungerLevel = 100;
+            }
+            Destroy(selectedRabbit);
+            selectedRabbit = null;
+            //state = State.Idle;
+        }
+    }
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
@@ -130,19 +156,6 @@ public class foxmanager : MonoBehaviour
         { 
             //the 1.0f is the max distance from the random point to a point on the navmesh, might want to increase if range is big
             //or add a for loop like in the documentation
-            result = hit.position;
-            return true;
-        }
-
-        result = Vector3.zero;
-        return false;
-    }
-
-    bool FoodPoint(Vector3 center, float range, out Vector3 result){
-
-        NavMeshHit hit;
-        if (selectedRabbit != null && NavMesh.SamplePosition(selectedRabbit.transform.position, out hit, 1.0f, NavMesh.AllAreas))
-        {
             result = hit.position;
             return true;
         }

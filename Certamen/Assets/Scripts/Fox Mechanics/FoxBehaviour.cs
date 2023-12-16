@@ -28,7 +28,8 @@ public class FoxBehaviour : MonoBehaviour
     void Start()
     {
         id = Random.Range(10000, 99999); // �zonos�t� "sorsol�sa"
-        maturity = Random.Range(5f, maturityLimit); // lespawnolt nyulak �retts�ge v�letlen
+        maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak érettsége véletlen
+        //maturity = 0f;
         age = 0f;
         if (fatherId != 0)
         {
@@ -53,6 +54,7 @@ public class FoxBehaviour : MonoBehaviour
         // el�regedett nyulak elpusztulnak
         if (age >= lifeTime)
         {
+            print("Búcsúzik a matuzsálem Róka!");
             Destroy(gameObject);
         }
     }
@@ -78,6 +80,8 @@ public class FoxBehaviour : MonoBehaviour
 
         // Az �j egyed meg�r�kli a sz�l� �rt�keit kisebb m�dosul�sokkal
         FoxBehaviour newFoxScript = newFox.GetComponent<FoxBehaviour>();
+        FoxManager newFoxManager = newFox.GetComponent<FoxManager>();
         newFoxScript.fatherId = id;
+        newFoxManager.hungerLevel = 80f;
     }
 }

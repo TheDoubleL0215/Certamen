@@ -1380,13 +1380,17 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: -5708123466369436382, guid: 20019def736ca274bb1f516d411dd5e0, type: 3}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_Name
       value: Fox Prefab
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_TagString
@@ -2046,22 +2050,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8adf0ed05117c4996d1a1549da54aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grassSpawn: 1
+  spawningOfGrass: 0
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
   grassParentObj: {fileID: 328867090}
   grassStartAmount: 200
-  grassSpawnRateTime: 10
-  grassSpawnRatePerSpawning: 2
-  rabbitSpawn: 1
+  grassSpawnRateTime: 1
+  grassSpawnRatePerSpawning: 7
+  spawningOfRabbit: 0
   Rabbit: {fileID: 1834399286}
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 10
-  foxSpawn: 1
+  rabbitStartAmount: 30
+  spawningOfFox: 0
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
-  foxStartAmount: 5
+  foxStartAmount: 15
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -2567,19 +2571,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d3e8611b0888b4c8403d6bbade8883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 5
-  forwardForce: 5
-  moveSpeed: 5
   range: 5
   radius: 20
-  newDirection: {x: 0, y: 0, z: 0}
-  speed: 3
-  groundDistance: 0.5
   agent: {fileID: 1834399288}
   centrePoint: {fileID: 1834399303}
   selectedPlant: {fileID: 0}
-  hungerLevel: 100
-  hungerLoss: 30
+  hungerLevel: 150
+  hungerLoss: 10
   state: 0
 --- !u!4 &1834399303 stripped
 Transform:
@@ -2875,41 +2873,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   fatherId: 0
-  fertility: 2
+  fertility: 3
   maturity: 0
-  maturityLimit: 25
+  maturityLimit: 20
   age: 0
-  lifeTime: 60
+  lifeTime: 80
   Fox: {fileID: 1982462649}
---- !u!65 &1982462654
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982462649}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 0.43627182, y: 1.1311954, z: 1.9116302}
-  m_Center: {x: 0.000000014901161, y: 0.54661626, z: -0.16683531}
---- !u!54 &1982462655
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982462649}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 80
-  m_CollisionDetection: 0
 --- !u!4 &1982462658 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
@@ -2925,10 +2894,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.73
-  m_Speed: 20.48
-  m_Acceleration: 12.51
+  m_Speed: 15
+  m_Acceleration: 10
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 100
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -2937,7 +2906,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
---- !u!114 &1982462663
+--- !u!114 &1982462666
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2946,18 +2915,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1982462649}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8330074fdf7cd5e46849a1953407c4fa, type: 3}
+  m_Script: {fileID: 11500000, guid: ca0102447e7d5664aa9864f3b198d6d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardForce: 10
   range: 5
-  radius: 30
-  newDirection: {x: 0, y: 0, z: 0}
+  radius: 40
   agent: {fileID: 1982462659}
   centrePoint: {fileID: 1982462658}
   selectedRabbit: {fileID: 0}
-  hungerLevel: 90
-  hungerLoss: 30
+  hungerLevel: 100
+  hungerLoss: 10
   state: 0
 --- !u!1 &1995701087
 GameObject:
@@ -2971,6 +2938,8 @@ GameObject:
   - component: {fileID: 1995701090}
   - component: {fileID: 1995701089}
   - component: {fileID: 1995701088}
+  - component: {fileID: 1995701093}
+  - component: {fileID: 1995701092}
   m_Layer: 6
   m_Name: World Plane
   m_TagString: Untagged
@@ -3011,7 +2980,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b2823f537bc1a134d83fe2b71ce28505, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3056,6 +3025,47 @@ Transform:
   m_Father: {fileID: 227715610}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1995701092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995701087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afeb01f399956f4498d072e7581a2cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 300
+  height: 300
+  regions: []
+  scale: 20
+--- !u!114 &1995701093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995701087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afeb01f399956f4498d072e7581a2cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 300
+  height: 300
+  regions:
+  - name: Land
+    height: 2
+    color: {r: 0.18949723, g: 0.8773585, b: 0.045523323, a: 0}
+  - name: Sand
+    height: 0.5
+    color: {r: 0.7735849, g: 0.6922825, b: 0.040138844, a: 0}
+  - name: Water
+    height: 0.4
+    color: {r: 0.04313726, g: 0.1097798, b: 0.8117647, a: 0}
+  scale: 4
 --- !u!1 &2044415780
 GameObject:
   m_ObjectHideFlags: 0
@@ -3221,7 +3231,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683302, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683302, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3239,21 +3249,13 @@ PrefabInstance:
       propertyPath: m_ObstacleAvoidanceType
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8084336115967683305, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8084336115967683305, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_RootOrder
       value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.91642
+      value: 40.8
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3261,7 +3263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 44.793785
+      value: 24.8
       objectReference: {fileID: 0}
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3290,6 +3292,18 @@ PrefabInstance:
     - target: {fileID: 8084336115967683310, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: lifeTime
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: fertility
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084336115967683311, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+      propertyPath: maturityLimit
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 8084336116124669200, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
       propertyPath: m_Color.b
@@ -3335,6 +3349,5 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8084336115967683305, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f2858aeeb9e914479e0ed9298034490, type: 3}

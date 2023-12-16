@@ -27,6 +27,7 @@ public class rabbitBehaviour : MonoBehaviour
     {
         id = Random.Range(10000, 99999); // ázonosító "sorsolása"
         maturity = Random.Range(0f, maturityLimit); // lespawnolt nyulak érettsége véletlen
+        //maturity = 0f;
         age = 0f;
         if (fatherId != 0)
         {
@@ -51,6 +52,7 @@ public class rabbitBehaviour : MonoBehaviour
         // elöregedett nyulak elpusztulnak
         if (age >= lifeTime)
         {
+            print("Búcsúzik a matuzsálem Nyúl!");
             Destroy(gameObject);
         }
 
@@ -78,6 +80,8 @@ public class rabbitBehaviour : MonoBehaviour
 
         // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
         rabbitBehaviour newRabbitScript = newRabbit.GetComponent<rabbitBehaviour>();
+        rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
         newRabbitScript.fatherId = id;
+        newRabbitManager.hungerLevel = 110f;
     }
 }

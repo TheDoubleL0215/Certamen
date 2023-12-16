@@ -36,6 +36,10 @@ public class Statistics : MonoBehaviour
 
     private const int maxDataPoints = 1000; // Maximum number of data points to keep
 
+    private bool showC = false;
+
+    private bool showV = false;
+
     private void Update()
     {
         // Update data at intervals
@@ -46,11 +50,29 @@ public class Statistics : MonoBehaviour
             UpdateStatistics();
         }
 
+        if (Input.GetKey(KeyCode.C) && showC == false){
+            showC = true;
+            showV = false;
+        }
+        else{
+            showC = false;
+        }
+
+        if (Input.GetKey(KeyCode.V) && showV == false){
+            showV = true;
+            showC = false;
+        }
+        else{
+            showV = false;
+        }
+
         // Update chart less frequently
-        if (chartNeedsUpdate)
-        {
-            UpdateChart();
-            chartNeedsUpdate = false;
+        if (showC || showV){
+            if (chartNeedsUpdate)
+            {
+                UpdateChart();
+                chartNeedsUpdate = false;
+            }
         }
     }
 
@@ -60,18 +82,18 @@ public class Statistics : MonoBehaviour
         if (grassObjectCount != GameObject.FindGameObjectsWithTag("Grass").Length)
         {
             grassObjectCount = GameObject.FindGameObjectsWithTag("Grass").Length;
-            grassCountText.text = "F˚csomÛk sz·ma: " + grassObjectCount;
+            grassCountText.text = "F≈±csom√≥k sz√°ma: " + grassObjectCount;
             chartNeedsUpdate = true; // Update chart if counts changed
         }
 
         if (foxObjectCount != GameObject.FindGameObjectsWithTag("Fox").Length || rabbitObjectCount != GameObject.FindGameObjectsWithTag("Rabbit").Length)
         {
             foxObjectCount = GameObject.FindGameObjectsWithTag("Fox").Length;
-            foxCountText.text = "RÛk·k sz·ma: " + foxObjectCount;
+            foxCountText.text = "R√≥k√°k sz√°ma: " + foxObjectCount;
             StoreFoxCount();
 
             rabbitObjectCount = GameObject.FindGameObjectsWithTag("Rabbit").Length;
-            rabbitCountText.text = "Nyulak sz·ma: " + rabbitObjectCount;
+            rabbitCountText.text = "Nyulak sz√°ma: " + rabbitObjectCount;
             StoreRabbitCount();
         }
     }
