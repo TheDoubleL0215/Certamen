@@ -21,6 +21,8 @@ public class rabbitManagerScript : MonoBehaviour
     
     public int detectedFoxes;
 
+    private List<Vector3> foxPositions = new List<Vector3>();
+
     public enum State{
         Idle,
         Hunger,
@@ -75,15 +77,15 @@ public class rabbitManagerScript : MonoBehaviour
 
         switch (state){
             case State.Idle:
-                DetectingPredators();
                 IdleMovement();
+                DetectingPredators(State.Idle);
                 break;
             case State.Hunger:
-                DetectingPredators();
                 FoodMovement();
+                DetectingPredators(State.Hunger);
                 break;
             case State.Escape:
-                DetectingPredators();
+                DetectingPredators(State.Escape);
                 break;
         }
 
@@ -156,11 +158,54 @@ public class rabbitManagerScript : MonoBehaviour
         }
     }
 
-    void EscapeMovement(int foxNumber) {
-        print("Escaping...");
+    void EscapeMovement(int foxNumber, List<Vector3> positions)
+    {
+        Vector3 escapeDestination = Vector3.zero;
+
+        // Ha csak egy róka van, akkor az összes nyúl meneküljön az ellenkező irányba
+        if (foxNumber == 1)
+        {
+            for (int i = 0; i < foxNumber; i++)
+            {
+                Vector3 escapeDirection = transform.position - positions[i];
+                escapeDirection.Normalize();
+
+                escapeDestination = positions[i] + (escapeDirection * 2 * radius);
+                Debug.DrawRay(escapeDestination, Vector3.up, Color.blue, 5f);
+                agent.SetDestination(escapeDestination);
+            }
+        }
+        else // Ha több róka van, a nyulak a legkevesebb róka felé meneküljenek
+        {
+            Vector3 closestFoxPosition = Vector3.zero;
+            float closestFoxDistance = Mathf.Infinity;
+
+            // Megkeressük a legközelebbi róka pozícióját a nyúlhoz
+            for (int i = 0; i < foxNumber; i++)
+            {
+                float distanceToFox = Vector3.Distance(transform.position, positions[i]);
+                if (distanceToFox < closestFoxDistance)
+                {
+                    closestFoxDistance = distanceToFox;
+                    closestFoxPosition = positions[i];
+                }
+            }
+
+            // Az összes nyúl meneküljön a legközelebbi róka felé
+            Vector3 escapeDirection = transform.position - closestFoxPosition;
+            escapeDirection.Normalize();
+
+            escapeDestination = closestFoxPosition + (escapeDirection * 2 * radius);
+            Debug.DrawRay(escapeDestination, Vector3.up, Color.blue, 5f);
+            agent.SetDestination(escapeDestination);
+        }
     }
 
-    void DetectingPredators(){
+
+
+
+    void DetectingPredators(State currentState)
+    {
         Collider[] objects = Physics.OverlapSphere(transform.position, radius);
 
         for (int i = 0; i < objects.Length; i++)
@@ -169,16 +214,29 @@ public class rabbitManagerScript : MonoBehaviour
             if (detectedObject.CompareTag("Fox"))
             {
                 detectedFoxes++;
-                // Debug.Log(detectedFoxes);
-                break;
+                foxPositions.Add(detectedObject.transform.position); // Store fox positions
+                //Debug.Log(detectedFoxes);
             }
         }
-        if(detectedFoxes > 0){
+        if (detectedFoxes > 0)
+        {
             state = State.Escape;
-            EscapeMovement(detectedFoxes);
+            EscapeMovement(detectedFoxes, foxPositions);
             detectedFoxes = 0;
+            foxPositions.Clear();
+        }
+        else
+        {
+            if(currentState != State.Escape){
+                state = currentState;
+                //Debug.Log(currentState);
+            }
+            else{
+                state = State.Idle;
+            }
         }
     }
+
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
@@ -210,11 +268,11 @@ public class rabbitManagerScript : MonoBehaviour
         return false;
     }
 
-   // #if UNITY_EDITOR
-    // private void OnDrawGizmos()
-    //{
-   //     Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
-    //}
-   // #endif
+   #if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+       Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
+    }
+   #endif
 
 }

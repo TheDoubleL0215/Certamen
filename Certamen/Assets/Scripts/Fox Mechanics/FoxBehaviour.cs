@@ -47,7 +47,7 @@ public class FoxBehaviour : MonoBehaviour
         {
             for (int i = 0; i < fertility; i++) // "fertility" v�ltoz� �rt�keszer megh�vja a "Reproduction()" f�ggv�nyt
             {
-                //Reproduction();
+                Reproduction();
             }
             maturity = 0f; //null�z�dik a maturity
         }

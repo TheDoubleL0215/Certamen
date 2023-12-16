@@ -18,7 +18,7 @@ public class FoxManager : MonoBehaviour
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedRabbit;
 
-    public float hungerLevel = 120f;
+    public float hungerLevel = 75f;
     public float hungerLoss = 5f;
 
     public enum State{
