@@ -11,16 +11,41 @@ using System.Runtime.CompilerServices;
 public class FoxManager : MonoBehaviour
 {
     Rigidbody rb; 
-    public float range;
-    public float radius = 0f;
+
+    [Header("ID")]
+    public int id; // egyéni azonosító
+    public int fatherId = 0; // örökölt azonosító
+    public string foxName { get; set; }
+
+    [Header("Reproduction")]
+    public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
+    public float maturity = 0f; // érettség, szaporodásban van szerepe
+    public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
+
+    [Header("Components")]
 
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedRabbit;
+    public GameObject Fox;
 
-    public float hungerLevel = 120f;
+    [Header("Hunger")]
+
+    public float hungerLevel = 75f;
     public float hungerLoss = 5f;
+    public float hungerLimit = 75f;
+    public float hungerMax = 100f;
+    public float satiety = 80f;
+    public float rabbitHungerLimit = 50f;
 
+    [Header("Movement")]
+    public float speed;
+    public float acceleration = 15f;
+    public float range = 5f;
+    public float radius = 20f;
+
+    [Header("Other")]
+    public float age; // nyúl életkora
     public enum State{
         Idle,
         Scout,
@@ -39,29 +64,68 @@ public class FoxManager : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         // Define radius
-        state = State.Idle;
-        
+        state = State.Scout;
+
+        id = Random.Range(10000, 99999);
+        age = 0f;
+        maturity = 0f;
+
+        if(fatherId == 0){
+            foxName = "F" + GetRandomLetter();
+
+            fertility = Random.Range(1, 2);
+            maturityLimit = Random.Range(19f, 21f);
+            //maturity = Random.Range(0f, maturityLimit);
+
+            hungerLevel = Random.Range(70f, 100f);
+            hungerLoss = Random.Range(10f, 15f);
+            hungerLimit = Random.Range(70f, 80f);
+            hungerMax = Random.Range(95f, 105f);
+            satiety = Random.Range(85f, 80f);
+
+            speed = Random.Range(15f, 19f);
+            acceleration = Random.Range(15f, 17f);
+            radius = Random.Range(35f, 40f);
+        }
+
+        gameObject.name = foxName;
+        agent.speed = speed;
     }
 
     // Update is called once per frame
     void Update()
     {
         hungerLevel -= Time.deltaTime * hungerLoss;
+        maturity += Time.deltaTime;
+        age += Time.deltaTime;
+
+        if (maturity >= maturityLimit)
+        {
+            for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
+            {
+                Reproduction();
+            }
+            maturity = 0f; //nullázódik a maturity
+        }
+
+        if (hungerLevel > hungerMax){
+            hungerLevel = hungerMax;
+        }
 
         if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if(selectedRabbit == null && hungerLevel < 75){
+        if(selectedRabbit == null && hungerLevel < hungerLimit){
             state = State.Scout;
         }
 
-        if (selectedRabbit != null && hungerLevel < 75)
+        if (selectedRabbit != null && hungerLevel < hungerLimit)
         {
             state = State.Chase;
         }
 
-        if (hungerLevel >= 80)
+        if (hungerLevel >= satiety)
         {
             state = State.Idle;
         }
@@ -78,6 +142,46 @@ public class FoxManager : MonoBehaviour
                 break;
         }
         
+    }
+
+    void Reproduction()
+    {
+        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //kl�nozzuk a Rabbit objektumot
+
+        Random.InitState(System.DateTime.Now.Millisecond);
+
+        // Defini�ld a p�lyater�let hat�rait
+        float minX = -75f;
+        float maxX = 75f;
+        float minZ = -75f;
+        float maxZ = 75f;
+
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // T�vols�g a sz�l� ny�lt�l
+        Vector3 newPosition = transform.position + offset;
+
+        // Korl�tozd a kis ny�l poz�ci�j�t a p�lya hat�rai k�z�tt
+        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+        newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
+
+        newFox.transform.position = newPosition;
+
+        // Az �j egyed meg�r�kli a sz�l� �rt�keit kisebb m�dosul�sokkal
+        FoxManager newFoxManager = newFox.GetComponent<FoxManager>();
+        newFoxManager.fatherId = id;
+        newFoxManager.foxName = foxName + GetRandomLetter();
+        newFoxManager.hungerLevel = 80f;
+
+        newFoxManager.fertility = newFoxManager.fertility += Random.Range(-1, 1);
+        newFoxManager.maturityLimit = newFoxManager.maturityLimit += Random.Range(-2f, 2f);
+
+        newFoxManager.hungerLimit = newFoxManager.hungerLimit += Random.Range(-3f, 3f);
+        newFoxManager.hungerLoss = newFoxManager.hungerLoss += Random.Range(-3f, 3f);
+        newFoxManager.hungerMax = newFoxManager.hungerMax += Random.Range(-3f, 3f);
+        newFoxManager.satiety = newFoxManager.satiety += Random.Range(-3f, 3f);
+
+        newFoxManager.speed = newFoxManager.speed += Random.Range(-2f, 2f);
+        newFoxManager.acceleration = newFoxManager.acceleration += Random.Range(-2f, 2f);
+        newFoxManager.radius = newFoxManager.radius += Random.Range(-2f, 2f);
     }
 
     void IdleMovement(){
@@ -111,7 +215,7 @@ public class FoxManager : MonoBehaviour
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
                             rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
-                            if(detRabbitScript.hungerLevel > 50f){
+                            if(detRabbitScript.hungerLevel > rabbitHungerLimit){
                                 selectedRabbit = detectedRabbit;
                                 break;
                             }
@@ -132,18 +236,22 @@ public class FoxManager : MonoBehaviour
     void Chasing()
     {
         Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
-        agent.SetDestination(selectedRabbit.transform.position);
-        if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
-        {
-            rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
-            hungerLevel += rabbitScript.hungerLevel;
-            if (hungerLevel > 100)
+        if(selectedRabbit != null){
+            agent.SetDestination(selectedRabbit.transform.position);
+            if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
             {
-                hungerLevel = 100;
+                rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
+                hungerLevel += rabbitScript.hungerLevel;
+                if (hungerLevel > hungerMax)
+                {
+                    hungerLevel = hungerMax;
+                }
+                Destroy(selectedRabbit);
+                selectedRabbit = null;
+                //state = State.Idle;
             }
-            Destroy(selectedRabbit);
-            selectedRabbit = null;
-            //state = State.Idle;
+        }else{
+            state = State.Idle;
         }
     }
 
@@ -162,6 +270,14 @@ public class FoxManager : MonoBehaviour
 
         result = Vector3.zero;
         return false;
+    }
+
+    char GetRandomLetter()
+    {
+        const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // All possible letters
+        System.Random random = new System.Random();
+        int index = random.Next(letters.Length);
+        return letters[index];
     }
 
     #if UNITY_EDITOR

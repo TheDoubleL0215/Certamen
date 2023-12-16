@@ -20,6 +20,7 @@ public class ProcedualTerrain : MonoBehaviour
     }
 
     void Update(){
+        
 
     }
 
