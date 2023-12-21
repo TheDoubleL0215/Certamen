@@ -1832,7 +1832,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2334,19 +2334,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8adf0ed05117c4996d1a1549da54aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawningOfGrass: 0
+  spawningOfGrass: 1
   Grass: {fileID: 5458113077754532424, guid: 6ff5754593e3ce64da274f554bc0e39e, type: 3}
   grassParentObj: {fileID: 328867090}
   grassStartAmount: 200
   grassSpawnRateTime: 1
   grassSpawnRatePerSpawning: 7
-  spawningOfRabbit: 0
+  spawningOfRabbit: 1
   Rabbit: {fileID: 1834399286}
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
   rabbitStartAmount: 30
-  spawningOfFox: 0
+  spawningOfFox: 1
   Fox: {fileID: 919132148857180190}
   foxParentObj: {fileID: 903556529}
   foxStartAmount: 10
@@ -3275,7 +3275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!195 &1834399288
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3297,7 +3297,7 @@ NavMeshAgent:
   m_Height: 0.03
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!23 &1834399292
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3682,7 +3682,7 @@ NavMeshAgent:
   m_Acceleration: 12
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0.5
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -3749,7 +3749,6 @@ GameObject:
   - component: {fileID: 1995701089}
   - component: {fileID: 1995701088}
   - component: {fileID: 1995701093}
-  - component: {fileID: 1995701092}
   m_Layer: 6
   m_Name: World Plane
   m_TagString: Untagged
@@ -3835,22 +3834,6 @@ Transform:
   m_Father: {fileID: 227715610}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1995701092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1995701087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afeb01f399956f4498d072e7581a2cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  width: 300
-  height: 300
-  regions: []
-  scale: 20
 --- !u!114 &1995701093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3987,7 +3970,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1711813855940293067
 MeshRenderer:
   m_ObjectHideFlags: 0
