@@ -30,6 +30,7 @@ public class rabbitManagerScript : MonoBehaviour
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
     public GameObject Rabbit;
+    public Transform rabbitParentObj;
 
     [Header("Hunger")]
 
@@ -43,8 +44,7 @@ public class rabbitManagerScript : MonoBehaviour
     [Header("Movement")]
 
     public float speed = 10f;
-    public float acceleration = 10f;
-    public float range = 5f; //radius
+    public float range = 2.5f; //radius
     public float radius = 20f;
 
     [Header("Escaping Mechanics")]
@@ -77,24 +77,28 @@ public class rabbitManagerScript : MonoBehaviour
         maturity = 0f;
 
         if(fatherId == 0){
-            rabbitName = "R" + GetRandomLetter();
+            rabbitName = "R-" + GetRandomLetter();
 
             fertility = Random.Range(2, 4);
-            maturityLimit = Random.Range(15f, 17f);
-            //maturity = Random.Range(0f, maturityLimit);
+            maturityLimit = Random.Range(14f, 18f);
+            maturity = Random.Range(0f, maturityLimit);
 
-            hungerLevel = Random.Range(85f, 150f);
-            hungerLoss = Random.Range(10f, 15f);
-            hungerLimit = Random.Range(95f, 85f);
-            hungerMax = Random.Range(145f, 155f);
-            satiety = Random.Range(115f, 125f);
+            hungerMax = Random.Range(140f, 160f);
+            hungerLevel = Random.Range(85f, hungerMax);
+            hungerLimit = Random.Range(100f, 80f);
+            satiety = Random.Range(110f, 130f);
 
-            speed = Random.Range(8f, 12f);
-            acceleration = Random.Range(8f, 12f);
-            radius = Random.Range(18f, 22f);
+            speed = Random.Range(5f, 15f);
+            radius = Random.Range(15f, 25f);
         }
 
+        hungerLoss = (hungerMax/38 + radius/5 + speed/5)/1;
+        Debug.Log(hungerLoss);
+
+        agent.speed = speed;
         gameObject.name = rabbitName;
+
+        IdleMovement();
     }
 
     // Update is called once per frame
@@ -153,7 +157,7 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Reproduction()
     {
-        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
+        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation, rabbitParentObj); //klónozzuk a Rabbit objektumot
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
@@ -163,7 +167,9 @@ public class rabbitManagerScript : MonoBehaviour
         float minZ = -75f;
         float maxZ = 75f;
 
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő nyúltól
+        float distanceFactor = 5f; // Adjust this factor to determine the separation distance
+
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)) * distanceFactor;
         Vector3 newPosition = transform.position + offset;
 
         // Korlátozd a kis nyúl pozícióját a pálya határai között
@@ -182,14 +188,13 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-1, 1);
         newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f, 2f);
 
-        newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-5f, 5f);
-        newRabbitManager.hungerLoss = newRabbitManager.hungerLoss += Random.Range(-1f, 1f);
-        newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-5f, 5f);
-        newRabbitManager.satiety = newRabbitManager.satiety += Random.Range(-5f, 5f);
+        newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-10f, 10f);
+        newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-10f, 10f);
+        newRabbitManager.satiety = newRabbitManager.satiety += Random.Range(-10f, 10f);
 
-        newRabbitManager.speed = newRabbitManager.speed += Random.Range(-2f, 2f);
-        newRabbitManager.acceleration = newRabbitManager.acceleration += Random.Range(-2f, 2f);
-        newRabbitManager.radius = newRabbitManager.radius += Random.Range(-2f, 2f);
+        newRabbitManager.speed = newRabbitManager.speed += Random.Range(-5f, 5f);
+        newRabbitManager.radius = newRabbitManager.radius += Random.Range(-5f, 5f);
+    
     }
 
     void IdleMovement(){

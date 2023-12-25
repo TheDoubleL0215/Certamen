@@ -28,6 +28,7 @@ public class FoxManager : MonoBehaviour
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedRabbit;
     public GameObject Fox;
+    public Transform foxParentObj;
 
     [Header("Hunger")]
 
@@ -40,8 +41,7 @@ public class FoxManager : MonoBehaviour
 
     [Header("Movement")]
     public float speed = 15f;
-    public float acceleration = 15f;
-    public float range = 5f;
+    public float range = 2.5f;
     public float radius = 20f;
 
     [Header("Other")]
@@ -64,31 +64,36 @@ public class FoxManager : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         // Define radius
-        state = State.Scout;
+        state = State.Idle;
 
         id = Random.Range(10000, 99999);
         age = 0f;
         maturity = 0f;
 
+
         if(fatherId == 0){
-            foxName = "F" + GetRandomLetter();
+            foxName = "F-" + GetRandomLetter();
 
             fertility = Random.Range(1, 2);
             maturityLimit = Random.Range(19f, 21f);
-            //maturity = Random.Range(0f, maturityLimit);
+            maturity = Random.Range(0f, maturityLimit);
 
-            hungerLevel = Random.Range(70f, 100f);
-            hungerLoss = Random.Range(10f, 15f);
+            hungerMax = Random.Range(90f, 110f);
+            hungerLevel = Random.Range(70f, hungerMax);
             hungerLimit = Random.Range(70f, 80f);
-            hungerMax = Random.Range(95f, 105f);
-            satiety = Random.Range(85f, 80f);
+            satiety = Random.Range(90f, 80f);
+            rabbitHungerLimit = Random.Range(40f, 60f);
 
-            speed = Random.Range(15f, 17f);
-            acceleration = Random.Range(15f, 17f);
-            radius = Random.Range(35f, 40f);
+            speed = Random.Range(15f, 20f);
+            radius = Random.Range(30f, 40f);
         }
-
+        
+        hungerLoss = (hungerMax/25 + radius/10 + speed/8)/2;
+        
+        agent.speed = speed;
         gameObject.name = foxName;
+
+        IdleMovement();
     }
 
     // Update is called once per frame
@@ -145,9 +150,7 @@ public class FoxManager : MonoBehaviour
 
     void Reproduction()
     {
-        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //kl�nozzuk a Rabbit objektumot
-
-        Random.InitState(System.DateTime.Now.Millisecond);
+        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation, foxParentObj); //kl�nozzuk a Rabbit objektumot
 
         // Defini�ld a p�lyater�let hat�rait
         float minX = -75f;
@@ -173,27 +176,27 @@ public class FoxManager : MonoBehaviour
         newFoxManager.fertility = newFoxManager.fertility += Random.Range(-1, 1);
         newFoxManager.maturityLimit = newFoxManager.maturityLimit += Random.Range(-2f, 2f);
 
-        newFoxManager.hungerLimit = newFoxManager.hungerLimit += Random.Range(-3f, 3f);
-        newFoxManager.hungerLoss = newFoxManager.hungerLoss += Random.Range(-3f, 3f);
-        newFoxManager.hungerMax = newFoxManager.hungerMax += Random.Range(-3f, 3f);
-        newFoxManager.satiety = newFoxManager.satiety += Random.Range(-3f, 3f);
+        newFoxManager.hungerLimit = newFoxManager.hungerLimit += Random.Range(-7f, 7f);
+        newFoxManager.hungerMax = newFoxManager.hungerMax += Random.Range(-7f, 7f);
+        newFoxManager.satiety = newFoxManager.satiety += Random.Range(-7f, 7f);
+        newFoxManager.rabbitHungerLimit = newFoxManager.rabbitHungerLimit += Random.Range(-7f, 7f);
 
-        newFoxManager.speed = newFoxManager.speed += Random.Range(-2f, 2f);
-        newFoxManager.acceleration = newFoxManager.acceleration += Random.Range(-2f, 2f);
-        newFoxManager.radius = newFoxManager.radius += Random.Range(-2f, 2f);
+        newFoxManager.speed = newFoxManager.speed += Random.Range(-5f, 5f);
+        newFoxManager.radius = newFoxManager.radius += Random.Range(-5f, 5f);
     }
 
     void IdleMovement(){
         if(agent.remainingDistance <= agent.stoppingDistance) //done with path
+        {
+            Vector3 point;
+            if (RandomPoint(centrePoint.position, radius, out point)) //pass in our centre point and radius of area
             {
-                Vector3 point;
-                if (RandomPoint(centrePoint.position, radius, out point)) //pass in our centre point and radius of area
-                {
-                    Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
-                    agent.SetDestination(point);
-                }
+                Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
+                agent.SetDestination(point);
             }
+        }
     }
+
     void Scouting()
     {
         if (agent.enabled)
@@ -224,7 +227,6 @@ public class FoxManager : MonoBehaviour
                         
                 if (selectedRabbit == null)
                 {
-                    //Debug.Log("Nem érzékel nyulat");
                     IdleMovement();
                 }                   
             }
@@ -236,7 +238,7 @@ public class FoxManager : MonoBehaviour
     {
         Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
         agent.SetDestination(selectedRabbit.transform.position);
-        if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
+        if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 10f)
         {
             rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
             hungerLevel += rabbitScript.hungerLevel;
@@ -244,6 +246,7 @@ public class FoxManager : MonoBehaviour
             {
                 hungerLevel = hungerMax;
             }
+            Debug.Log("megette");
             Destroy(selectedRabbit);
             selectedRabbit = null;
             //state = State.Idle;
