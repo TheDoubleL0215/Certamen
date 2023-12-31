@@ -22,13 +22,15 @@ public class rabbitManagerScript : MonoBehaviour
     public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
     public float maturity = 0f; // érettség, szaporodásban van szerepe
     public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
-
-
+    public List<string> genderlist  = new List<string>{"male", "female"};
+    public string gender = genderList[Random.Range(0, genderList.Count)];
+    
     [Header("Components")]
 
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
+    private GameObject selectedRabbit;
     public GameObject Rabbit;
 
     [Header("Hunger")]
@@ -56,7 +58,8 @@ public class rabbitManagerScript : MonoBehaviour
     public enum State{
         Idle,
         Hunger,
-        Escape
+        Escape,
+        Reproduction
     }
 
     [SerializeField] public State state;
@@ -106,9 +109,9 @@ public class rabbitManagerScript : MonoBehaviour
 
         if (maturity >= maturityLimit)
         {
-            for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
+            for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "ReproductionMovement()" függvényt
             {
-                Reproduction();
+                ReproductionMovement();
             }
             maturity = 0f; //nullázódik a maturity
         }
@@ -147,14 +150,76 @@ public class rabbitManagerScript : MonoBehaviour
             case State.Escape:
                 DetectingPredators(State.Escape);
                 break;
+            case State.Reproduction:
+                ReproductionMovement();
+                break;
         }
 
     }
+    void ReproductionMovement()
+    {
+        if (agent.enabled)
+        {
+            if (agent.remainingDistance <= agent.stoppingDistance)
+                Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
 
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    if (selectedRabbit == null)
+                    {
+                        GameObject detectedRabbit = colliders[i].gameObject;
+                        
+                        if (detectedRabbit.CompareTag("Rabbit"))
+                        {
+                            rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
+                            if(detRabbitScript.State = State.Reproduction)
+                            {
+                                if(detRabbitScript.gender != Rabbit.gender)
+                                {
+                                    selectedRabbit = detectedRabbit;
+                                }
+                        
+                            }
+                        }
+                    }
+                }
+                        
+                if (selectedRabbit == null)
+                {
+                    IdleMovement();
+                }                   
+            }
+            else
+                {
+                    agent.SetDestination(selectedRabbit.transform.position);
+                    if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
+                    {
+                        selectedRabbit = null;
+                        if (Rabbit.gender = female)
+                        {
+                            Reproduction()
+                        }
+                        else
+                        {
+                            state = State.Idle;
+                        }
+                    }
+                    else if (!selectedRabbit.activeSelf) // If the selected rabbit doesn't exist anymore
+                    {
+                        selectedRabbit = null;
+                        state = State.Idle;
+                    }
+                }
+           
+        }
+
+
+
+
+    }
     void Reproduction()
     {
-        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
-
+        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); 
         Random.InitState(System.DateTime.Now.Millisecond);
 
         // Definiáld a pályaterület határait
@@ -364,7 +429,7 @@ public class rabbitManagerScript : MonoBehaviour
 
 
    #if UNITY_EDITOR
-    private void OnDrawGizmos()
+   private void OnDrawGizmos()
     {
        Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
     }

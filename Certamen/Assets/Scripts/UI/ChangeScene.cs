@@ -5,12 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class ChangeScene : MonoBehaviour
 {
-    // Átvált a megadott Scene-re
+    // Ã¡tvÃ¡lt a megadott Scene-re
     public void moveToScene(int sceneID)
     {
         SceneManager.LoadScene(sceneID);
     }
-    // Kilép az alkalmazásból
+    // KilÃ©p az alkalmazÃ¡sbÃ³l
     public void Exit()
     {
         print("exit");

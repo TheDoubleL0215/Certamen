@@ -48,7 +48,7 @@ public class FoxGraph : MonoBehaviour
         if (foxObjectCount != GameObject.FindGameObjectsWithTag("Fox").Length)
         {
             foxObjectCount = GameObject.FindGameObjectsWithTag("Fox").Length;
-            foxCountText.text = "Rókák száma: " + foxObjectCount;
+            foxCountText.text = "RÃ³kÃ¡k szÃ¡ma: " + foxObjectCount;
             chartNeedsUpdate = true; // Update chart if counts changed
         }
 
@@ -85,7 +85,7 @@ public class FoxGraph : MonoBehaviour
             if (line.gameObject.name == "Line")
             {
                 Destroy(line.gameObject);
-                print("törölt vonalat");
+                print("tÃ¶rÃ¶lt vonalat");
             }
         }
 
@@ -107,7 +107,7 @@ public class FoxGraph : MonoBehaviour
             {
                 print("rajzol vonalat");
                 GameObject line = new GameObject("Line");
-                print("létrehoz vonalat");
+                print("lÃ©trehoz vonalat");
                 line.transform.SetParent(chartPanel, false);
 
                 RectTransform lineRectTransform = line.AddComponent<RectTransform>();
@@ -115,7 +115,7 @@ public class FoxGraph : MonoBehaviour
 
                 Image lineImage = line.AddComponent<Image>();
                 lineImage.color = Color.white; // Set line color
-                print("szín is megvan határozva");
+                print("szÃ­n is megvan hatÃ¡rozva");
 
                 // Position the line between two points
                 Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, foxEvolution[i - 1] * 10 - 500);
@@ -127,7 +127,7 @@ public class FoxGraph : MonoBehaviour
                 Vector2 direction = endPoint - startPoint;
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 lineRectTransform.rotation = Quaternion.Euler(0, 0, angle);
-                print("pörög is");
+                print("pÃ¶rÃ¶g is");
             }
             // Instantiate a single chart point for each data point
             GameObject chartPoint = Instantiate(chartPointPrefab, chartPanel);

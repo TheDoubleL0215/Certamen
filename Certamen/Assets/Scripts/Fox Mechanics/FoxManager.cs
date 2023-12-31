@@ -145,26 +145,26 @@ public class FoxManager : MonoBehaviour
 
     void Reproduction()
     {
-        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //kl�nozzuk a Rabbit objektumot
+        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
-        // Defini�ld a p�lyater�let hat�rait
+        // Definiáld a pályaterület határait
         float minX = -75f;
         float maxX = 75f;
         float minZ = -75f;
         float maxZ = 75f;
 
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // T�vols�g a sz�l� ny�lt�l
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő rókától
         Vector3 newPosition = transform.position + offset;
 
-        // Korl�tozd a kis ny�l poz�ci�j�t a p�lya hat�rai k�z�tt
+        // Korlátozd a kis róka pozícióját a pálya határai között
         newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
         newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
 
         newFox.transform.position = newPosition;
 
-        // Az �j egyed meg�r�kli a sz�l� �rt�keit kisebb m�dosul�sokkal
+        // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
         FoxManager newFoxManager = newFox.GetComponent<FoxManager>();
         newFoxManager.fatherId = id;
         newFoxManager.foxName = foxName + GetRandomLetter();

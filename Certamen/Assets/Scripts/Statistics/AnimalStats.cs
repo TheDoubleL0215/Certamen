@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class AnimalStats : MonoBehaviour
 {
-    public Transform target; // Ny�l Transform komponense
-    private rabbitManagerScript rabbitMoveScript; // Deklar�ljuk az oszt�ly szintj�n
+    public Transform target; // Nyúl Transform komponense
+    private rabbitManagerScript rabbitMoveScript; // Deklaráljuk az osztály szintjén
 
     private void Start()
     {
-        rabbitMoveScript = target.GetComponent<rabbitManagerScript>(); // Inicializ�ljuk a Start met�dusban
+        rabbitMoveScript = target.GetComponent<rabbitManagerScript>(); // Inicializáljuk a Start metódusban
     }
 
     private void Update()
@@ -20,16 +20,16 @@ public class AnimalStats : MonoBehaviour
             transform.position = target.position;
             //string statText = "Energia: " + rabbitMoveScript.energy + "\n" +
                 //"Energia Limit: " + rabbitMoveScript.energyLimit + "\n" +
-               // "Energia Vesztes�g: " + rabbitMoveScript.energyLoss + "\n" +
-                //"Sebess�g: " + rabbitMoveScript.forwardForce + "\n" +
-               // "L�t�sug�r: " + rabbitMoveScript.radius;
+               // "Energia Veszteség: " + rabbitMoveScript.energyLoss + "\n" +
+                //"Sebesség: " + rabbitMoveScript.forwardForce + "\n" +
+               // "Látósugár: " + rabbitMoveScript.radius;
 
-            // Most �ll�tsd be a sz�veget a Text komponensen
+            // Most állítsd be a szöveget a Text komponensen
             //GetComponent<Text>().text = statText;
-            // Hozz l�tre egy forgat�si c�lpontot, amely mindig a kamera poz�ci�j�ban van
+            // Hozz létre egy forgatási célpontot, amely mindig a kamera pozíciójában van
             Vector3 cameraPosition = Camera.main.transform.position;
 
-            // Ford�tsd el az objektumot a kamera fel�
+            // Fordítsd el az objektumot a kamera felé
             transform.LookAt(2 * transform.position - cameraPosition);
         }
         else

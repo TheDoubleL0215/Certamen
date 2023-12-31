@@ -5,17 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    // A MenuObjectet fogja megjelen�teni
+    // A MenuObjectet fogja megjeleníteni
     public GameObject StatsPanel;
     public GameObject MenuObject;
     public GameObject ChartsObject;
     public GameObject SpiralObject;
     public GameObject DecorObject;
 
-    // Ezzel eszk�z�lj�k a v�rakoz�st
+    // Ezzel eszközöljük a várakozást
     private float WaitTime = 0;
 
-    // Az elej�n megh�vjuk a "PauseMenu()" ciklust
+    // Az elején meghívjuk a "PauseMenu()" ciklust
     void Start()
     {
         Detect();
@@ -24,12 +24,12 @@ public class Menu : MonoBehaviour
 
     void Detect()
     {
-        // Mikor bel�p�nk a ciklusba 0 lesz a v�rakoz�s id�
+        // Mikor belépünk a ciklusba 0 lesz a várakozási idő
         WaitTime = 0;
-        // Escape gomb lenyom�s�ra...
+        // Escape gomb lenyomására...
         if (Input.GetKey(KeyCode.Escape))
         {
-            // ...ha nem volt megjelen�tve a men�, megjelen�ti
+            // ...ha nem volt megjelenítve a menü, megjeleníti
             if (MenuObject.activeInHierarchy == false)
             {
                 MenuObject.SetActive(true);
@@ -37,28 +37,28 @@ public class Menu : MonoBehaviour
                 StatsPanel.SetActive(false);
                 SpiralObject.SetActive(false);
                 DecorObject.SetActive(false);
-                // A j�t�k idej�t lelass�tja
+                // A játék idejét lelassítja
                 Time.timeScale = 0.1f;
-                // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
+                // Megnöveli a várakozási időt, a bugok elkerülése végett
                 WaitTime = 0.05f;
             }
-            // ...ha meg volt jelen�tve a men�, elt�nteti
+            // ...ha meg volt jelenítve a menü, eltünteti
             else
             {
                 if (MenuObject.activeInHierarchy == true)
                 {
                     MenuObject.SetActive(false);
                     StatsPanel.SetActive(true);
-                    // J�t�k sebess�g�t vissza�ll�tja
+                    // Játék sebességét visszaállítja
                     Time.timeScale = 1f;
-                    // V�rakoz�si id� megn�vekszik (az�rt 10x t�bb mint mikor meg�ll�tjuk, mert az id� is 10x gyorsabb)
+                    // Várakozási idő megnővekszik (azért 10x több mint mikor megállítjuk, mert az idő is 10x gyorsabb)
                     WaitTime = 0.5f;
                 }
             }
         }
         if (Input.GetKey(KeyCode.C))
         {
-            // ...ha nem volt megjelen�tve a men�, megjelen�ti
+            // ...ha nem volt megjelenítve a menü, megjeleníti
             if (ChartsObject.activeInHierarchy == false)
             {
                 ChartsObject.SetActive(true);
@@ -66,12 +66,12 @@ public class Menu : MonoBehaviour
                 SpiralObject.SetActive(false);
                 MenuObject.SetActive(false);
                 StatsPanel.SetActive(false);
-                // A j�t�k idej�t lelass�tja
+                // A játék idejét lelassítja
                 Time.timeScale = 0.1f;
-                // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
+                // Megnöveli a várakozási időt, a bugok elkerülése végett
                 WaitTime = 0.05f;
             }
-            // ...ha meg volt jelen�tve a men�, elt�nteti
+            // ...ha meg volt jelenítve a menü, eltünteti
             else
             {
                 if (ChartsObject.activeInHierarchy == true)
@@ -79,9 +79,9 @@ public class Menu : MonoBehaviour
                     ChartsObject.SetActive(false);
                     DecorObject.SetActive(false);
                     StatsPanel.SetActive(true);
-                    // J�t�k sebess�g�t vissza�ll�tja
+                    // Játék sebességét visszaállítja
                     Time.timeScale = 1f;
-                    // V�rakoz�si id� megn�vekszik (az�rt 10x t�bb mint mikor meg�ll�tjuk, mert az id� is 10x gyorsabb)
+                    // Várakozási idő megnövekszik (azért 10x több mint mikor megállítjuk, mert az idő is 10x gyorsabb)
                     WaitTime = 0.5f;
                 }
             }
@@ -89,7 +89,7 @@ public class Menu : MonoBehaviour
 
         if (Input.GetKey(KeyCode.V))
         {
-            // ...ha nem volt megjelen�tve a men�, megjelen�ti
+            // ...ha nem volt megjelenítve a menü, megjeleníti
             if (SpiralObject.activeInHierarchy == false)
             {
                 SpiralObject.SetActive(true);
@@ -97,12 +97,12 @@ public class Menu : MonoBehaviour
                 MenuObject.SetActive(false);
                 StatsPanel.SetActive(false);
                 ChartsObject.SetActive(false);
-                // A j�t�k idej�t lelass�tja
+                // A játék idejét lelassítja
                 Time.timeScale = 0.1f;
-                // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
+                // Megnöveli a várakozás időt, a bugok elkerülése végett
                 WaitTime = 0.05f;
             }
-            // ...ha meg volt jelen�tve a men�, elt�nteti
+            // ...ha meg volt jelenítve a menü, eltünteti
             else
             {
                 if (SpiralObject.activeInHierarchy == true)
@@ -110,19 +110,19 @@ public class Menu : MonoBehaviour
                     SpiralObject.SetActive(false);
                     DecorObject.SetActive(false);
                     StatsPanel.SetActive(true);
-                    // J�t�k sebess�g�t vissza�ll�tja
+                    // Játék sebességét visszaállítja
                     Time.timeScale = 1f;
-                    // V�rakoz�si id� megn�vekszik (az�rt 10x t�bb mint mikor meg�ll�tjuk, mert az id� is 10x gyorsabb)
+                    // Várakozási idő megnövekszik (azért 10x több mint mikor megállítjuk, mert az idő is 10x gyorsabb)
                     WaitTime = 0.5f;
                 }
             }
         }
 
-        // Megh�vja a "callPauseMenu()" f�ggv�nyt
+        // Meghívja a "callPauseMenu()" függvényt
         Invoke("callDetect", WaitTime);
     }
 
-    // Ez a f�ggv�ny �jb�l �s �jb�l megh�vja a "PauseMenu()" f�ggv�nyt
+    // Ez a függvény újból és újból meghívja a "PauseMenu()" függvényt
     void callDetect()
     {
         Invoke("Detect", WaitTime);
