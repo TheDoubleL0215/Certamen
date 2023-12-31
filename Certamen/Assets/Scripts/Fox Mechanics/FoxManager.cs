@@ -36,7 +36,6 @@ public class FoxManager : MonoBehaviour
     public float hungerLoss = 5f;
     public float hungerLimit = 75f;
     public float hungerMax = 100f;
-    public float satiety = 80f;
     public float rabbitHungerLimit = 50f;
 
     [Header("Movement")]
@@ -75,13 +74,12 @@ public class FoxManager : MonoBehaviour
             foxName = "F-" + GetRandomLetter();
 
             fertility = Random.Range(1, 2);
-            maturityLimit = Random.Range(19f, 21f);
+            maturityLimit = Random.Range(35f, 45f);
             maturity = Random.Range(0f, maturityLimit);
 
             hungerMax = Random.Range(90f, 110f);
             hungerLevel = Random.Range(70f, hungerMax);
             hungerLimit = Random.Range(70f, 80f);
-            satiety = Random.Range(90f, 80f);
             rabbitHungerLimit = Random.Range(40f, 60f);
 
             speed = Random.Range(15f, 20f);
@@ -89,6 +87,11 @@ public class FoxManager : MonoBehaviour
         }
         
         hungerLoss = (hungerMax/25 + radius/10 + speed/8)/2;
+
+        if(hungerMax/hungerLoss > maturityLimit){
+            maturityLimit = hungerMax/hungerLoss + 1f;
+            Debug.Log(maturityLimit);
+        }
         
         agent.speed = speed;
         gameObject.name = foxName;
@@ -112,27 +115,22 @@ public class FoxManager : MonoBehaviour
             maturity = 0f; //nullázódik a maturity
         }
 
-        if (hungerLevel > hungerMax){
-            hungerLevel = hungerMax;
-        }
-
         if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if(selectedRabbit == null && hungerLevel < hungerLimit){
-            state = State.Scout;
+        if(hungerLevel <= hungerLimit){
+            if(selectedRabbit == null){
+                state = State.Scout;
+            }
+            else{
+                state = State.Chase;
+            }
         }
-
-        if (selectedRabbit != null && hungerLevel < hungerLimit)
-        {
-            state = State.Chase;
-        }
-
-        if (hungerLevel >= satiety)
-        {
+        else{
             state = State.Idle;
         }
+        
 
         switch (state){
             case State.Idle:
@@ -173,12 +171,15 @@ public class FoxManager : MonoBehaviour
         newFoxManager.foxName = foxName + GetRandomLetter();
         newFoxManager.hungerLevel = 80f;
 
-        newFoxManager.fertility = newFoxManager.fertility += Random.Range(-1, 1);
+        newFoxManager.fertility = newFoxManager.fertility += Random.Range(-2, 2);
+        if(newFoxManager.fertility < 0){
+            newFoxManager.fertility = 0;
+            Debug.Log(newFoxManager.foxName);
+        }
         newFoxManager.maturityLimit = newFoxManager.maturityLimit += Random.Range(-2f, 2f);
 
         newFoxManager.hungerLimit = newFoxManager.hungerLimit += Random.Range(-7f, 7f);
         newFoxManager.hungerMax = newFoxManager.hungerMax += Random.Range(-7f, 7f);
-        newFoxManager.satiety = newFoxManager.satiety += Random.Range(-7f, 7f);
         newFoxManager.rabbitHungerLimit = newFoxManager.rabbitHungerLimit += Random.Range(-7f, 7f);
 
         newFoxManager.speed = newFoxManager.speed += Random.Range(-5f, 5f);
@@ -246,7 +247,6 @@ public class FoxManager : MonoBehaviour
             {
                 hungerLevel = hungerMax;
             }
-            Debug.Log("megette");
             Destroy(selectedRabbit);
             selectedRabbit = null;
             //state = State.Idle;

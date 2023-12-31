@@ -38,7 +38,7 @@ public class rabbitManagerScript : MonoBehaviour
     public float hungerLoss = 5f;
     public float hungerLimit = 100f;
     public float hungerMax = 150f;
-    public float satiety = 120f;
+    public float hungerMinimum = 40f;
     public float resourceFromGrass = 30f;
     
     [Header("Movement")]
@@ -80,20 +80,23 @@ public class rabbitManagerScript : MonoBehaviour
             rabbitName = "R-" + GetRandomLetter();
 
             fertility = Random.Range(2, 4);
-            maturityLimit = Random.Range(14f, 18f);
+            maturityLimit = Random.Range(35f, 45f);
             maturity = Random.Range(0f, maturityLimit);
 
             hungerMax = Random.Range(140f, 160f);
+            hungerMinimum = Random.Range(30f, 40f);
             hungerLevel = Random.Range(85f, hungerMax);
             hungerLimit = Random.Range(100f, 80f);
-            satiety = Random.Range(110f, 130f);
 
             speed = Random.Range(5f, 15f);
             radius = Random.Range(15f, 25f);
         }
 
-        hungerLoss = (hungerMax/38 + radius/5 + speed/5)/1;
-        Debug.Log(hungerLoss);
+        hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
+        if(hungerMax/hungerLoss > maturityLimit){
+            maturityLimit = hungerMax/hungerLoss + 1f;
+            //Debug.Log(maturityLimit);
+        }
 
         agent.speed = speed;
         gameObject.name = rabbitName;
@@ -117,25 +120,15 @@ public class rabbitManagerScript : MonoBehaviour
             maturity = 0f; //nullázódik a maturity
         }
 
-        if(hungerLevel > hungerMax){
-            hungerLevel = hungerMax;
-        }
-
         if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if (hungerLevel <= hungerLimit && state != State.Escape)
-        {
+        if(hungerLevel <= hungerLimit){
             state = State.Hunger;
         }
-
-        else
-        {
-            if (hungerLevel >= satiety && state == State.Hunger)
-            {
-                state = State.Idle;
-            }
+        else{
+            state = State.Idle;
         }
 
 
@@ -185,12 +178,16 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
         newRabbitManager.hungerLevel = 90f;
 
-        newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-1, 1);
+        newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-2, 2);
+        if(newRabbitManager.fertility < 0){
+            newRabbitManager.fertility = 0;
+            Debug.Log(newRabbitManager.rabbitName);
+        }
         newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f, 2f);
 
         newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-10f, 10f);
         newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-10f, 10f);
-        newRabbitManager.satiety = newRabbitManager.satiety += Random.Range(-10f, 10f);
+        newRabbitManager.hungerMinimum = newRabbitManager.hungerMinimum += Random.Range(-10f, 10f);
 
         newRabbitManager.speed = newRabbitManager.speed += Random.Range(-5f, 5f);
         newRabbitManager.radius = newRabbitManager.radius += Random.Range(-5f, 5f);
@@ -249,6 +246,10 @@ public class rabbitManagerScript : MonoBehaviour
                     {
                         Destroy(selectedPlant);
                         hungerLevel += resourceFromGrass;
+                        if(hungerLevel > hungerMax){
+                            hungerLevel = hungerMax;
+                            print("Thank you!");
+                        }
                         selectedPlant = null;
                         state = State.Idle;
                     }
@@ -324,10 +325,15 @@ public class rabbitManagerScript : MonoBehaviour
         }
         if (detectedFoxes > 0)
         {
-            state = State.Escape;
-            EscapeMovement(detectedFoxes, foxPositions);
-            detectedFoxes = 0;
-            foxPositions.Clear();
+            if(hungerMinimum < hungerLevel){
+                state = State.Escape;
+                EscapeMovement(detectedFoxes, foxPositions);
+                detectedFoxes = 0;
+                foxPositions.Clear();
+            }
+            else{
+                state = State.Idle;
+            }
         }
         else
         {
