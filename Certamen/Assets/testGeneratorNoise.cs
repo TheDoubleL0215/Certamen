@@ -1,41 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
+
+
 
 [RequireComponent(typeof(MeshFilter))]
-public class ProcedualTerrain : MonoBehaviour
+public class testGeneratorNoise : MonoBehaviour
 {
+    Mesh mesh;
+
     public int width = 300;
     public int height = 300;
-    public TerrainType[] regions;
+    
     public float scale = 20;
 
-    Mesh mesh;
-    int[] triangles;
-    int[] testTriangles;
     private float xOffset;
     private float yOffset;
-    Vector3[] vertices;
-    Vector3[] testVertices;
+    public TerrainType[] regions;
 
     [Header("Gizmos")]
     [SerializeField] private bool showGizmosSphere = true;
     public int verticesScale = 20;
 
-    void Start(){
+    Vector3[] vertices;
+    int[] triangles;
+    void Start()
+    {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-        UpdateMesh();
-        CreateShape();
 
+        DevideUpMesh();
+        UpdateMesh();
         xOffset = Random.Range(0, 999999);
         yOffset = Random.Range(0, 999999);
         Renderer renderer = GetComponent<Renderer>();
         renderer.material.mainTexture = GenerateTexture();
-        //DevideUpMesh();
     }
 
     Texture2D GenerateTexture(){
@@ -66,44 +65,6 @@ public class ProcedualTerrain : MonoBehaviour
 
     }
 
-    void CreateShape(){
-
-        testVertices = new Vector3[]{
-            new Vector3 (0,0,0),
-            new Vector3 (0,0,1),
-            new Vector3 (1,0,0)
-        };
-
-        testTriangles = new int[]{
-            0, 1, 2
-        };
-    }
-
-
-    void DevideUpMesh(){
-
-        vertices = new Vector3[((width/verticesScale)+1) * ((height/verticesScale)+1)];
-        Debug.Log(vertices.Length);
-
-        int i = 0;
-        for (int x = 0; x <= width; x+=verticesScale)
-        {
-            for (int y = 0; y <= height; y+=verticesScale)
-            {
-                vertices[i] = new Vector3(x-150, 0, y-150);
-                i++;
-            }
-        }
-
-        triangles = new int[3];
-        triangles[0] = 0;
-        triangles[1] = height+1;
-        triangles[2] = 1;
-    }
-
-
-
-    //TerrainTypes az Inspectorban
     [System.Serializable]
     public struct TerrainType{
         public string name;
@@ -111,6 +72,48 @@ public class ProcedualTerrain : MonoBehaviour
         public Color color;
     }
 
+
+
+    void DevideUpMesh(){
+
+        vertices = new Vector3[((width/verticesScale)+1) * ((height/verticesScale)+1)];
+
+        int i = 0;
+        for (int x = 0; x <= width; x+=verticesScale)
+        {
+            for (int y = 0; y <= height; y+=verticesScale)
+            {
+                vertices[i] = new Vector3(y, 0, x);
+                i++;
+            }
+        }
+
+
+        triangles = new int[(width/verticesScale) * (height/verticesScale) * 6];
+        int vert = 0;
+        int tris = 0;
+        for (int y = 0; y < width; y+=verticesScale){
+
+            for (int x = 0; x < height; x+=verticesScale)
+            {
+                triangles[tris + 0] = vert + 0;
+                triangles[tris + 1] = vert + (height/verticesScale) + 1;
+                triangles[tris + 2] = vert + 1;
+                triangles[tris + 3] = vert + 1;
+                triangles[tris + 4] = vert + (width/verticesScale) + 1;
+                triangles[tris + 5] = vert + (width/verticesScale) + 2;
+
+                vert++;
+                tris += 6;
+                
+            }
+            vert++;
+        }
+
+
+
+
+    }
     void UpdateMesh(){
 
         mesh.Clear();
@@ -130,9 +133,9 @@ public class ProcedualTerrain : MonoBehaviour
             for (int i = 0; i < vertices.Length; i++)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(vertices[i], 1f);
+                Gizmos.DrawSphere(vertices[i], 0.5f);
             }
         }
     }
-    }
 
+}
