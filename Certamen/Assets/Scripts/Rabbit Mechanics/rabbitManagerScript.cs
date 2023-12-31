@@ -22,8 +22,8 @@ public class rabbitManagerScript : MonoBehaviour
     public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
     public float maturity = 0f; // érettség, szaporodásban van szerepe
     public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
-    public List<string> genderlist  = new List<string>{"male", "female"};
-    public string gender = genderList[Random.Range(0, genderList.Count)];
+    public List<string> genderList  = new List<string>{"male", "female"};
+    public string gender;
     
     [Header("Components")]
 
@@ -55,7 +55,8 @@ public class rabbitManagerScript : MonoBehaviour
 
     [Header("Other")]
     public float age; // nyúl életkora
-    public enum State{
+    public enum State
+    {
         Idle,
         Hunger,
         Escape,
@@ -96,6 +97,8 @@ public class rabbitManagerScript : MonoBehaviour
             acceleration = Random.Range(8f, 12f);
             radius = Random.Range(18f, 22f);
         }
+
+        gender = genderList[Random.Range(0, genderList.Count)];
 
         gameObject.name = rabbitName;
     }
@@ -152,6 +155,7 @@ public class rabbitManagerScript : MonoBehaviour
                 break;
             case State.Reproduction:
                 ReproductionMovement();
+                DetectingPredators(State.Reproduction);
                 break;
         }
 
@@ -160,21 +164,21 @@ public class rabbitManagerScript : MonoBehaviour
     {
         if (agent.enabled)
         {
-            if (agent.remainingDistance <= agent.stoppingDistance)
-                Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-
-                for (int i = 0; i < colliders.Length; i++)
+            if (agent.remainingDistance <= agent.stoppingDistance) //még nem érte el
+            {
+                if (selectedRabbit == null) //nincs kiválasztott pár     
                 {
-                    if (selectedRabbit == null)
+                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+                    for (int i = 0; i < colliders.Length; i++)
                     {
                         GameObject detectedRabbit = colliders[i].gameObject;
                         
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
                             rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
-                            if(detRabbitScript.State = State.Reproduction)
+                            if(detRabbitScript.state == State.Reproduction)
                             {
-                                if(detRabbitScript.gender != Rabbit.gender)
+                                if(detRabbitScript.gender != gender)
                                 {
                                     selectedRabbit = detectedRabbit;
                                 }
@@ -183,21 +187,16 @@ public class rabbitManagerScript : MonoBehaviour
                         }
                     }
                 }
-                        
-                if (selectedRabbit == null)
-                {
-                    IdleMovement();
-                }                   
-            }
-            else
+                else
                 {
                     agent.SetDestination(selectedRabbit.transform.position);
                     if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
                     {
+                        //Már elérte a párt
                         selectedRabbit = null;
-                        if (Rabbit.gender = female)
+                        if (gender == "female")
                         {
-                            Reproduction()
+                            Reproduction();
                         }
                         else
                         {
@@ -210,13 +209,10 @@ public class rabbitManagerScript : MonoBehaviour
                         state = State.Idle;
                     }
                 }
-           
+            }                 
         }
-
-
-
-
     }
+
     void Reproduction()
     {
         GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); 
@@ -429,10 +425,9 @@ public class rabbitManagerScript : MonoBehaviour
 
 
    #if UNITY_EDITOR
-   private void OnDrawGizmos()
+   void OnDrawGizmos()
     {
        Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
     }
    #endif
-
 }

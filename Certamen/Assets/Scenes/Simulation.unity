@@ -1390,7 +1390,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_TagString
@@ -2603,6 +2603,10 @@ MonoBehaviour:
   fertility: 4
   maturity: 0
   maturityLimit: 16
+  genderList:
+  - male
+  - female
+  gender: 
   agent: {fileID: 1834399288}
   centrePoint: {fileID: 1834399303}
   selectedPlant: {fileID: 0}
