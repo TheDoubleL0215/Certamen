@@ -74,8 +74,8 @@ public class FoxManager : MonoBehaviour
             foxName = "F" + GetRandomLetter();
 
             fertility = Random.Range(1, 2);
-            maturityLimit = Random.Range(19f, 21f);
-            //maturity = Random.Range(0f, maturityLimit);
+            maturityLimit = Random.Range(10f, 11f);
+            maturity = Random.Range(0f, maturityLimit);
 
             hungerLevel = Random.Range(70f, 100f);
             hungerLoss = Random.Range(10f, 15f);

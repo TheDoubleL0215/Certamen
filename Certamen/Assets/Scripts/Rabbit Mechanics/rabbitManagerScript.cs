@@ -84,11 +84,11 @@ public class rabbitManagerScript : MonoBehaviour
             rabbitName = "R" + GetRandomLetter();
 
             fertility = Random.Range(2, 4);
-            maturityLimit = Random.Range(15f, 17f);
-            //maturity = Random.Range(0f, maturityLimit);
+            maturityLimit = Random.Range(10f, 12f);
+            maturity = Random.Range(0f, maturityLimit);
 
             hungerLevel = Random.Range(85f, 150f);
-            hungerLoss = Random.Range(10f, 15f);
+            hungerLoss = Random.Range(8f, 10f);
             hungerLimit = Random.Range(95f, 85f);
             hungerMax = Random.Range(145f, 155f);
             satiety = Random.Range(115f, 125f);
@@ -110,14 +110,6 @@ public class rabbitManagerScript : MonoBehaviour
         maturity += Time.deltaTime;
         age += Time.deltaTime;
 
-        if (maturity >= maturityLimit)
-        {
-            for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "ReproductionMovement()" függvényt
-            {
-                ReproductionMovement();
-            }
-            maturity = 0f; //nullázódik a maturity
-        }
 
         if(hungerLevel > hungerMax){
             hungerLevel = hungerMax;
@@ -139,7 +131,17 @@ public class rabbitManagerScript : MonoBehaviour
                 state = State.Idle;
             }
         }
-
+        if (maturity  >=maturityLimit)
+        {
+            if (selectedRabbit == null)
+            {
+                DetectMate();
+            }  
+            if (selectedRabbit != null)
+            {
+                state = State.Reproduction;
+            }
+        }
 
         switch (state){
             case State.Idle:
@@ -160,54 +162,57 @@ public class rabbitManagerScript : MonoBehaviour
         }
 
     }
+    void DetectMate()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            GameObject detectedRabbit = colliders[i].gameObject;
+            
+            if (detectedRabbit.CompareTag("Rabbit"))
+            {
+                rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
+                if(detRabbitScript.maturity >= detRabbitScript.maturityLimit)
+                {
+                    if(detRabbitScript.gender != gender)
+                    {
+                        selectedRabbit = detectedRabbit;
+                    }
+            
+                }
+            }
+        }
+    }
     void ReproductionMovement()
     {
         if (agent.enabled)
         {
             if (agent.remainingDistance <= agent.stoppingDistance) //még nem érte el
             {
-                if (selectedRabbit == null) //nincs kiválasztott pár     
+                agent.SetDestination(selectedRabbit.transform.position);
+                if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
                 {
-                    Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-                    for (int i = 0; i < colliders.Length; i++)
+                    //Már elérte a párt
+                    selectedRabbit = null;
+                    if (gender == "female")
                     {
-                        GameObject detectedRabbit = colliders[i].gameObject;
-                        
-                        if (detectedRabbit.CompareTag("Rabbit"))
-                        {
-                            rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
-                            if(detRabbitScript.state == State.Reproduction)
-                            {
-                                if(detRabbitScript.gender != gender)
-                                {
-                                    selectedRabbit = detectedRabbit;
-                                }
-                        
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    agent.SetDestination(selectedRabbit.transform.position);
-                    if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
-                    {
-                        //Már elérte a párt
-                        selectedRabbit = null;
-                        if (gender == "female")
+                        for(int i = 0; i < fertility; i++)
                         {
                             Reproduction();
                         }
-                        else
-                        {
-                            state = State.Idle;
-                        }
-                    }
-                    else if (!selectedRabbit.activeSelf) // If the selected rabbit doesn't exist anymore
-                    {
-                        selectedRabbit = null;
+                        maturity = 0;
                         state = State.Idle;
                     }
+                    else
+                    {
+                        maturity = 0;
+                        state = State.Idle;
+                    }
+                }
+                else if (!selectedRabbit.activeSelf) // If the selected rabbit doesn't exist anymore
+                {
+                    selectedRabbit = null;
+                    state = State.Idle;
                 }
             }                 
         }
