@@ -21,12 +21,15 @@ public class FoxManager : MonoBehaviour
     public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
     public float maturity = 0f; // érettség, szaporodásban van szerepe
     public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
+    public List<string> genderList  = new List<string>{"male", "female"};
+    public string gender;
 
     [Header("Components")]
 
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedRabbit;
+    private GameObject selectedFox;
     public GameObject Fox;
 
     [Header("Hunger")]
@@ -50,6 +53,7 @@ public class FoxManager : MonoBehaviour
         Idle,
         Scout,
         Chase,
+        Reproduction
     }
 
     [SerializeField] public State state;
@@ -87,6 +91,8 @@ public class FoxManager : MonoBehaviour
             acceleration = Random.Range(15f, 17f);
             radius = Random.Range(35f, 40f);
         }
+
+        gender = genderList[Random.Range(0, genderList.Count)];
 
         gameObject.name = foxName;
     }
@@ -128,7 +134,17 @@ public class FoxManager : MonoBehaviour
         {
             state = State.Idle;
         }
-
+        if (maturity  >=maturityLimit)
+        {
+            if (selectedRabbit == null)
+            {
+                DetectMate();
+            }  
+            if (selectedRabbit != null)
+            {
+                state = State.Reproduction;
+            }
+        }
         switch (state){
             case State.Idle:
                 IdleMovement();
@@ -139,10 +155,67 @@ public class FoxManager : MonoBehaviour
             case State.Chase:
                 Chasing();
                 break;
+            case State.Reproduction:
+                ReproductionMovement();
+                break;
         }
         
     }
-
+    void DetectMate()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            GameObject detectedFox = colliders[i].gameObject;
+            
+            if (detectedFox.CompareTag("Fox"))
+            {
+                FoxManager detFoxScript = detectedFox.GetComponent<FoxManager>();
+                if(detFoxScript.maturity >= detFoxScript.maturityLimit)
+                {
+                    if(detFoxScript.gender != gender)
+                    {
+                        selectedFox = detectedFox;
+                    }
+            
+                }
+            }
+        }
+    }
+    void ReproductionMovement()
+    {
+        if (agent.enabled)
+        {
+            if (agent.remainingDistance <= agent.stoppingDistance) //még nem érte el
+            {
+                agent.SetDestination(selectedFox.transform.position);
+                if (selectedFox.activeSelf && Vector3.Distance(transform.position, selectedFox.transform.position) < 5f)
+                {
+                    //Már elérte a párt
+                    selectedFox = null;
+                    if (gender == "female")
+                    {
+                        for(int i = 0; i < fertility; i++)
+                        {
+                            Reproduction();
+                        }
+                        maturity = 0;
+                        state = State.Idle;
+                    }
+                    else
+                    {
+                        maturity = 0;
+                        state = State.Idle;
+                    }
+                }
+                else if (!selectedFox.activeSelf) // If the selected fox doesn't exist anymore
+                {
+                    selectedFox = null;
+                    state = State.Idle;
+                }
+            }                 
+        }
+    }
     void Reproduction()
     {
         GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot

@@ -1390,7 +1390,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_TagString
@@ -2060,7 +2060,7 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 1
+  rabbitStartAmount: 40
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
   foxStartAmount: 10
@@ -2948,10 +2948,14 @@ MonoBehaviour:
   fertility: 4
   maturity: 0
   maturityLimit: 16
+  genderList:
+  - male
+  - female
+  gender: 
   agent: {fileID: 1982462659}
   centrePoint: {fileID: 1982462658}
   selectedRabbit: {fileID: 0}
-  Fox: {fileID: 0}
+  Fox: {fileID: 1982462649}
   hungerLevel: 75
   hungerLoss: 10
   hungerLimit: 75
