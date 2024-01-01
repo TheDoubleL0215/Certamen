@@ -26,16 +26,11 @@ public class ProcedualTerrain : MonoBehaviour
     public int verticesScale = 20;
 
     void Start(){
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-        UpdateMesh();
-        CreateShape();
 
         xOffset = Random.Range(0, 999999);
         yOffset = Random.Range(0, 999999);
         Renderer renderer = GetComponent<Renderer>();
         renderer.material.mainTexture = GenerateTexture();
-        //DevideUpMesh();
     }
 
     Texture2D GenerateTexture(){
@@ -66,40 +61,7 @@ public class ProcedualTerrain : MonoBehaviour
 
     }
 
-    void CreateShape(){
 
-        testVertices = new Vector3[]{
-            new Vector3 (0,0,0),
-            new Vector3 (0,0,1),
-            new Vector3 (1,0,0)
-        };
-
-        testTriangles = new int[]{
-            0, 1, 2
-        };
-    }
-
-
-    void DevideUpMesh(){
-
-        vertices = new Vector3[((width/verticesScale)+1) * ((height/verticesScale)+1)];
-        Debug.Log(vertices.Length);
-
-        int i = 0;
-        for (int x = 0; x <= width; x+=verticesScale)
-        {
-            for (int y = 0; y <= height; y+=verticesScale)
-            {
-                vertices[i] = new Vector3(x-150, 0, y-150);
-                i++;
-            }
-        }
-
-        triangles = new int[3];
-        triangles[0] = 0;
-        triangles[1] = height+1;
-        triangles[2] = 1;
-    }
 
 
 
@@ -109,16 +71,6 @@ public class ProcedualTerrain : MonoBehaviour
         public string name;
         public float height;
         public Color color;
-    }
-
-    void UpdateMesh(){
-
-        mesh.Clear();
-
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-
-        mesh.RecalculateNormals();
     }
 
     private void OnDrawGizmos(){
