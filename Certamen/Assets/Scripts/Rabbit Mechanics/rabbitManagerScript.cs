@@ -181,7 +181,6 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-2, 2);
         if(newRabbitManager.fertility < 0){
             newRabbitManager.fertility = 0;
-            Debug.Log(newRabbitManager.rabbitName);
         }
         newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f, 2f);
 
@@ -248,7 +247,6 @@ public class rabbitManagerScript : MonoBehaviour
                         hungerLevel += resourceFromGrass;
                         if(hungerLevel > hungerMax){
                             hungerLevel = hungerMax;
-                            print("Thank you!");
                         }
                         selectedPlant = null;
                         state = State.Idle;

@@ -90,7 +90,6 @@ public class FoxManager : MonoBehaviour
 
         if(hungerMax/hungerLoss > maturityLimit){
             maturityLimit = hungerMax/hungerLoss + 1f;
-            Debug.Log(maturityLimit);
         }
         
         agent.speed = speed;
@@ -174,7 +173,6 @@ public class FoxManager : MonoBehaviour
         newFoxManager.fertility = newFoxManager.fertility += Random.Range(-2, 2);
         if(newFoxManager.fertility < 0){
             newFoxManager.fertility = 0;
-            Debug.Log(newFoxManager.foxName);
         }
         newFoxManager.maturityLimit = newFoxManager.maturityLimit += Random.Range(-2f, 2f);
 

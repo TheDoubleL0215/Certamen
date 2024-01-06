@@ -21,9 +21,14 @@ public class Statistics : MonoBehaviour
     public GameObject rAttrChartPoint;
     public GameObject fAttrChartPoint;
 
+    [Header("Attributes")]
+    public List<string> attributeNames = new List<string> { "speed", "hungerLevel", "radius", "fertility", "hungerLoss", "hungerMax"};
+
+
     private int grassObjectCount = 0;
     private int rabbitObjectCount = 0;
     private int foxObjectCount = 0;
+
     private List<float> foxAttributeAverages = new List<float>();
     private List<float> rabbitAttributeAverages = new List<float>();
     private List<int> rabbitEvolution = new List<int>();
@@ -31,10 +36,10 @@ public class Statistics : MonoBehaviour
 
     private float interval = 0.5f; // Store data interval
     private float timer = 0.0f;
-    public float attrDivider = 20f;
-    public float attrSubtrahend = 500f;
-    private float popDivider = 10f;
-    private float popSubtrahend = 500f;
+    public float attrDivider = 40f;
+    public float attrSubtrahend = 750f;
+    public float popDivider = 10f;
+    public float popSubtrahend = 500f;
 
     private List<GameObject> rPopPointList = new List<GameObject>(); // Store chart points
     private List<GameObject> fPopPointList = new List<GameObject>(); // Store chart points
@@ -101,15 +106,15 @@ public class Statistics : MonoBehaviour
         {
             foxObjectCount = GameObject.FindGameObjectsWithTag("Fox").Length;
             foxCountText.text = "Rókák száma: " + foxObjectCount;
-            UpdateFoxData();
+            UpdateFoxData(attributeNames[0]);
 
             rabbitObjectCount = GameObject.FindGameObjectsWithTag("Rabbit").Length;
             rabbitCountText.text = "Nyulak száma: " + rabbitObjectCount;
-            UpdateRabbitData();
+            UpdateRabbitData(attributeNames[0]);
         }
     }
 
-    private void UpdateRabbitData()
+    private void UpdateRabbitData(string attributeName)
     {
         //  stores the current number of rabbits
         rabbitEvolution.Add(rabbitObjectCount);
@@ -131,8 +136,14 @@ public class Statistics : MonoBehaviour
 
             if (rabbitScript != null)
             {
-                // Assuming 'XAttribute' is the attribute you want to average
-                totalXAttributes += rabbitScript.speed;
+                System.Type rabbitType = rabbitScript.GetType();
+                System.Reflection.FieldInfo field = rabbitType.GetField(attributeName);
+
+                if (field != null)
+                {
+                    object attributeValue = field.GetValue(rabbitScript);
+                    totalXAttributes += (float)attributeValue;
+                }
             }
         }
 
@@ -149,7 +160,7 @@ public class Statistics : MonoBehaviour
         chartNeedsUpdate = true;
     }
 
-    private void UpdateFoxData()
+    private void UpdateFoxData(string attributeName)
     {
         //  stores the current number of rabbits
         foxEvolution.Add(foxObjectCount);
@@ -171,8 +182,14 @@ public class Statistics : MonoBehaviour
 
             if (foxScript != null)
             {
-                // Assuming 'XAttribute' is the attribute you want to average
-                totalXAttributes += foxScript.speed;
+                System.Type foxType = foxScript.GetType();
+                System.Reflection.FieldInfo field = foxType.GetField(attributeName);
+
+                if (field != null)
+                {
+                    object attributeValue = field.GetValue(foxScript);
+                    totalXAttributes += (float)attributeValue;
+                }
             }
         }
 
@@ -209,7 +226,6 @@ public class Statistics : MonoBehaviour
         }
 
         int totalPoints = rabbitAttributeAverages.Count;
-        Debug.Log(totalPoints);
         float widthPerPoint = rAttrPanel.rect.width / Mathf.Max(totalPoints - 1, 1); // Calculate the width per data point
 
         // Reduce the distance between points by a factor (for example, dividing by 2)
@@ -219,7 +235,6 @@ public class Statistics : MonoBehaviour
         {
             float xPosition = i * widthPerPoint;
             float yPosition = rabbitAttributeAverages[i] * attrDivider - attrSubtrahend;
-            Debug.Log(rabbitAttributeAverages[i]);
 
 
             // Draw lines between points (except for the first point)
