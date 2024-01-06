@@ -25,11 +25,6 @@ public class getSpeed : MonoBehaviour
         }
     }
 
-    void Update(){
-       
-    }
-
-
     public void SpeedStatSetter(float speed)
     {
         text.text = "" + speed;

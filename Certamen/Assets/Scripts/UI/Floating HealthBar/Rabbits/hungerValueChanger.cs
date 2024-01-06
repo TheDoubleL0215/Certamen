@@ -11,7 +11,7 @@ public class hungerValueChanger : MonoBehaviour
     public rabbitManagerScript rabbit;
 
 
-    void Awake(){
+    void Start(){
         rabbit = gameObjectSelf.GetComponent<rabbitManagerScript>();
     }
 
@@ -21,7 +21,7 @@ public class hungerValueChanger : MonoBehaviour
 
     public void SetEnergyValueOnFloater(float hungerLevel, float hungerMax)
     {
-        text.text = ((int)hungerMax) + "/" + ((int)hungerLevel);
+        text.text = ((int)hungerLevel) + "/" + ((int)hungerMax);
     }
 
 }
