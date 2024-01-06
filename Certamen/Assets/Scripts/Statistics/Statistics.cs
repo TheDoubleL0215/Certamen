@@ -12,33 +12,42 @@ public class Statistics : MonoBehaviour
     public Text foxCountText;
 
     [Header("Chart Components")]
-    public RectTransform chartPanel;
-    public RectTransform foxChartPanel;
-    public GameObject rabbitChartPointPrefab;
-    public GameObject foxChartPointPrefab;
-    public GameObject spiralPointPrefab;
-    public RectTransform spiralPanel;
+    public RectTransform rPopPanel;
+    public RectTransform fPopPanel;
+    public RectTransform fAttrPanel;
+    public RectTransform rAttrPanel;
+    public GameObject rPopChartPoint;
+    public GameObject fPopChartPoint;
+    public GameObject rAttrChartPoint;
+    public GameObject fAttrChartPoint;
 
     private int grassObjectCount = 0;
     private int rabbitObjectCount = 0;
     private int foxObjectCount = 0;
+    private List<float> foxAttributeAverages = new List<float>();
+    private List<float> rabbitAttributeAverages = new List<float>();
     private List<int> rabbitEvolution = new List<int>();
     private List<int> foxEvolution = new List<int>();
 
     private float interval = 0.5f; // Store data interval
     private float timer = 0.0f;
+    public float attrDivider = 20f;
+    public float attrSubtrahend = 500f;
+    private float popDivider = 10f;
+    private float popSubtrahend = 500f;
 
-    private List<GameObject> chartPoints = new List<GameObject>(); // Store chart points
-    private List<GameObject> foxChartPoints = new List<GameObject>(); // Store chart points
-    private List<RectTransform> spiralPointsList = new List<RectTransform>();
+    private List<GameObject> rPopPointList = new List<GameObject>(); // Store chart points
+    private List<GameObject> fPopPointList = new List<GameObject>(); // Store chart points
+    private List<GameObject> rAttrPointList = new List<GameObject>();
+    private List<GameObject> fAttrPointList = new List<GameObject>();
 
     private bool chartNeedsUpdate = false; // Flag to determine if the chart needs updating
 
     private const int maxDataPoints = 1000; // Maximum number of data points to keep
 
-    private bool showC = false;
+    private bool showP = false;
 
-    private bool showV = false;
+    private bool showO = false;
 
     private void Update()
     {
@@ -50,27 +59,30 @@ public class Statistics : MonoBehaviour
             UpdateStatistics();
         }
 
-        if (Input.GetKey(KeyCode.C) && showC == false){
-            showC = true;
-            showV = false;
+        if (Input.GetKey(KeyCode.P) && showP == false){
+            showP = true;
+            showO = false;
         }
         else{
-            showC = false;
+            showP = false;
         }
 
-        if (Input.GetKey(KeyCode.V) && showV == false){
-            showV = true;
-            showC = false;
+        if (Input.GetKey(KeyCode.O) && showO == false){
+            showO = true;
+            showP = false;
         }
         else{
-            showV = false;
+            showO = false;
         }
 
         // Update chart less frequently
-        if (showC || showV){
-            if (chartNeedsUpdate)
-            {
-                UpdateChart();
+        if(chartNeedsUpdate){
+            if (showP){
+                UpdatePopNumChart();
+                chartNeedsUpdate = false;
+            }
+            if(showO){
+                UpdateAttrChart();
                 chartNeedsUpdate = false;
             }
         }
@@ -83,22 +95,21 @@ public class Statistics : MonoBehaviour
         {
             grassObjectCount = GameObject.FindGameObjectsWithTag("Grass").Length;
             grassCountText.text = "Fűcsomók száma: " + grassObjectCount;
-            chartNeedsUpdate = true; // Update chart if counts changed
         }
 
         if (foxObjectCount != GameObject.FindGameObjectsWithTag("Fox").Length || rabbitObjectCount != GameObject.FindGameObjectsWithTag("Rabbit").Length)
         {
             foxObjectCount = GameObject.FindGameObjectsWithTag("Fox").Length;
             foxCountText.text = "Rókák száma: " + foxObjectCount;
-            StoreFoxCount();
+            UpdateFoxData();
 
             rabbitObjectCount = GameObject.FindGameObjectsWithTag("Rabbit").Length;
             rabbitCountText.text = "Nyulak száma: " + rabbitObjectCount;
-            StoreRabbitCount();
+            UpdateRabbitData();
         }
     }
 
-    private void StoreRabbitCount()
+    private void UpdateRabbitData()
     {
         //  stores the current number of rabbits
         rabbitEvolution.Add(rabbitObjectCount);
@@ -108,10 +119,37 @@ public class Statistics : MonoBehaviour
             rabbitEvolution.RemoveAt(0);
         }
 
+        GameObject[] rabbitObjects = GameObject.FindGameObjectsWithTag("Rabbit");
+
+        float totalXAttributes = 0f;
+
+        // Loop through all the rabbit objects
+        foreach (GameObject rabbitObject in rabbitObjects)
+        {
+            // Access the script containing the X attribute
+            rabbitManagerScript rabbitScript = rabbitObject.GetComponent<rabbitManagerScript>();
+
+            if (rabbitScript != null)
+            {
+                // Assuming 'XAttribute' is the attribute you want to average
+                totalXAttributes += rabbitScript.speed;
+            }
+        }
+
+        float averageXAttribute = rabbitObjectCount > 0 ? totalXAttributes / rabbitObjectCount : 0f;
+
+    
+        rabbitAttributeAverages.Add(averageXAttribute);
+
+        if (rabbitAttributeAverages.Count > maxDataPoints)
+        {
+            rabbitAttributeAverages.RemoveAt(0);
+        }
+
         chartNeedsUpdate = true;
     }
 
-    private void StoreFoxCount()
+    private void UpdateFoxData()
     {
         //  stores the current number of rabbits
         foxEvolution.Add(foxObjectCount);
@@ -121,79 +159,47 @@ public class Statistics : MonoBehaviour
             foxEvolution.RemoveAt(0);
         }
 
+        GameObject[] foxObjects = GameObject.FindGameObjectsWithTag("Fox");
+
+        float totalXAttributes = 0f;
+
+        // Loop through all the fox objects
+        foreach (GameObject foxObject in foxObjects)
+        {
+            // Access the script containing the X attribute
+            FoxManager foxScript = foxObject.GetComponent<FoxManager>();
+
+            if (foxScript != null)
+            {
+                // Assuming 'XAttribute' is the attribute you want to average
+                totalXAttributes += foxScript.speed;
+            }
+        }
+
+        float averageXAttribute = foxObjectCount > 0 ? totalXAttributes / foxObjectCount : 0f;
+
+        foxAttributeAverages.Add(averageXAttribute);
+
+        if (foxAttributeAverages.Count > maxDataPoints)
+        {
+            foxAttributeAverages.RemoveAt(0);
+        }
         chartNeedsUpdate = true;
     }
 
-    void UpdateSpiralDiagram()
+
+    void UpdateAttrChart()
     {
-        float x, y;
-        y = foxObjectCount; // Adjust as needed
-        x = rabbitObjectCount; // Adjust as needed
-
-        if (x != 0)
-        {
-            x *= 15f;
-        }
-        if (y != 0)
-        {
-            y *= 30f;
-        }
-
-        // Create and position a point at the calculated position on the spiral
-        GameObject spiralPoint = Instantiate(spiralPointPrefab, spiralPanel);
-
-        RectTransform rectTransform = spiralPoint.GetComponent<RectTransform>();
-        rectTransform.anchoredPosition = new Vector2(x - 900, y - 500);
-        spiralPointsList.Add(rectTransform);
-
-        // Draw lines between points (except for the first point)
-        if (spiralPanel.childCount > 1)
-        {
-            GameObject line = new GameObject("SpiralLine");
-            line.transform.SetParent(spiralPanel, false);
-
-            RectTransform lineRectTransform = line.AddComponent<RectTransform>();
-            lineRectTransform.sizeDelta = new Vector2(2f, 2f); // Set line thickness
-
-            Image lineImage = line.AddComponent<Image>();
-            lineImage.color = Color.green; // Set line color
-
-            // Get the current and previous points
-            RectTransform prevPoint = spiralPointsList[spiralPointsList.Count - 2];
-            RectTransform currentPoint = spiralPoint.GetComponent<RectTransform>();
-
-            // Set line position
-            Vector2 startPoint = prevPoint.anchoredPosition;
-            Vector2 endPoint = currentPoint.anchoredPosition;
-
-            // Calculate midpoint and distance
-            Vector2 midPoint = (startPoint + endPoint) / 2f;
-            float distance = Vector2.Distance(startPoint, endPoint);
-
-            // Set line position and length
-            lineRectTransform.anchoredPosition = midPoint;
-            lineRectTransform.sizeDelta = new Vector2(distance, 2f);
-
-            // Set line rotation
-            Vector2 direction = (endPoint - startPoint).normalized;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            lineRectTransform.rotation = Quaternion.Euler(0, 0, angle);
-        }
-    }
-
-    void UpdateChart()
-    {
-        UpdateSpiralDiagram();
-        //RABBIT CHART//
+        //RABBITS
         // Clear all previous chart points and lines
-        foreach (var chartPoint in chartPoints)
+        foreach (var chartPoint in rAttrPointList)
         {
             Destroy(chartPoint);
         }
-        chartPoints.Clear();
+        rAttrPointList.Clear();
 
         // Clear all previous lines
-        var lines = chartPanel.GetComponentsInChildren<Image>();
+        var lines = rAttrPanel.GetComponentsInChildren<Image>();
         foreach (var line in lines)
         {
             if (line.gameObject.name == "Line")
@@ -202,8 +208,9 @@ public class Statistics : MonoBehaviour
             }
         }
 
-        int totalPoints = rabbitEvolution.Count;
-        float widthPerPoint = chartPanel.rect.width / Mathf.Max(totalPoints - 1, 1); // Calculate the width per data point
+        int totalPoints = rabbitAttributeAverages.Count;
+        Debug.Log(totalPoints);
+        float widthPerPoint = rAttrPanel.rect.width / Mathf.Max(totalPoints - 1, 1); // Calculate the width per data point
 
         // Reduce the distance between points by a factor (for example, dividing by 2)
         widthPerPoint /= 1.07f;
@@ -211,14 +218,15 @@ public class Statistics : MonoBehaviour
         for (int i = 0; i < totalPoints; i++)
         {
             float xPosition = i * widthPerPoint;
-            float yPosition = rabbitEvolution[i] * 10 - 500;
+            float yPosition = rabbitAttributeAverages[i] * attrDivider - attrSubtrahend;
+            Debug.Log(rabbitAttributeAverages[i]);
 
 
             // Draw lines between points (except for the first point)
             if (i > 0)
             {
                 GameObject line = new GameObject("Line");
-                line.transform.SetParent(chartPanel, false);
+                line.transform.SetParent(rAttrPanel, false);
 
                 RectTransform lineRectTransform = line.AddComponent<RectTransform>();
                 lineRectTransform.sizeDelta = new Vector2(widthPerPoint * 2, 10f); // Set line length and thickness
@@ -227,7 +235,7 @@ public class Statistics : MonoBehaviour
                 lineImage.color = Color.white; // Set line color
 
                 // Position the line between two points
-                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rabbitEvolution[i - 1] * 10 - 500);
+                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rabbitAttributeAverages[i - 1] * attrDivider - attrSubtrahend);
                 Vector2 endPoint = new Vector2(xPosition - 900, yPosition);
 
                 lineRectTransform.anchoredPosition = Vector2.Lerp(startPoint, endPoint, 0.5f);
@@ -238,58 +246,171 @@ public class Statistics : MonoBehaviour
                 lineRectTransform.rotation = Quaternion.Euler(0, 0, angle);
             }
             // Instantiate a single chart point for each data point
-            GameObject chartPoint = Instantiate(rabbitChartPointPrefab, chartPanel);
-            RectTransform rectTransform = chartPoint.GetComponent<RectTransform>();
+            GameObject rChartPoint = Instantiate(rAttrChartPoint, rAttrPanel);
+            RectTransform rectTransform = rChartPoint.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(xPosition - 900, yPosition);
-            chartPoints.Add(chartPoint);
+            rAttrPointList.Add(rChartPoint);
+        }
+
+
+
+        //FOXES
+        // Clear all previous chart points and lines
+        foreach (var chartPoint in fAttrPointList)
+        {
+            Destroy(chartPoint);
+        }
+        fAttrPointList.Clear();
+
+        // Clear all previous lines
+        var foxLines = fAttrPanel.GetComponentsInChildren<Image>();
+        foreach (var line in foxLines)
+        {
+            if (line.gameObject.name == "Line")
+            {
+                Destroy(line.gameObject);
+            }
+        }
+
+        for (int i = 0; i < totalPoints; i++)
+        {
+            float xPosition = i * widthPerPoint;
+            float yPosition = foxAttributeAverages[i] * attrDivider - attrSubtrahend;
+
+
+            // Draw lines between points (except for the first point)
+            if (i > 0)
+            {
+                GameObject line = new GameObject("Line");
+                line.transform.SetParent(fAttrPanel, false);
+
+                RectTransform lineRectTransform = line.AddComponent<RectTransform>();
+                lineRectTransform.sizeDelta = new Vector2(widthPerPoint * 2, 10f); // Set line length and thickness
+
+                Image lineImage = line.AddComponent<Image>();
+                lineImage.color = Color.red; // Set line color
+
+                // Position the line between two points
+                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, foxAttributeAverages[i - 1] * attrDivider - attrSubtrahend);
+                Vector2 endPoint = new Vector2(xPosition - 900, yPosition);
+
+                lineRectTransform.anchoredPosition = Vector2.Lerp(startPoint, endPoint, 0.5f);
+                lineRectTransform.sizeDelta = new Vector2(Vector2.Distance(startPoint, endPoint), 2f);
+
+                Vector2 direction = endPoint - startPoint;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                lineRectTransform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+            // Instantiate a single chart point for each data point
+            GameObject fChartPoint = Instantiate(fAttrChartPoint, fAttrPanel);
+            RectTransform rectTransform = fChartPoint.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(xPosition - 900, yPosition);
+            fAttrPointList.Add(fChartPoint);
+        }
+    }
+
+    void UpdatePopNumChart()
+    {
+        //RABBIT CHART//
+        // Clear all previous chart points and lines
+        foreach (var chartPoint in rPopPointList)
+        {
+            Destroy(chartPoint);
+        }
+        rPopPointList.Clear();
+
+        // Clear all previous lines
+        var rabbitLines = rPopPanel.GetComponentsInChildren<Image>();
+        foreach (var line in rabbitLines)
+        {
+            if (line.gameObject.name == "Line")
+            {
+                Destroy(line.gameObject);
+            }
+        }
+
+        int totalPoints = rabbitEvolution.Count;
+        float widthPerPoint = rPopPanel.rect.width / Mathf.Max(totalPoints - 1, 1); // Calculate the width per data point
+
+        // Reduce the distance between points by a factor (for example, dividing by 2)
+        widthPerPoint /= 1.07f;
+
+        for (int i = 0; i < totalPoints; i++)
+        {
+            float xPosition = i * widthPerPoint;
+            float yPosition = rabbitEvolution[i] * popDivider - popSubtrahend;
+
+
+            // Draw lines between points (except for the first point)
+            if (i > 0)
+            {
+                GameObject line = new GameObject("Line");
+                line.transform.SetParent(rPopPanel, false);
+
+                RectTransform lineRectTransform = line.AddComponent<RectTransform>();
+                lineRectTransform.sizeDelta = new Vector2(widthPerPoint * 2, 10f); // Set line length and thickness
+
+                Image lineImage = line.AddComponent<Image>();
+                lineImage.color = Color.white; // Set line color
+
+                // Position the line between two points
+                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rabbitEvolution[i - 1] * popDivider - popSubtrahend);
+                Vector2 endPoint = new Vector2(xPosition - 900, yPosition);
+
+                lineRectTransform.anchoredPosition = Vector2.Lerp(startPoint, endPoint, 0.5f);
+                lineRectTransform.sizeDelta = new Vector2(Vector2.Distance(startPoint, endPoint), 2f);
+
+                Vector2 direction = endPoint - startPoint;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                lineRectTransform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+            // Instantiate a single chart point for each data point
+            GameObject rChartPoint = Instantiate(rPopChartPoint, rPopPanel);
+            RectTransform rectTransform = rChartPoint.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(xPosition - 900, yPosition);
+            rPopPointList.Add(rChartPoint);
         }
 
 
 
         //FOX CHART//
         // Clear all previous chart points and lines
-        foreach (var foxChartPoint in foxChartPoints)
+        foreach (var chartPoint in fPopPointList)
         {
-            Destroy(foxChartPoint);
+            Destroy(chartPoint);
         }
-        foxChartPoints.Clear();
+        fPopPointList.Clear();
 
         // Clear all previous lines
-        var foxLines = foxChartPanel.GetComponentsInChildren<Image>();
-        foreach (var foxLine in foxLines)
+        var foxLines = fPopPanel.GetComponentsInChildren<Image>();
+        foreach (var line in foxLines)
         {
-            if (foxLine.gameObject.name == "FoxLine")
+            if (line.gameObject.name == "Line")
             {
-                Destroy(foxLine.gameObject);
+                Destroy(line.gameObject);
             }
         }
 
-        int foxTotalPoints = foxEvolution.Count;
-        float foxWidthPerPoint = chartPanel.rect.width / Mathf.Max(totalPoints - 1, 1); // Calculate the width per data point
-
-        // Reduce the distance between points by a factor (for example, dividing by 2)
-        foxWidthPerPoint /= 1.07f;
-
-        for (int i = 0; i < foxTotalPoints; i++)
+        for (int i = 0; i < totalPoints; i++)
         {
-            float foxXPosition = i * foxWidthPerPoint;
-            float foxYPosition = foxEvolution[i] * 10 - 500;
+            float foxXPosition = i * widthPerPoint;
+            float foxYPosition = foxEvolution[i] * popDivider - popSubtrahend;
 
 
             // Draw lines between points (except for the first point)
             if (i > 0)
             {
-                GameObject foxLine = new GameObject("FoxLine");
-                foxLine.transform.SetParent(foxChartPanel, false);
+                GameObject foxLine = new GameObject("Line");
+                foxLine.transform.SetParent(rPopPanel, false);
 
                 RectTransform foxLineRectTransform = foxLine.AddComponent<RectTransform>();
-                foxLineRectTransform.sizeDelta = new Vector2(foxWidthPerPoint * 2, 10f); // Set line length and thickness
+                foxLineRectTransform.sizeDelta = new Vector2(widthPerPoint * 2, 10f); // Set line length and thickness
 
                 Image foxLineImage = foxLine.AddComponent<Image>();
                 foxLineImage.color = Color.red; // Set line color
 
                 // Position the line between two points
-                Vector2 foxStartPoint = new Vector2((i - 1) * foxWidthPerPoint - 900, foxEvolution[i - 1] * 10 - 500);
+                Vector2 foxStartPoint = new Vector2((i - 1) * widthPerPoint - 900, foxEvolution[i - 1] * popDivider - popSubtrahend);
                 Vector2 foxEndPoint = new Vector2(foxXPosition - 900, foxYPosition);
 
                 foxLineRectTransform.anchoredPosition = Vector2.Lerp(foxStartPoint, foxEndPoint, 0.5f);
@@ -300,10 +421,10 @@ public class Statistics : MonoBehaviour
                 foxLineRectTransform.rotation = Quaternion.Euler(0, 0, foxAngle);
             }
             // Instantiate a single chart point for each data point
-            GameObject foxChartPoint = Instantiate(foxChartPointPrefab, foxChartPanel);
-            RectTransform rectTransform = foxChartPoint.GetComponent<RectTransform>();
+            GameObject fChartPoint = Instantiate(fPopChartPoint, fPopPanel);
+            RectTransform rectTransform = fChartPoint.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(foxXPosition - 900, foxYPosition);
-            foxChartPoints.Add(foxChartPoint);
+            fPopPointList.Add(fChartPoint);
         }
     }
 }
