@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class energyBar : MonoBehaviour
+public class hungerBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
 
     public GameObject gameObjectSelf;
-    public rabbitManagerScript rabbi;
+    public rabbitManagerScript rabbit;
     private float hungerLevel;
 
 
     void Awake(){
-        rabbi = gameObjectSelf.GetComponent<rabbitManagerScript>();
+        rabbit = gameObjectSelf.GetComponent<rabbitManagerScript>();
     }
 
     void Update(){
-        EnergyBarUpdate(100, rabbi.hungerLevel);
+        EnergyBarUpdate(rabbit.hungerMax, rabbit.hungerLevel);
     }
 
     public void EnergyBarUpdate(float maxHunger, float hungerLevel)

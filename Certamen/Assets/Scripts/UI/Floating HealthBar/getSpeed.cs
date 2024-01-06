@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
-public class getRadius : MonoBehaviour
+public class getSpeed : MonoBehaviour
 {
     [SerializeField] private Text text;
 
@@ -16,18 +16,23 @@ public class getRadius : MonoBehaviour
         if(gameObjectSelf != null) {
             rabbit = gameObjectSelf.GetComponent<rabbitManagerScript>();
             if(rabbit != null) {
-                RadiusStatSetter(rabbit.radius);
+                SpeedStatSetter(rabbit.speed);
             } else {
                 Debug.LogError("Nincs rabbitManagerScript komponens a gameObjectSelf játékobjektumban!");
             }
         } else {
-            Debug.LogError("Nincs érték rendelve a gameObjectSelf-hez a getRadius szkriptben!");
+            Debug.LogError("Nincs érték rendelve a gameObjectSelf-hez a szkriptben!");
         }
     }
 
-    public void RadiusStatSetter(float radius)
+    void Update(){
+       
+    }
+
+
+    public void SpeedStatSetter(float speed)
     {
-        text.text = "" + radius;
+        text.text = "" + speed;
     }
 
 }
