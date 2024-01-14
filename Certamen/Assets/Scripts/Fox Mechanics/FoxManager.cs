@@ -23,6 +23,9 @@ public class FoxManager : MonoBehaviour
     public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
     public List<string> genderList  = new List<string>{"male", "female"};
     public string gender;
+    public float pregnancyTime;
+    private bool isPregnant = false;
+    private float elapsedTime = 0.0f;
 
     [Header("Components")]
 
@@ -93,6 +96,7 @@ public class FoxManager : MonoBehaviour
         }
 
         gender = genderList[Random.Range(0, genderList.Count)];
+        pregnancyTime = Random.Range(10f, 20f);
 
         gameObject.name = foxName;
     }
@@ -143,6 +147,18 @@ public class FoxManager : MonoBehaviour
             if (selectedRabbit != null)
             {
                 state = State.Reproduction;
+            }
+        }
+       if (isPregnant == false)
+        {
+            elapsedTime += Time.deltaTime;
+        }
+        else
+        {
+             if (elapsedTime >= pregnancyTime)
+            {   
+                Reproduction();
+                elapsedTime = 0.0f;
             }
         }
         switch (state){
@@ -197,7 +213,7 @@ public class FoxManager : MonoBehaviour
                     {
                         for(int i = 0; i < fertility; i++)
                         {
-                            Reproduction();
+                            isPregnant = true;
                         }
                         maturity = 0;
                         state = State.Idle;
@@ -218,42 +234,47 @@ public class FoxManager : MonoBehaviour
     }
     void Reproduction()
     {
-        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
+       
+        if (Time.deltaTime == pregnancyTime)
+        {
+            
+            GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
 
-        Random.InitState(System.DateTime.Now.Millisecond);
+            Random.InitState(System.DateTime.Now.Millisecond);
 
-        // Definiáld a pályaterület határait
-        float minX = -75f;
-        float maxX = 75f;
-        float minZ = -75f;
-        float maxZ = 75f;
+            // Definiáld a pályaterület határait
+            float minX = -75f;
+            float maxX = 75f;
+            float minZ = -75f;
+            float maxZ = 75f;
 
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő rókától
-        Vector3 newPosition = transform.position + offset;
+            Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő rókától
+            Vector3 newPosition = transform.position + offset;
 
-        // Korlátozd a kis róka pozícióját a pálya határai között
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-        newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
+            // Korlátozd a kis róka pozícióját a pálya határai között
+            newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+            newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
 
-        newFox.transform.position = newPosition;
+            newFox.transform.position = newPosition;
 
-        // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
-        FoxManager newFoxManager = newFox.GetComponent<FoxManager>();
-        newFoxManager.fatherId = id;
-        newFoxManager.foxName = foxName + GetRandomLetter();
-        newFoxManager.hungerLevel = 80f;
+            // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
+            FoxManager newFoxManager = newFox.GetComponent<FoxManager>();
+            newFoxManager.fatherId = id;
+            newFoxManager.foxName = foxName + GetRandomLetter();
+            newFoxManager.hungerLevel = 80f;
 
-        newFoxManager.fertility = newFoxManager.fertility += Random.Range(-1, 1);
-        newFoxManager.maturityLimit = newFoxManager.maturityLimit += Random.Range(-2f, 2f);
+            newFoxManager.fertility = newFoxManager.fertility += Random.Range(-1, 1);
+            newFoxManager.maturityLimit = newFoxManager.maturityLimit += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
 
-        newFoxManager.hungerLimit = newFoxManager.hungerLimit += Random.Range(-3f, 3f);
-        newFoxManager.hungerLoss = newFoxManager.hungerLoss += Random.Range(-3f, 3f);
-        newFoxManager.hungerMax = newFoxManager.hungerMax += Random.Range(-3f, 3f);
-        newFoxManager.satiety = newFoxManager.satiety += Random.Range(-3f, 3f);
+            newFoxManager.hungerLimit = newFoxManager.hungerLimit += Random.Range(-3f+pregnancyTime/10, 3f+pregnancyTime/10);
+            newFoxManager.hungerLoss = newFoxManager.hungerLoss += Random.Range(-3f+pregnancyTime/10, 3f+pregnancyTime/10);
+            newFoxManager.hungerMax = newFoxManager.hungerMax += Random.Range(-3f+pregnancyTime/10, 3f+pregnancyTime/10);
+            newFoxManager.satiety = newFoxManager.satiety += Random.Range(-3f+pregnancyTime/10, 3f+pregnancyTime/10);
 
-        newFoxManager.speed = newFoxManager.speed += Random.Range(-2f, 2f);
-        newFoxManager.acceleration = newFoxManager.acceleration += Random.Range(-2f, 2f);
-        newFoxManager.radius = newFoxManager.radius += Random.Range(-2f, 2f);
+            newFoxManager.speed = newFoxManager.speed += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
+            newFoxManager.acceleration = newFoxManager.acceleration += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
+            newFoxManager.radius = newFoxManager.radius += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
+        }
     }
 
     void IdleMovement(){

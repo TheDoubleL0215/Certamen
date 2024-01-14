@@ -24,7 +24,9 @@ public class rabbitManagerScript : MonoBehaviour
     public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
     public List<string> genderList  = new List<string>{"male", "female"};
     public string gender;
-    
+    public float pregnancyTime;
+    private bool isPregnant = false;
+    private float elapsedTime = 0.0f;
     [Header("Components")]
 
     public NavMeshAgent agent;
@@ -96,9 +98,11 @@ public class rabbitManagerScript : MonoBehaviour
             speed = Random.Range(8f, 12f);
             acceleration = Random.Range(8f, 12f);
             radius = Random.Range(18f, 22f);
+            
         }
 
         gender = genderList[Random.Range(0, genderList.Count)];
+        pregnancyTime = Random.Range(5f, 10f);
 
         gameObject.name = rabbitName;
     }
@@ -140,6 +144,18 @@ public class rabbitManagerScript : MonoBehaviour
             if (selectedRabbit != null)
             {
                 state = State.Reproduction;
+            }
+        }
+        if (isPregnant == false)
+        {
+            elapsedTime += Time.deltaTime;
+        }
+        else
+        {
+             if (elapsedTime >= pregnancyTime)
+            {   
+                Reproduction();
+                elapsedTime = 0.0f;
             }
         }
 
@@ -192,13 +208,14 @@ public class rabbitManagerScript : MonoBehaviour
                 agent.SetDestination(selectedRabbit.transform.position);
                 if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
                 {
+                    
                     //Már elérte a párt
                     selectedRabbit = null;
                     if (gender == "female")
                     {
                         for(int i = 0; i < fertility; i++)
                         {
-                            Reproduction();
+                            isPregnant = true;
                         }
                         maturity = 0;
                         state = State.Idle;
@@ -220,42 +237,44 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Reproduction()
     {
-        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); 
-        Random.InitState(System.DateTime.Now.Millisecond);
+            isPregnant = false;
+    
+            GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); 
+            Random.InitState(System.DateTime.Now.Millisecond);
 
-        // Definiáld a pályaterület határait
-        float minX = -75f;
-        float maxX = 75f;
-        float minZ = -75f;
-        float maxZ = 75f;
+            // Definiáld a pályaterület határait
+            float minX = -75f;
+            float maxX = 75f;
+            float minZ = -75f;
+            float maxZ = 75f;
 
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő nyúltól
-        Vector3 newPosition = transform.position + offset;
+            Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő nyúltól
+            Vector3 newPosition = transform.position + offset;
 
-        // Korlátozd a kis nyúl pozícióját a pálya határai között
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-        newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
+            // Korlátozd a kis nyúl pozícióját a pálya határai között
+            newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+            newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
 
-        newRabbit.transform.position = newPosition;
+            newRabbit.transform.position = newPosition;
 
-        // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
-        rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
+            // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
+            rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
 
-        newRabbitManager.fatherId = id;
-        newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
-        newRabbitManager.hungerLevel = 90f;
+            newRabbitManager.fatherId = id;
+            newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
+            newRabbitManager.hungerLevel = 90f;
 
-        newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-1, 1);
-        newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f, 2f);
+            newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-1, 1);
+            newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f-pregnancyTime/10, 2f-pregnancyTime/10);
 
-        newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-5f, 5f);
-        newRabbitManager.hungerLoss = newRabbitManager.hungerLoss += Random.Range(-1f, 1f);
-        newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-5f, 5f);
-        newRabbitManager.satiety = newRabbitManager.satiety += Random.Range(-5f, 5f);
+            newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-5f+pregnancyTime/10, 5f+pregnancyTime/10);
+            newRabbitManager.hungerLoss = newRabbitManager.hungerLoss += Random.Range(-1f+pregnancyTime/10, 1f+pregnancyTime/10);
+            newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-5f+pregnancyTime/10, 5f+pregnancyTime/10);
+            newRabbitManager.satiety = newRabbitManager.satiety += Random.Range(-5f+pregnancyTime/10, 5f+pregnancyTime/10);
 
-        newRabbitManager.speed = newRabbitManager.speed += Random.Range(-2f, 2f);
-        newRabbitManager.acceleration = newRabbitManager.acceleration += Random.Range(-2f, 2f);
-        newRabbitManager.radius = newRabbitManager.radius += Random.Range(-2f, 2f);
+            newRabbitManager.speed = newRabbitManager.speed += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
+            newRabbitManager.acceleration = newRabbitManager.acceleration += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
+            newRabbitManager.radius = newRabbitManager.radius += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
     }
 
     void IdleMovement(){
