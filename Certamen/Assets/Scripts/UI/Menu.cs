@@ -8,9 +8,9 @@ public class Menu : MonoBehaviour
     // A MenuObjectet fogja megjelen�teni
     public GameObject StatsPanel;
     public GameObject MenuObject;
-    public GameObject ChartsObject;
-    public GameObject SpiralObject;
-    public GameObject DecorObject;
+    public GameObject popNumChart;
+    public GameObject attributesChart;
+    public GameObject Decor;
 
     // Ezzel eszk�z�lj�k a v�rakoz�st
     private float WaitTime = 0;
@@ -33,10 +33,10 @@ public class Menu : MonoBehaviour
             if (MenuObject.activeInHierarchy == false)
             {
                 MenuObject.SetActive(true);
-                ChartsObject.SetActive(false);
+                popNumChart.SetActive(false);
+                attributesChart.SetActive(false);
                 StatsPanel.SetActive(false);
-                SpiralObject.SetActive(false);
-                DecorObject.SetActive(false);
+                Decor.SetActive(false);
                 // A j�t�k idej�t lelass�tja
                 Time.timeScale = 0.1f;
                 // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
@@ -56,14 +56,15 @@ public class Menu : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKey(KeyCode.C))
+        if (Input.GetKey(KeyCode.P))
         {
             // ...ha nem volt megjelen�tve a men�, megjelen�ti
-            if (ChartsObject.activeInHierarchy == false)
+            if (popNumChart.activeInHierarchy == false)
             {
-                ChartsObject.SetActive(true);
-                DecorObject.SetActive(true);
-                SpiralObject.SetActive(false);
+                //Debug.Log("Megjelenítés");
+                popNumChart.SetActive(true);
+                Decor.SetActive(true);
+                attributesChart.SetActive(false);
                 MenuObject.SetActive(false);
                 StatsPanel.SetActive(false);
                 // A j�t�k idej�t lelass�tja
@@ -74,10 +75,11 @@ public class Menu : MonoBehaviour
             // ...ha meg volt jelen�tve a men�, elt�nteti
             else
             {
-                if (ChartsObject.activeInHierarchy == true)
+                if (popNumChart.activeInHierarchy == true)
                 {
-                    ChartsObject.SetActive(false);
-                    DecorObject.SetActive(false);
+                    //Debug.Log("Eltűntetés");
+                    popNumChart.SetActive(false);
+                    Decor.SetActive(false);
                     StatsPanel.SetActive(true);
                     // J�t�k sebess�g�t vissza�ll�tja
                     Time.timeScale = 1f;
@@ -87,16 +89,16 @@ public class Menu : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.V))
+        if (Input.GetKey(KeyCode.O))
         {
             // ...ha nem volt megjelen�tve a men�, megjelen�ti
-            if (SpiralObject.activeInHierarchy == false)
+            if (attributesChart.activeInHierarchy == false)
             {
-                SpiralObject.SetActive(true);
-                DecorObject.SetActive(true);
+                attributesChart.SetActive(true);
+                Decor.SetActive(true);
                 MenuObject.SetActive(false);
                 StatsPanel.SetActive(false);
-                ChartsObject.SetActive(false);
+                popNumChart.SetActive(false);
                 // A j�t�k idej�t lelass�tja
                 Time.timeScale = 0.1f;
                 // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
@@ -105,10 +107,10 @@ public class Menu : MonoBehaviour
             // ...ha meg volt jelen�tve a men�, elt�nteti
             else
             {
-                if (SpiralObject.activeInHierarchy == true)
+                if (attributesChart.activeInHierarchy == true)
                 {
-                    SpiralObject.SetActive(false);
-                    DecorObject.SetActive(false);
+                    attributesChart.SetActive(false);
+                    Decor.SetActive(false);
                     StatsPanel.SetActive(true);
                     // J�t�k sebess�g�t vissza�ll�tja
                     Time.timeScale = 1f;

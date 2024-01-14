@@ -30,6 +30,7 @@ public class rabbitManagerScript : MonoBehaviour
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
     public GameObject Rabbit;
+    public Transform rabbitParentObj;
 
     [Header("Hunger")]
 
@@ -37,22 +38,35 @@ public class rabbitManagerScript : MonoBehaviour
     public float hungerLoss = 5f;
     public float hungerLimit = 100f;
     public float hungerMax = 150f;
-    public float satiety = 120f;
+    public float baseHungerMax;
+    public float hungerMinimum = 40f;
     public float resourceFromGrass = 30f;
     
     [Header("Movement")]
 
     public float speed = 10f;
-    public float acceleration = 10f;
-    public float range = 5f; //radius
+    public float baseSpeed;
+    public float range = 2.5f; //radius
     public float radius = 20f;
+    public float baseRadius;
 
     [Header("Escaping Mechanics")]
     public int detectedFoxes;
     private List<Vector3> foxPositions = new List<Vector3>();
 
+    [Header("Scale")]
+    public float scaleValue;
+    public float adultScale;
+    public float newbornScale;
+
     [Header("Other")]
     public float age; // nyúl életkora
+
+    [Header("Teszt")]
+    public bool canHaveChildren = true;
+    public float timeSinceLastChildren;
+
+
     public enum State{
         Idle,
         Hunger,
@@ -77,61 +91,107 @@ public class rabbitManagerScript : MonoBehaviour
         maturity = 0f;
 
         if(fatherId == 0){
-            rabbitName = "R" + GetRandomLetter();
+            rabbitName = "R-" + GetRandomLetter();
 
             fertility = Random.Range(2, 4);
-            maturityLimit = Random.Range(15f, 17f);
-            //maturity = Random.Range(0f, maturityLimit);
+            maturityLimit = Random.Range(35f, 45f);
+            maturity = Random.Range(0f, maturityLimit);
 
-            hungerLevel = Random.Range(85f, 150f);
-            hungerLoss = Random.Range(10f, 15f);
-            hungerLimit = Random.Range(95f, 85f);
-            hungerMax = Random.Range(145f, 155f);
-            satiety = Random.Range(115f, 125f);
+            hungerMax = Random.Range(140f, 160f);
+            hungerMinimum = Random.Range(30f, 40f);
+            hungerLevel = Random.Range(85f, hungerMax);
+            hungerLimit = Random.Range(100f, 80f);
 
-            speed = Random.Range(8f, 12f);
-            acceleration = Random.Range(8f, 12f);
-            radius = Random.Range(18f, 22f);
+            speed = Random.Range(5f, 15f);
+            radius = Random.Range(15f, 25f);
         }
 
+
+        baseHungerMax = hungerMax;
+        baseSpeed = speed;
+        baseRadius = radius;
+
+        
+        //Computing hungerLost
+        hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
+        //To avoid too low hungarLoss and infinite energy
+        if(hungerMax/hungerLoss > maturityLimit){
+            hungerLoss = (hungerMax + 5)/maturityLimit;
+            //Debug.Log(hungerLoss);
+        }
+
+        //Scales
+        adultScale = hungerLoss * 20;
+        newbornScale = adultScale / 3;
+        transform.localScale = new Vector3(newbornScale, newbornScale, newbornScale);
+
+        agent.speed = speed;
         gameObject.name = rabbitName;
+
+        IdleMovement();
     }
 
     // Update is called once per frame
     void Update()
     {
         hungerLevel -= Time.deltaTime * hungerLoss;
-        maturity += Time.deltaTime;
+        
         age += Time.deltaTime;
+        //TESZT
+        if(canHaveChildren == false){
+            if(timeSinceLastChildren >= 20f){
+                canHaveChildren = true;
+                timeSinceLastChildren = 0f;
+            }
+            else{
+                timeSinceLastChildren += Time.deltaTime;
+            }
+        }
 
         if (maturity >= maturityLimit)
         {
             for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
             {
-                Reproduction();
+                //TESZTELÉSHEZ
+                if(canHaveChildren){
+                    //maturity = 0f; //nullázódik a maturity
+
+                    Reproduction();
+                }
             }
-            maturity = 0f; //nullázódik a maturity
+            canHaveChildren = false;
+            
+        }
+        else{
+            //Increasing scale
+            scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
+            transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
+            
+            //Increasing attributes based maturity
+            hungerMax = baseHungerMax * (0.6f + maturity/100);
+            radius = baseRadius * (0.6f + maturity/100);
+            speed = baseSpeed * (0.6f + maturity/100);
+            agent.speed = speed;
+            //teszt miatt áthelyezve
+            maturity += Time.deltaTime;
         }
 
-        if(hungerLevel > hungerMax){
-            hungerLevel = hungerMax;
+
+        //To avoid too low hungarLoss and infinite energy
+        if(hungerMax/hungerLoss > maturityLimit){
+            hungerLoss = (hungerMax + 5)/maturityLimit;
+            //Debug.Log(hungerLoss);
         }
 
         if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if (hungerLevel <= hungerLimit && state != State.Escape)
-        {
+        if(hungerLevel <= hungerLimit){
             state = State.Hunger;
         }
-
-        else
-        {
-            if (hungerLevel >= satiety && state == State.Hunger)
-            {
-                state = State.Idle;
-            }
+        else{
+            state = State.Idle;
         }
 
 
@@ -156,7 +216,7 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Reproduction()
     {
-        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
+        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation, rabbitParentObj); //klónozzuk a Rabbit objektumot
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
@@ -166,7 +226,9 @@ public class rabbitManagerScript : MonoBehaviour
         float minZ = -75f;
         float maxZ = 75f;
 
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő nyúltól
+        float distanceFactor = 5f; // Adjust this factor to determine the separation distance
+
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)) * distanceFactor;
         Vector3 newPosition = transform.position + offset;
 
         // Korlátozd a kis nyúl pozícióját a pálya határai között
@@ -182,17 +244,19 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
         newRabbitManager.hungerLevel = 90f;
 
-        newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-1, 1);
+        newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-2, 2);
+        if(newRabbitManager.fertility < 0){
+            newRabbitManager.fertility = 0;
+        }
         newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f, 2f);
 
-        newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-5f, 5f);
-        newRabbitManager.hungerLoss = newRabbitManager.hungerLoss += Random.Range(-1f, 1f);
-        newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-5f, 5f);
-        newRabbitManager.satiety = newRabbitManager.satiety += Random.Range(-5f, 5f);
+        newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-10f, 10f);
+        newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-10f, 10f);
+        newRabbitManager.hungerMinimum = newRabbitManager.hungerMinimum += Random.Range(-10f, 10f);
 
-        newRabbitManager.speed = newRabbitManager.speed += Random.Range(-2f, 2f);
-        newRabbitManager.acceleration = newRabbitManager.acceleration += Random.Range(-2f, 2f);
-        newRabbitManager.radius = newRabbitManager.radius += Random.Range(-2f, 2f);
+        newRabbitManager.speed = newRabbitManager.speed += Random.Range(-5f, 5f);
+        newRabbitManager.radius = newRabbitManager.radius += Random.Range(-5f, 5f);
+    
     }
 
     void IdleMovement(){
@@ -247,6 +311,9 @@ public class rabbitManagerScript : MonoBehaviour
                     {
                         Destroy(selectedPlant);
                         hungerLevel += resourceFromGrass;
+                        if(hungerLevel > hungerMax){
+                            hungerLevel = hungerMax;
+                        }
                         selectedPlant = null;
                         state = State.Idle;
                     }
@@ -322,10 +389,15 @@ public class rabbitManagerScript : MonoBehaviour
         }
         if (detectedFoxes > 0)
         {
-            state = State.Escape;
-            EscapeMovement(detectedFoxes, foxPositions);
-            detectedFoxes = 0;
-            foxPositions.Clear();
+            if(hungerMinimum < hungerLevel){
+                state = State.Escape;
+                EscapeMovement(detectedFoxes, foxPositions);
+                detectedFoxes = 0;
+                foxPositions.Clear();
+            }
+            else{
+                state = State.Idle;
+            }
         }
         else
         {

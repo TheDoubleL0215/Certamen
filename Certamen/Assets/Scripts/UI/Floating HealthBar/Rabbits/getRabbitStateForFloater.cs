@@ -13,7 +13,7 @@ public class getRabbitStateForFloater : MonoBehaviour
     private Enum state;
 
 
-    void Awake(){
+    void Start(){
         rabbi = gameObjectSelf.GetComponent<rabbitManagerScript>();
     }
 
