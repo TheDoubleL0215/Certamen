@@ -12,7 +12,7 @@ public class getRadius : MonoBehaviour
     public GameObject gameObjectSelf;
     public rabbitManagerScript rabbit;
 
-    void Start(){
+    void Update(){
         if(gameObjectSelf != null) {
             rabbit = gameObjectSelf.GetComponent<rabbitManagerScript>();
             if(rabbit != null) {

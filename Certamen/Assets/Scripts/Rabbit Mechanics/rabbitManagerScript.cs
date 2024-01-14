@@ -38,14 +38,17 @@ public class rabbitManagerScript : MonoBehaviour
     public float hungerLoss = 5f;
     public float hungerLimit = 100f;
     public float hungerMax = 150f;
+    public float baseHungerMax;
     public float hungerMinimum = 40f;
     public float resourceFromGrass = 30f;
     
     [Header("Movement")]
 
     public float speed = 10f;
+    public float baseSpeed;
     public float range = 2.5f; //radius
     public float radius = 20f;
+    public float baseRadius;
 
     [Header("Escaping Mechanics")]
     public int detectedFoxes;
@@ -53,6 +56,15 @@ public class rabbitManagerScript : MonoBehaviour
 
     [Header("Other")]
     public float age; // nyúl életkora
+    public float scaleValue;
+    public float adultScale;
+    public float newbornScale;
+
+    //TESZTELÉS
+    public bool canHaveChildren = true;
+    public float timeSinceLastChildren;
+
+
     public enum State{
         Idle,
         Hunger,
@@ -68,6 +80,8 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Start()
     {
+        
+
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         state = State.Hunger;
@@ -84,19 +98,28 @@ public class rabbitManagerScript : MonoBehaviour
             maturity = Random.Range(0f, maturityLimit);
 
             hungerMax = Random.Range(140f, 160f);
+            baseHungerMax = hungerMax;
             hungerMinimum = Random.Range(30f, 40f);
             hungerLevel = Random.Range(85f, hungerMax);
             hungerLimit = Random.Range(100f, 80f);
 
             speed = Random.Range(5f, 15f);
+            baseSpeed = speed;
             radius = Random.Range(15f, 25f);
+            baseRadius = radius;
         }
+
+        
 
         hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
         if(hungerMax/hungerLoss > maturityLimit){
             maturityLimit = hungerMax/hungerLoss + 1f;
             //Debug.Log(maturityLimit);
         }
+
+        adultScale = hungerLoss * 20;
+        newbornScale = adultScale / 3;
+        transform.localScale = new Vector3(newbornScale, newbornScale, newbornScale);
 
         agent.speed = speed;
         gameObject.name = rabbitName;
@@ -108,16 +131,44 @@ public class rabbitManagerScript : MonoBehaviour
     void Update()
     {
         hungerLevel -= Time.deltaTime * hungerLoss;
-        maturity += Time.deltaTime;
+        
         age += Time.deltaTime;
+        //TESZT
+        if(!canHaveChildren){
+            if(timeSinceLastChildren >= 20f){
+                canHaveChildren = true;
+                timeSinceLastChildren = 0f;
+            }
+            else{
+                timeSinceLastChildren += timeSinceLastChildren;
+            }
+        }
 
         if (maturity >= maturityLimit)
         {
             for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
             {
-                Reproduction();
+                //TESZTELÉSHEZ
+                if(canHaveChildren){
+                    //maturity = 0f; //nullázódik a maturity
+
+                    Reproduction();
+                }
             }
-            maturity = 0f; //nullázódik a maturity
+            canHaveChildren = false;
+            
+        }
+        else{
+            scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
+            transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
+            //Debug.Log(scaleValue);
+
+            hungerMax = baseHungerMax * (0.96f + maturity/1000);
+            radius = baseRadius * (0.96f + maturity/1000);
+            speed = baseSpeed * (0.96f + maturity/1000);
+            agent.speed = speed;
+            //teszt miatt áthelyezve
+            maturity += Time.deltaTime;
         }
 
         if (hungerLevel <= 0){

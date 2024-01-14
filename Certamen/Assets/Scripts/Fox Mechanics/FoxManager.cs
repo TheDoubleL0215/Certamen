@@ -36,15 +36,24 @@ public class FoxManager : MonoBehaviour
     public float hungerLoss = 5f;
     public float hungerLimit = 75f;
     public float hungerMax = 100f;
+    public float baseHungerMax;
     public float rabbitHungerLimit = 50f;
 
     [Header("Movement")]
     public float speed = 15f;
+    public float baseSpeed;
     public float range = 2.5f;
     public float radius = 20f;
+    public float baseRadius;
 
     [Header("Other")]
     public float age; // nyúl életkora
+    public float scaleValue;
+    public float adultScale;
+    public float newbornScale;
+    //TESZT
+    public bool canHaveChildren = true;
+    public float timeSinceLastChildren = 0f;
     public enum State{
         Idle,
         Scout,
@@ -60,6 +69,7 @@ public class FoxManager : MonoBehaviour
 
     void Start()
     {
+        Debug.Log(transform.localScale);
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         // Define radius
@@ -73,17 +83,20 @@ public class FoxManager : MonoBehaviour
         if(fatherId == 0){
             foxName = "F-" + GetRandomLetter();
 
-            fertility = Random.Range(1, 2);
+            fertility = Random.Range(1, 3);
             maturityLimit = Random.Range(35f, 45f);
             maturity = Random.Range(0f, maturityLimit);
 
             hungerMax = Random.Range(90f, 110f);
+            baseHungerMax = hungerMax;
             hungerLevel = Random.Range(70f, hungerMax);
             hungerLimit = Random.Range(70f, 80f);
             rabbitHungerLimit = Random.Range(40f, 60f);
 
             speed = Random.Range(15f, 20f);
+            baseSpeed = speed;
             radius = Random.Range(30f, 40f);
+            baseRadius = radius;
         }
         
         hungerLoss = (hungerMax/25 + radius/10 + speed/8)/2;
@@ -91,6 +104,10 @@ public class FoxManager : MonoBehaviour
         if(hungerMax/hungerLoss > maturityLimit){
             maturityLimit = hungerMax/hungerLoss + 1f;
         }
+
+        adultScale = hungerLoss * 0.9f;
+        newbornScale = adultScale / 3;
+        transform.localScale = new Vector3(newbornScale, newbornScale, newbornScale);
         
         agent.speed = speed;
         gameObject.name = foxName;
@@ -102,20 +119,44 @@ public class FoxManager : MonoBehaviour
     void Update()
     {
         hungerLevel -= Time.deltaTime * hungerLoss;
-        maturity += Time.deltaTime;
+        
         age += Time.deltaTime;
+        //TESZT
+        if(!canHaveChildren){
+            if(timeSinceLastChildren >= 20f){
+                canHaveChildren = true;
+                timeSinceLastChildren = 0f;
+            }
+            else{
+                timeSinceLastChildren += timeSinceLastChildren;
+            }
+        }
 
         if (maturity >= maturityLimit)
         {
             for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
             {
-                Reproduction();
-            }
-            maturity = 0f; //nullázódik a maturity
-        }
+                //TESZTELÉSHEZ
+                if(canHaveChildren){
+                    //maturity = 0f; //nullázódik a maturity
 
-        if (hungerLevel <= 0){
-            Destroy(gameObject);
+                    Reproduction();
+                }
+            }
+            canHaveChildren = false;
+            
+        }
+        else{
+            scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
+            transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
+            Debug.Log(scaleValue);
+
+            hungerMax = baseHungerMax * (0.96f + maturity/1000);
+            radius = baseRadius * (0.96f + maturity/1000);
+            speed = baseSpeed * (0.96f + maturity/1000);
+            agent.speed = speed;
+            //teszt miatt áthelyezve
+            maturity += Time.deltaTime;
         }
 
         if(hungerLevel <= hungerLimit){
@@ -129,7 +170,10 @@ public class FoxManager : MonoBehaviour
         else{
             state = State.Idle;
         }
-        
+
+        if (hungerLevel <= 0){
+            Destroy(gameObject);
+        }        
 
         switch (state){
             case State.Idle:

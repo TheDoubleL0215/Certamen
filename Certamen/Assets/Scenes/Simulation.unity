@@ -1273,12 +1273,12 @@ MonoBehaviour:
   rAttrChartPoint: {fileID: 3522444947141369241, guid: aa37f494d2836444d8cd28acfc938bb3, type: 3}
   fAttrChartPoint: {fileID: 6170455898062607496, guid: b2246c122603f6c4dad786c6dea93dd7, type: 3}
   attributeNames:
+  - hungerLoss
   - speed
   - fertility
   - hungerMax
   - hungerLevel
   - radius
-  - hungerLoss
   attrDivider: 20
   attrSubtrahend: 500
   popDivider: 2
@@ -2085,7 +2085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: ac85a9ce9b3eb6946bdde1bf9ba6265a, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2921,10 +2921,10 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   nameTagParent: {fileID: 407760744}
   rabbitParentObj: {fileID: 407760744}
-  rabbitStartAmount: 50
+  rabbitStartAmount: 40
   Fox: {fileID: 1982462649}
   foxParentObj: {fileID: 903556529}
-  foxStartAmount: 10
+  foxStartAmount: 5
   lowestX: -150
   highestX: 150
   lowestZ: -150
@@ -4216,13 +4216,21 @@ MonoBehaviour:
   hungerLoss: 10
   hungerLimit: 100
   hungerMax: 150
+  baseHungerMax: 0
   hungerMinimum: 40
   resourceFromGrass: 30
   speed: 10
+  baseSpeed: 0
   range: 5
   radius: 20
+  baseRadius: 0
   detectedFoxes: 0
   age: 0
+  scaleValue: 0
+  adultScale: 0
+  newbornScale: 0
+  canHaveChildren: 1
+  timeSinceLastChildren: 0
   state: 1
 --- !u!4 &1834399303 stripped
 Transform:
@@ -4633,11 +4641,19 @@ MonoBehaviour:
   hungerLoss: 10
   hungerLimit: 75
   hungerMax: 100
+  baseHungerMax: 0
   rabbitHungerLimit: 50
   speed: 15
+  baseSpeed: 0
   range: 5
   radius: 40
+  baseRadius: 0
   age: 0
+  scaleValue: 0
+  adultScale: 0
+  newbornScale: 0
+  canHaveChildren: 1
+  timeSinceLastChildren: 0
   state: 1
 --- !u!65 &1982462669
 BoxCollider:
