@@ -46,12 +46,15 @@ public class FoxManager : MonoBehaviour
     public float radius = 20f;
     public float baseRadius;
 
-    [Header("Other")]
-    public float age; // nyúl életkora
+    [Header("Scale")]
     public float scaleValue;
     public float adultScale;
     public float newbornScale;
-    //TESZT
+
+    [Header("Other")]
+    public float age; // nyúl életkora
+
+    [Header("Teszt")]
     public bool canHaveChildren = true;
     public float timeSinceLastChildren = 0f;
     public enum State{
@@ -94,16 +97,21 @@ public class FoxManager : MonoBehaviour
             speed = Random.Range(15f, 20f);
             radius = Random.Range(30f, 40f);
         }
+
+        // These will come handy at "ontogeny"
         baseHungerMax = hungerMax;
         baseRadius = radius;
         baseSpeed = speed;
         
+        //Computing hungerLoss based on attributes
         hungerLoss = (hungerMax/25 + radius/10 + speed/8)/2;
 
+        //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             maturityLimit = hungerMax/hungerLoss + 1f;
         }
 
+        //Scales
         adultScale = hungerLoss * 0.9f;
         newbornScale = adultScale / 3;
         transform.localScale = new Vector3(newbornScale, newbornScale, newbornScale);
@@ -146,18 +154,19 @@ public class FoxManager : MonoBehaviour
             
         }
         else{
+            //Inscreasing scale
             scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
-            //Debug.Log(scaleValue);
-
+            //Increasing attributes based on maturity
             hungerMax = baseHungerMax * (0.6f + maturity/100);
             radius = baseRadius * (0.6f + maturity/100);
-            speed = baseSpeed * (0.9f + maturity/100);
+            speed = baseSpeed * (0.6f + maturity/100);
             agent.speed = speed;
-            //teszt miatt áthelyezve
+            
             maturity += Time.deltaTime;
         }
 
+        //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
         }

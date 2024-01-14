@@ -54,13 +54,15 @@ public class rabbitManagerScript : MonoBehaviour
     public int detectedFoxes;
     private List<Vector3> foxPositions = new List<Vector3>();
 
-    [Header("Other")]
-    public float age; // nyúl életkora
+    [Header("Scale")]
     public float scaleValue;
     public float adultScale;
     public float newbornScale;
 
-    //TESZTELÉS
+    [Header("Other")]
+    public float age; // nyúl életkora
+
+    /[Header("Teszt")]
     public bool canHaveChildren = true;
     public float timeSinceLastChildren;
 
@@ -103,18 +105,22 @@ public class rabbitManagerScript : MonoBehaviour
             speed = Random.Range(5f, 15f);
             radius = Random.Range(15f, 25f);
         }
+
+
         baseHungerMax = hungerMax;
         baseSpeed = speed;
         baseRadius = radius;
 
         
-
+        //Computing hungerLost
         hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
+        //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
             Debug.Log(hungerLoss);
         }
 
+        //Scales
         adultScale = hungerLoss * 20;
         newbornScale = adultScale / 3;
         transform.localScale = new Vector3(newbornScale, newbornScale, newbornScale);
@@ -157,10 +163,11 @@ public class rabbitManagerScript : MonoBehaviour
             
         }
         else{
+            //Increasing scale
             scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
-            //Debug.Log(scaleValue);
-
+            
+            //Increasing attributes based maturity
             hungerMax = baseHungerMax * (0.6f + maturity/100);
             radius = baseRadius * (0.6f + maturity/100);
             speed = baseSpeed * (0.6f + maturity/100);
@@ -169,6 +176,8 @@ public class rabbitManagerScript : MonoBehaviour
             maturity += Time.deltaTime;
         }
 
+
+        //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
             Debug.Log(hungerLoss);
