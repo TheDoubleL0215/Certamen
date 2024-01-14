@@ -151,7 +151,6 @@ public class rabbitManagerScript : MonoBehaviour
                 break;
         }
 
-        Debug.Log(agent.speed);
 
     }
 

@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using Unity.AI.Navigation;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -25,7 +28,6 @@ public class terrainGeneratorScript : MonoBehaviour
 
     private float xOffset;
     private float yOffset;
-    public TerrainType[] regions;
 
     [Header("Gizmos")]
     [SerializeField] private bool showGizmosSphere = false;  //VIGYÁZZ!!!!! A TELJESÍTMÉNY DRASZTIKUSAN CSÖKKENHET
@@ -39,6 +41,7 @@ public class terrainGeneratorScript : MonoBehaviour
     public float heightMapping = 50;
     public Gradient gradient;
 
+    public NavMeshSurface surface;
     private float minTerrainHeight;
     private float maxTerrainHeight;
 
@@ -69,20 +72,34 @@ public class terrainGeneratorScript : MonoBehaviour
 
         DevideUpMesh();
         UpdateMesh();
+        CreateNavMeshSurface();
     }
 
-    void ReloadFunction(){
+    void Start(){
+        seed = Random.Range(1, 100000);
+        minTerrainHeight = 0f;
+        maxTerrainHeight = 0f;
+
+
+        meshCollider = GetComponent<MeshCollider>(); // Hozzáadott sor
+
+        if (mesh == null) {
+            mesh = new Mesh();
+            GetComponent<MeshFilter>().mesh = mesh;
+        }
 
         DevideUpMesh();
         UpdateMesh();
+        CreateNavMeshSurface();
     }
 
-    [System.Serializable]
-    public struct TerrainType{
-        public string name;
-        public float height;
-        public Color color;
+
+    void CreateNavMeshSurface(){
+
+        surface.BuildNavMesh();
     }
+
+
 
 
 
