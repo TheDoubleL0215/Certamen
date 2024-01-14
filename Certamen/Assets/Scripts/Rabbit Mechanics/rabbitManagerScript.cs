@@ -62,7 +62,7 @@ public class rabbitManagerScript : MonoBehaviour
     [Header("Other")]
     public float age; // nyúl életkora
 
-    /[Header("Teszt")]
+    [Header("Teszt")]
     public bool canHaveChildren = true;
     public float timeSinceLastChildren;
 
@@ -117,7 +117,7 @@ public class rabbitManagerScript : MonoBehaviour
         //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
-            Debug.Log(hungerLoss);
+            //Debug.Log(hungerLoss);
         }
 
         //Scales
@@ -180,7 +180,7 @@ public class rabbitManagerScript : MonoBehaviour
         //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
-            Debug.Log(hungerLoss);
+            //Debug.Log(hungerLoss);
         }
 
         if (hungerLevel <= 0){
