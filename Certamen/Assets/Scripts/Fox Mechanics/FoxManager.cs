@@ -69,7 +69,6 @@ public class FoxManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log(transform.localScale);
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         // Define radius
@@ -88,16 +87,16 @@ public class FoxManager : MonoBehaviour
             maturity = Random.Range(0f, maturityLimit);
 
             hungerMax = Random.Range(90f, 110f);
-            baseHungerMax = hungerMax;
             hungerLevel = Random.Range(70f, hungerMax);
             hungerLimit = Random.Range(70f, 80f);
             rabbitHungerLimit = Random.Range(40f, 60f);
 
             speed = Random.Range(15f, 20f);
-            baseSpeed = speed;
             radius = Random.Range(30f, 40f);
-            baseRadius = radius;
         }
+        baseHungerMax = hungerMax;
+        baseRadius = radius;
+        baseSpeed = speed;
         
         hungerLoss = (hungerMax/25 + radius/10 + speed/8)/2;
 
@@ -128,7 +127,7 @@ public class FoxManager : MonoBehaviour
                 timeSinceLastChildren = 0f;
             }
             else{
-                timeSinceLastChildren += timeSinceLastChildren;
+                timeSinceLastChildren += Time.deltaTime;
             }
         }
 
@@ -149,14 +148,18 @@ public class FoxManager : MonoBehaviour
         else{
             scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
-            Debug.Log(scaleValue);
+            //Debug.Log(scaleValue);
 
-            hungerMax = baseHungerMax * (0.96f + maturity/1000);
-            radius = baseRadius * (0.96f + maturity/1000);
-            speed = baseSpeed * (0.96f + maturity/1000);
+            hungerMax = baseHungerMax * (0.6f + maturity/100);
+            radius = baseRadius * (0.6f + maturity/100);
+            speed = baseSpeed * (0.9f + maturity/100);
             agent.speed = speed;
             //teszt miatt áthelyezve
             maturity += Time.deltaTime;
+        }
+
+        if(hungerMax/hungerLoss > maturityLimit){
+            hungerLoss = (hungerMax + 5)/maturityLimit;
         }
 
         if(hungerLevel <= hungerLimit){

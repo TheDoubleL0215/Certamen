@@ -80,8 +80,6 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Start()
     {
-        
-
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         state = State.Hunger;
@@ -98,23 +96,23 @@ public class rabbitManagerScript : MonoBehaviour
             maturity = Random.Range(0f, maturityLimit);
 
             hungerMax = Random.Range(140f, 160f);
-            baseHungerMax = hungerMax;
             hungerMinimum = Random.Range(30f, 40f);
             hungerLevel = Random.Range(85f, hungerMax);
             hungerLimit = Random.Range(100f, 80f);
 
             speed = Random.Range(5f, 15f);
-            baseSpeed = speed;
             radius = Random.Range(15f, 25f);
-            baseRadius = radius;
         }
+        baseHungerMax = hungerMax;
+        baseSpeed = speed;
+        baseRadius = radius;
 
         
 
         hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
         if(hungerMax/hungerLoss > maturityLimit){
-            maturityLimit = hungerMax/hungerLoss + 1f;
-            //Debug.Log(maturityLimit);
+            hungerLoss = (hungerMax + 5)/maturityLimit;
+            Debug.Log(hungerLoss);
         }
 
         adultScale = hungerLoss * 20;
@@ -134,13 +132,13 @@ public class rabbitManagerScript : MonoBehaviour
         
         age += Time.deltaTime;
         //TESZT
-        if(!canHaveChildren){
+        if(canHaveChildren == false){
             if(timeSinceLastChildren >= 20f){
                 canHaveChildren = true;
                 timeSinceLastChildren = 0f;
             }
             else{
-                timeSinceLastChildren += timeSinceLastChildren;
+                timeSinceLastChildren += Time.deltaTime;
             }
         }
 
@@ -163,12 +161,17 @@ public class rabbitManagerScript : MonoBehaviour
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
             //Debug.Log(scaleValue);
 
-            hungerMax = baseHungerMax * (0.96f + maturity/1000);
-            radius = baseRadius * (0.96f + maturity/1000);
-            speed = baseSpeed * (0.96f + maturity/1000);
+            hungerMax = baseHungerMax * (0.6f + maturity/100);
+            radius = baseRadius * (0.6f + maturity/100);
+            speed = baseSpeed * (0.6f + maturity/100);
             agent.speed = speed;
             //teszt miatt áthelyezve
             maturity += Time.deltaTime;
+        }
+
+        if(hungerMax/hungerLoss > maturityLimit){
+            hungerLoss = (hungerMax + 5)/maturityLimit;
+            Debug.Log(hungerLoss);
         }
 
         if (hungerLevel <= 0){

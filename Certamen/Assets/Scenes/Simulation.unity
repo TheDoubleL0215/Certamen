@@ -1273,8 +1273,8 @@ MonoBehaviour:
   rAttrChartPoint: {fileID: 3522444947141369241, guid: aa37f494d2836444d8cd28acfc938bb3, type: 3}
   fAttrChartPoint: {fileID: 6170455898062607496, guid: b2246c122603f6c4dad786c6dea93dd7, type: 3}
   attributeNames:
-  - hungerLoss
   - speed
+  - hungerLoss
   - fertility
   - hungerMax
   - hungerLevel
