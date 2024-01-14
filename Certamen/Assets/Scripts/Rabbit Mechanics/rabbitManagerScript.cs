@@ -195,6 +195,8 @@ public class rabbitManagerScript : MonoBehaviour
         }
 
 
+
+
         switch (state){
             case State.Idle:
                 IdleMovement();
@@ -208,6 +210,7 @@ public class rabbitManagerScript : MonoBehaviour
                 DetectingPredators(State.Escape);
                 break;
         }
+
 
     }
 
