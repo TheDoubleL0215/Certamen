@@ -340,6 +340,7 @@ public class rabbitManagerScript : MonoBehaviour
                 escapeDirection.Normalize();
 
                 escapeDestination = positions[i] + (escapeDirection * 2 * radius);
+                //Debug.Log("Escape dest: " + escapeDestination);
                 Debug.DrawRay(escapeDestination, Vector3.up, Color.blue, 5f);
                 agent.SetDestination(escapeDestination);
             }
@@ -353,6 +354,7 @@ public class rabbitManagerScript : MonoBehaviour
             for (int i = 0; i < foxNumber; i++)
             {
                 float distanceToFox = Vector3.Distance(transform.position, positions[i]);
+                //Debug.Log("Dist to fox: " + distanceToFox);
                 if (distanceToFox < closestFoxDistance)
                 {
                     closestFoxDistance = distanceToFox;

@@ -13,8 +13,8 @@ public class PlayerMovementScript : MonoBehaviour
     public float smoothTime = 1.5f; // a "sprintelés" és "gyaloglás" közti átmenet mértéke
     private float currentVelocity = 0.0f; // reference változó a C#-nak
     private float maxFlyHeight = 90f; // maximum magasság
-    private float currentSpeed; // sebesség változtató
-    private float smoothSpeed; // símított gyorsulás
+    private float currentSpeed; // sebesség változó
+    private float smoothSpeed; // simított gyorsulás
     public CharacterController controller; // karakter irányítója
     public float speed = 20f; // "gyaloglás" sebesség
 
@@ -47,11 +47,11 @@ public class PlayerMovementScript : MonoBehaviour
         // REPÜLÉS
         //-------------------
 
-        if (Input.GetKey(KeyCode.Space)) //FELFELÉ 
+        if (Input.GetKey(KeyCode.Space)) //FELFELÉ
         {
             // Jelenlegi pozíció
             Vector3 currentPosition = controller.transform.position;
-            // Új pozíció felfelé mozgás esetén
+            // új pozíció felfelé mozgás esetén
             Vector3 newPosition = currentPosition + Vector3.up * novekedesSebesseg * Time.deltaTime;
             // Az új pozíció Y koordinátáját korlátozzuk 30 értékre
             newPosition.y = Mathf.Clamp(newPosition.y, 1f, maxFlyHeight);
@@ -75,7 +75,7 @@ public class PlayerMovementScript : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            // A Mathf.SmoothDamp-al megadhatjuk hogy egy változó értéke mennyi idõ alatt változzon meg, ami így
+            // A Mathf.SmoothDamp-al megadhatjuk hogy egy változó értéke mennyi id? alatt változzon meg, ami úgy
             // simább mozgást eredményez
             currentSpeed = 80;
             smoothSpeed = Mathf.SmoothDamp(speed, currentSpeed, ref currentVelocity, smoothTime);
@@ -85,9 +85,7 @@ public class PlayerMovementScript : MonoBehaviour
             currentSpeed = 20;
             smoothSpeed = Mathf.SmoothDamp(speed, currentSpeed, ref currentVelocity, smoothTime);
         }
-        // a sebesség a símított gyorsulás lesz
+        // a sebesség a simított gyorsulás lesz
         speed = smoothSpeed;
     }
 }
-
-

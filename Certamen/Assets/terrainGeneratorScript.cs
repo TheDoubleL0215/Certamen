@@ -48,6 +48,20 @@ public class terrainGeneratorScript : MonoBehaviour
     Vector3[] vertices;
     int[] triangles;
 
+    [Header("Environment")]
+    public GameObject treePrefab;
+    [Range(1, 30)]
+    public float treeDensity ;
+
+    public float lowestX;
+    public float highestX;
+    public float lowestZ;
+    public float highestZ;
+
+    public Transform environmentParentObj;
+
+
+
     void OnLoad()
     {
         seed = Random.Range(1, 100000);
@@ -72,11 +86,13 @@ public class terrainGeneratorScript : MonoBehaviour
 
         DevideUpMesh();
         UpdateMesh();
-        CreateNavMeshSurface();
+        //CreateNavMeshSurface();
     }
 
+
+
     void Start(){
-        seed = Random.Range(1, 100000);
+        //seed = Random.Range(1, 100000);
         minTerrainHeight = 0f;
         maxTerrainHeight = 0f;
 
@@ -91,6 +107,7 @@ public class terrainGeneratorScript : MonoBehaviour
         DevideUpMesh();
         UpdateMesh();
         CreateNavMeshSurface();
+        placeTree();
     }
 
 
@@ -99,7 +116,37 @@ public class terrainGeneratorScript : MonoBehaviour
         surface.BuildNavMesh();
     }
 
+    void placeTree(){
 
+        for(int x = 0; x < treeDensity; x++){
+
+            bool placed = false;
+
+            while (!placed)
+            {
+                float tryPositionX = Random.Range(lowestX, highestX);
+                float tryPositionZ = Random.Range(lowestZ, highestZ);
+
+                Vector3 raycastStart = new Vector3(tryPositionX, 100f, tryPositionZ);
+
+                if (Physics.Raycast(raycastStart, Vector3.down, out RaycastHit hit, Mathf.Infinity))
+                {
+                    if (hit.point.y > 12.5f)
+                    {
+                        float randomRotationY = Random.Range(0f, 360f);
+
+                        // Hozz létre egy Quaternion-t a véletlenszerű Euler-szögvektorok alapján
+                        Quaternion randomRotation = Quaternion.Euler(0, randomRotationY, 0);
+
+                        Instantiate(treePrefab, new Vector3(tryPositionX, hit.point.y, tryPositionZ), randomRotation, environmentParentObj.transform);
+                        placed = true;
+                    }
+                }
+            }
+        }
+
+
+    }
 
 
 
