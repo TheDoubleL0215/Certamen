@@ -43,7 +43,8 @@ public class rabbitManagerScript : MonoBehaviour
     public float hungerMax = 150f;
     public float satiety = 120f;
     public float resourceFromGrass = 30f;
-    
+    public float criticalpercent = 0.2f;
+
     [Header("Movement")]
 
     public float speed = 10f;
@@ -53,6 +54,7 @@ public class rabbitManagerScript : MonoBehaviour
 
     [Header("Escaping Mechanics")]
     public int detectedFoxes;
+    public bool detectedPredators = false;
     private List<Vector3> foxPositions = new List<Vector3>();
 
     [Header("Other")]
@@ -90,7 +92,7 @@ public class rabbitManagerScript : MonoBehaviour
             maturity = Random.Range(0f, maturityLimit);
 
             hungerLevel = Random.Range(85f, 150f);
-            hungerLoss = Random.Range(8f, 10f);
+            hungerLoss = Random.Range(4f, 7f);
             hungerLimit = Random.Range(95f, 85f);
             hungerMax = Random.Range(145f, 155f);
             satiety = Random.Range(115f, 125f);
@@ -102,7 +104,7 @@ public class rabbitManagerScript : MonoBehaviour
         }
 
         gender = genderList[Random.Range(0, genderList.Count)];
-        pregnancyTime = Random.Range(5f, 10f);
+        pregnancyTime = Random.Range(1f, 3f);
 
         gameObject.name = rabbitName;
     }
@@ -123,9 +125,13 @@ public class rabbitManagerScript : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (hungerLevel <= hungerLimit && state != State.Escape)
+        if (hungerLevel/hungerLimit<criticalpercent && state != State.Escape)
         {
             state = State.Hunger;
+        }
+        if (state == State.Reproduction && selectedRabbit == null)
+        {
+            state = State.Idle
         }
 
         else
@@ -146,17 +152,25 @@ public class rabbitManagerScript : MonoBehaviour
                 state = State.Reproduction;
             }
         }
-        if (isPregnant == false)
+        if (state == State.Reproduction)
         {
-            elapsedTime += Time.deltaTime;
+            if (isPregnant == false)
+            {
+                elapsedTime += Time.deltaTime;
+            }
         }
-        else
+        if (isPregnant == true)
         {
-             if (elapsedTime >= pregnancyTime)
+            if (elapsedTime >= pregnancyTime)
             {   
                 Reproduction();
                 elapsedTime = 0.0f;
             }
+        }
+        
+        if(detectedPredators == true)
+        {
+            state = State.Escape;
         }
 
         switch (state){
@@ -405,6 +419,7 @@ public class rabbitManagerScript : MonoBehaviour
         if (detectedFoxes > 0)
         {
             state = State.Escape;
+            detectedPredators = true;
             EscapeMovement(detectedFoxes, foxPositions);
             detectedFoxes = 0;
             foxPositions.Clear();

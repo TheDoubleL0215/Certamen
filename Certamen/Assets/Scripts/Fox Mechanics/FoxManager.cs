@@ -43,6 +43,7 @@ public class FoxManager : MonoBehaviour
     public float hungerMax = 100f;
     public float satiety = 80f;
     public float rabbitHungerLimit = 50f;
+    public float criticalpercent = 0.2f;
 
     [Header("Movement")]
     public float speed = 15f;
@@ -124,7 +125,11 @@ public class FoxManager : MonoBehaviour
         if (hungerLevel <= 0){
             Destroy(gameObject);
         }
-
+        
+        if (state == State.Reproduction && selectedRabbit == null)
+        {
+            state = State.Idle
+        }
         if(selectedRabbit == null && hungerLevel < hungerLimit){
             state = State.Scout;
         }
@@ -133,6 +138,11 @@ public class FoxManager : MonoBehaviour
         {
             state = State.Chase;
         }
+        if (hungerLevel/hungerLimit<criticalpercent && state != State.Chase)
+        {
+            state = State.Scout;
+        }
+        
 
         if (hungerLevel >= satiety)
         {
@@ -149,13 +159,16 @@ public class FoxManager : MonoBehaviour
                 state = State.Reproduction;
             }
         }
-       if (isPregnant == false)
+       if (state == State.Reproduction)
         {
-            elapsedTime += Time.deltaTime;
+            if (isPregnant == false)
+            {
+                elapsedTime += Time.deltaTime;
+            }
         }
-        else
+        if (isPregnant == true)
         {
-             if (elapsedTime >= pregnancyTime)
+            if (elapsedTime >= pregnancyTime)
             {   
                 Reproduction();
                 elapsedTime = 0.0f;
