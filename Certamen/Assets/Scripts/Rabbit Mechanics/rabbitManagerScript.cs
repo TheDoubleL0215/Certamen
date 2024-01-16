@@ -424,7 +424,6 @@ public class rabbitManagerScript : MonoBehaviour
         {
             for (int i = 0; i < foxNumber; i++)
             {
-                Debug.Log("Pozicio: " + positions[i]);
                 Vector3 escapeDirection = transform.position - positions[i];
                 escapeDirection.Normalize();
 
@@ -441,7 +440,6 @@ public class rabbitManagerScript : MonoBehaviour
             // Megkeressük a legközelebbi róka pozícióját a nyúlhoz
             for (int i = 0; i < foxNumber; i++)
             {
-                Debug.Log("Pozicio: " + positions[i]);
                 float distanceToFox = Vector3.Distance(transform.position, positions[i]);
                 if (distanceToFox < closestFoxDistance)
                 {

@@ -6,21 +6,21 @@ using UnityEngine.EventSystems;
 public class PlayerMovementScript : MonoBehaviour
 {
     //-------------------
-    // VÁLTOZÓK
+    // Vï¿½LTOZï¿½K
     //-------------------
 
-    public float novekedesSebesseg = 20f; // a magasság változásának sebessége
-    public float smoothTime = 1.5f; // a "sprintelés" és "gyaloglás" közti átmenet mértéke
-    private float currentVelocity = 0.0f; // reference változó a C#-nak
-    private float maxFlyHeight = 90f; // maximum magasság
-    private float currentSpeed; // sebesség változó
-    private float smoothSpeed; // simított gyorsulás
-    public CharacterController controller; // karakter irányítója
-    public float speed = 20f; // "gyaloglás" sebesség
+    public float novekedesSebesseg = 20f; // a magassï¿½g vï¿½ltozï¿½sï¿½nak sebessï¿½ge
+    public float smoothTime = 1.5f; // a "sprintelï¿½s" ï¿½s "gyaloglï¿½s" kï¿½zti ï¿½tmenet mï¿½rtï¿½ke
+    private float currentVelocity = 0.0f; // reference vï¿½ltozï¿½ a C#-nak
+    private float maxFlyHeight = 30f; // maximum magassï¿½g
+    private float currentSpeed; // sebessï¿½g vï¿½ltozï¿½
+    private float smoothSpeed; // simï¿½tott gyorsulï¿½s
+    public CharacterController controller; // karakter irï¿½nyï¿½tï¿½ja
+    public float speed = 20f; // "gyaloglï¿½s" sebessï¿½g
 
 
     //-------------------
-    // INICIALIZÁCIÓ
+    // INICIALIZï¿½CIï¿½
     //-------------------
     private void Start()
     {
@@ -31,36 +31,36 @@ public class PlayerMovementScript : MonoBehaviour
     void Update()
     {
         //-------------------
-        // MOZGÁS
+        // MOZGï¿½S
         //-------------------
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        // Az objektum helyzete és elfordulása alapján számoljuk az irányt
+        // Az objektum helyzete ï¿½s elfordulï¿½sa alapjï¿½n szï¿½moljuk az irï¿½nyt
         Vector3 move = transform.TransformDirection(new Vector3(x, 0, z));
 
         controller.Move(move * speed * Time.deltaTime);
 
 
         //-------------------
-        // REPÜLÉS
+        // REPï¿½Lï¿½S
         //-------------------
 
-        if (Input.GetKey(KeyCode.Space)) //FELFELÉ
+        if (Input.GetKey(KeyCode.Space)) //FELFELï¿½
         {
-            // Jelenlegi pozíció
+            // Jelenlegi pozï¿½ciï¿½
             Vector3 currentPosition = controller.transform.position;
-            // új pozíció felfelé mozgás esetén
+            // ï¿½j pozï¿½ciï¿½ felfelï¿½ mozgï¿½s esetï¿½n
             Vector3 newPosition = currentPosition + Vector3.up * novekedesSebesseg * Time.deltaTime;
-            // Az új pozíció Y koordinátáját korlátozzuk 30 értékre
+            // Az ï¿½j pozï¿½ciï¿½ Y koordinï¿½tï¿½jï¿½t korlï¿½tozzuk 30 ï¿½rtï¿½kre
             newPosition.y = Mathf.Clamp(newPosition.y, 1f, maxFlyHeight);
-            // Mozgás a korlátozott pozícióra
+            // Mozgï¿½s a korlï¿½tozott pozï¿½ciï¿½ra
             controller.Move(newPosition - currentPosition);
 
         }
 
-        if (Input.GetKey(KeyCode.LeftControl)) //LEFELÉ
+        if (Input.GetKey(KeyCode.LeftControl)) //LEFELï¿½
         {
             Vector3 currentPosition = controller.transform.position;
             Vector3 newPosition = currentPosition - Vector3.up * novekedesSebesseg * Time.deltaTime;
@@ -75,8 +75,8 @@ public class PlayerMovementScript : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            // A Mathf.SmoothDamp-al megadhatjuk hogy egy változó értéke mennyi id? alatt változzon meg, ami úgy
-            // simább mozgást eredményez
+            // A Mathf.SmoothDamp-al megadhatjuk hogy egy vï¿½ltozï¿½ ï¿½rtï¿½ke mennyi id? alatt vï¿½ltozzon meg, ami ï¿½gy
+            // simï¿½bb mozgï¿½st eredmï¿½nyez
             currentSpeed = 80;
             smoothSpeed = Mathf.SmoothDamp(speed, currentSpeed, ref currentVelocity, smoothTime);
         }
@@ -85,7 +85,7 @@ public class PlayerMovementScript : MonoBehaviour
             currentSpeed = 20;
             smoothSpeed = Mathf.SmoothDamp(speed, currentSpeed, ref currentVelocity, smoothTime);
         }
-        // a sebesség a simított gyorsulás lesz
+        // a sebessï¿½g a simï¿½tott gyorsulï¿½s lesz
         speed = smoothSpeed;
     }
 }
