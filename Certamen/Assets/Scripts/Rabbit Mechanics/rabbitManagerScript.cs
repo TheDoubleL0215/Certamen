@@ -22,15 +22,21 @@ public class rabbitManagerScript : MonoBehaviour
     public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
     public float maturity = 0f; // érettség, szaporodásban van szerepe
     public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
-
+    public List<string> genderList  = new List<string>{"male", "female"};
+    public string gender;
+    public float pregnancyTime;
+    public bool isPregnant = false;
+    private float elapsedTime = 0f;
+    public float matingCooldown = 0f;
 
     [Header("Components")]
 
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
+    public GameObject selectedRabbit;
     public GameObject Rabbit;
-    public Transform rabbitParentObj;
+    private rabbitManagerScript mateScript;
 
     [Header("Hunger")]
 
@@ -39,19 +45,20 @@ public class rabbitManagerScript : MonoBehaviour
     public float hungerLimit = 100f;
     public float hungerMax = 150f;
     public float baseHungerMax;
-    public float hungerMinimum = 40f;
     public float resourceFromGrass = 30f;
-    
+    //public float criticalpercent = 0.2f;
+
     [Header("Movement")]
 
     public float speed = 10f;
     public float baseSpeed;
-    public float range = 2.5f; //radius
+    public float range = 5f; //radius
     public float radius = 20f;
     public float baseRadius;
 
     [Header("Escaping Mechanics")]
     public int detectedFoxes;
+    public bool detectedPredators = false;
     private List<Vector3> foxPositions = new List<Vector3>();
 
     [Header("Scale")]
@@ -61,16 +68,12 @@ public class rabbitManagerScript : MonoBehaviour
 
     [Header("Other")]
     public float age; // nyúl életkora
-
-    [Header("Teszt")]
-    public bool canHaveChildren = true;
-    public float timeSinceLastChildren;
-
-
-    public enum State{
+    public enum State
+    {
         Idle,
         Hunger,
-        Escape
+        Escape,
+        Reproduction
     }
 
     [SerializeField] public State state;
@@ -91,111 +94,135 @@ public class rabbitManagerScript : MonoBehaviour
         maturity = 0f;
 
         if(fatherId == 0){
-            rabbitName = "R-" + GetRandomLetter();
+            rabbitName = "R - " + GetRandomLetter();
 
-            fertility = Random.Range(2, 4);
-            maturityLimit = Random.Range(35f, 45f);
-            maturity = Random.Range(0f, maturityLimit);
+            fertility = Random.Range(3, 5);
+            maturityLimit = Random.Range(20, 25);
+            maturity = maturityLimit + 1f;
 
-            hungerMax = Random.Range(140f, 160f);
-            hungerMinimum = Random.Range(30f, 40f);
-            hungerLevel = Random.Range(85f, hungerMax);
-            hungerLimit = Random.Range(100f, 80f);
+            hungerMax = Random.Range(145f, 155f);
+            hungerLevel = Random.Range(120f, hungerMax);
+            hungerLimit = Random.Range(95f, 85f);
 
-            speed = Random.Range(5f, 15f);
-            radius = Random.Range(15f, 25f);
+            speed = Random.Range(8f, 12f);
+            radius = Random.Range(18f, 22f);
+            
+            pregnancyTime = Random.Range(5f, 10f);
+            gender = genderList[Random.Range(0, genderList.Count)];
         }
 
+        if (gender == "female")
+        {
+            GetComponent<Renderer>().material.color = Color.white; // Set female color
+        }
+        else
+        {
+            GetComponent<Renderer>().material.color = Color.grey; // Set male color
+        }
 
+        // These will come handy at "ontogeny"
         baseHungerMax = hungerMax;
-        baseSpeed = speed;
         baseRadius = radius;
+        baseSpeed = speed;
 
-        
-        //Computing hungerLost
+        //Computing hungerLoss based on attributes
         hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
+
         //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
-            hungerLoss = (hungerMax + 5)/maturityLimit;
-            //Debug.Log(hungerLoss);
+            maturityLimit = hungerMax/hungerLoss + 1f;
         }
 
         //Scales
-        adultScale = hungerLoss * 20;
+        adultScale = hungerLoss * 20f;
         newbornScale = adultScale / 3;
         transform.localScale = new Vector3(newbornScale, newbornScale, newbornScale);
 
-        agent.speed = speed;
         gameObject.name = rabbitName;
-
-        IdleMovement();
     }
 
     // Update is called once per frame
     void Update()
     {
-        hungerLevel -= Time.deltaTime * hungerLoss;
-        
-        age += Time.deltaTime;
-        //TESZT
-        if(canHaveChildren == false){
-            if(timeSinceLastChildren >= 20f){
-                canHaveChildren = true;
-                timeSinceLastChildren = 0f;
-            }
-            else{
-                timeSinceLastChildren += Time.deltaTime;
-            }
-        }
-
-        if (maturity >= maturityLimit)
-        {
-            for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
-            {
-                //TESZTELÉSHEZ
-                if(canHaveChildren){
-                    //maturity = 0f; //nullázódik a maturity
-
-                    Reproduction();
-                }
-            }
-            canHaveChildren = false;
-            
-        }
-        else{
-            //Increasing scale
-            scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
-            transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
-            
-            //Increasing attributes based maturity
-            hungerMax = baseHungerMax * (0.6f + maturity/100);
-            radius = baseRadius * (0.6f + maturity/100);
-            speed = baseSpeed * (0.6f + maturity/100);
-            agent.speed = speed;
-            //teszt miatt áthelyezve
-            maturity += Time.deltaTime;
-        }
-
-
         //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
-            //Debug.Log(hungerLoss);
+        }
+
+        hungerLevel -= Time.deltaTime * hungerLoss;
+        age += Time.deltaTime;
+
+        if(matingCooldown > 0){
+            matingCooldown -= Time.deltaTime;
+        }
+
+
+        if(state != State.Reproduction){
+            if(hungerLevel <= hungerLimit){
+                state = State.Hunger;
+            }
+            else{
+                state = State.Idle;
+            }
+        }
+        else{
+            if (selectedRabbit == null){
+                state = State.Idle;
+            }
         }
 
         if (hungerLevel <= 0){
             Destroy(gameObject);
         }
 
-        if(hungerLevel <= hungerLimit){
-            state = State.Hunger;
+
+        if (maturity  >= maturityLimit)
+        {
+            if(matingCooldown <= 0){
+                if (selectedRabbit == null)
+                {
+                    DetectMate();
+                }
+                else{
+                    state = State.Reproduction;
+                }
+            }
         }
         else{
-            state = State.Idle;
+            //Inscreasing scale
+            scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
+            transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
+            //Increasing attributes based on maturity
+            hungerMax = baseHungerMax * (0.8f + maturity/100);
+            radius = baseRadius * (0.8f + maturity/100);
+            speed = baseSpeed * (0.8f + maturity/100);
+            agent.speed = speed;
+            
+            maturity += Time.deltaTime;
         }
 
-
-
+        if (isPregnant == true)
+        {
+            if (elapsedTime >= pregnancyTime)
+            {   
+                for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
+                {
+                    isPregnant = false;
+                    Reproduction();
+                }
+                isPregnant = false;
+                matingCooldown = 15f;
+                state = State.Hunger;
+            }
+            else{
+                elapsedTime += Time.deltaTime;
+            }
+        }
+        
+        if(detectedPredators == true)
+        {
+            state = State.Escape;
+        }
 
         switch (state){
             case State.Idle:
@@ -209,15 +236,75 @@ public class rabbitManagerScript : MonoBehaviour
             case State.Escape:
                 DetectingPredators(State.Escape);
                 break;
+            case State.Reproduction:
+                ReproductionMovement();
+                DetectingPredators(State.Reproduction);
+                break;
         }
 
-
     }
+    void DetectMate()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            GameObject detectedRabbit = colliders[i].gameObject;
+            
+            if (detectedRabbit.CompareTag("Rabbit"))
+            {
+                rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
+                
+                if(detRabbitScript.maturity >= detRabbitScript.maturityLimit && detRabbitScript.state != State.Reproduction && detRabbitScript.matingCooldown <= 0f)
+                {
+                    if(detRabbitScript.gender != gender)
+                    {
+                        selectedRabbit = detectedRabbit;
+                        detRabbitScript.selectedRabbit = gameObject;
+                        state = State.Reproduction;
+                    }
+            
+                }
+            }
+            detectedRabbit = null;
+        }
+    }
+
+    void ReproductionMovement()
+    {
+        if (agent.enabled && selectedRabbit != null && selectedRabbit.activeSelf)
+        {
+            agent.SetDestination(selectedRabbit.transform.position);
+            Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.green, 5.0f);
+            float distanceToRabbit = Vector3.Distance(transform.position, selectedRabbit.transform.position);
+
+            if (distanceToRabbit < 10f)
+            {
+                if (gender == "female")
+                {
+                    mateScript = selectedRabbit.GetComponent<rabbitManagerScript>();
+                    isPregnant = true;
+                }
+                else
+                {
+                    matingCooldown = 20;
+                }
+
+                state = State.Hunger;
+                selectedRabbit = null;
+            }
+        }
+        else
+        {
+            // If the selected rabbit doesn't exist anymore or is not active, reset the state
+            selectedRabbit = null;
+            state = State.Idle;
+        }
+    }
+
 
     void Reproduction()
     {
-        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation, rabbitParentObj); //klónozzuk a Rabbit objektumot
-
+        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); 
         Random.InitState(System.DateTime.Now.Millisecond);
 
         // Definiáld a pályaterület határait
@@ -226,38 +313,44 @@ public class rabbitManagerScript : MonoBehaviour
         float minZ = -75f;
         float maxZ = 75f;
 
-        float distanceFactor = 5f; // Adjust this factor to determine the separation distance
-
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)) * distanceFactor;
+        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő rókától
         Vector3 newPosition = transform.position + offset;
 
-        // Korlátozd a kis nyúl pozícióját a pálya határai között
+        // Korlátozd a kis róka pozícióját a pálya határai között
         newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
         newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
 
         newRabbit.transform.position = newPosition;
 
-        // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
-        rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
 
-        newRabbitManager.fatherId = id;
-        newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
+        rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
+        
+        // Randomly choose between father and mother
+        rabbitManagerScript sourceParent = Random.Range(0f, 1f) < 0.5f ? mateScript : this;
+
+        newRabbitManager.gender = genderList[Random.Range(0, genderList.Count)];
+        if(newRabbitManager.gender == "male"){
+            newRabbitManager.rabbitName = mateScript.rabbitName + GetRandomLetter();
+        }
+        else{
+            newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
+        }
+        newRabbitManager.fatherId = mateScript.id;
         newRabbitManager.hungerLevel = 90f;
 
-        newRabbitManager.fertility = newRabbitManager.fertility += Random.Range(-2, 2);
-        if(newRabbitManager.fertility < 0){
-            newRabbitManager.fertility = 0;
-        }
-        newRabbitManager.maturityLimit = newRabbitManager.maturityLimit += Random.Range(-2f, 2f);
 
-        newRabbitManager.hungerLimit = newRabbitManager.hungerLimit += Random.Range(-10f, 10f);
-        newRabbitManager.hungerMax = newRabbitManager.hungerMax += Random.Range(-10f, 10f);
-        newRabbitManager.hungerMinimum = newRabbitManager.hungerMinimum += Random.Range(-10f, 10f);
+        // Apply mutations to the selected attributes
+        newRabbitManager.fertility = sourceParent.fertility + Random.Range(-1, 1);
+        newRabbitManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-3f, 3f);
+        newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
 
-        newRabbitManager.speed = newRabbitManager.speed += Random.Range(-5f, 5f);
-        newRabbitManager.radius = newRabbitManager.radius += Random.Range(-5f, 5f);
-    
+        newRabbitManager.hungerLimit = sourceParent.hungerLimit + Random.Range(-5f, 5f);
+        newRabbitManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
+
+        newRabbitManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
+        newRabbitManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7 * 2);
     }
+
 
     void IdleMovement(){
         if(agent.remainingDistance <= agent.stoppingDistance) //done with path
@@ -265,7 +358,7 @@ public class rabbitManagerScript : MonoBehaviour
                 Vector3 point;
                 if (RandomPoint(centrePoint.position, radius, out point)) //pass in our centre point and radius of area
                 {
-                    Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
+                    Debug.DrawRay(point, Vector3.up, Color.black, 1.0f); //so you can see with gizmos
                     agent.SetDestination(point);
                 }
             }
@@ -282,7 +375,6 @@ public class rabbitManagerScript : MonoBehaviour
                 {
                     //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
                     Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-                    //Debug.Log(colliders.Length);
                     for (int i = 0; i < colliders.Length; i++)
                     {
                         if (selectedPlant == null)
@@ -292,7 +384,6 @@ public class rabbitManagerScript : MonoBehaviour
                             if (detectedPlant.CompareTag("Grass"))
                             {
                                 selectedPlant = detectedPlant;
-                                //Debug.Log(selectedPlant.name);
                                 break;
                             }
                         }
@@ -305,15 +396,12 @@ public class rabbitManagerScript : MonoBehaviour
                 }
                 else
                 {
-                    Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.green, 3.0f);
+                    Debug.DrawRay(selectedPlant.transform.position, Vector3.up, Color.black, 2.0f);
                     agent.SetDestination(selectedPlant.transform.position);
                     if (selectedPlant.activeSelf && Vector3.Distance(transform.position, selectedPlant.transform.position) < 5f)
                     {
                         Destroy(selectedPlant);
                         hungerLevel += resourceFromGrass;
-                        if(hungerLevel > hungerMax){
-                            hungerLevel = hungerMax;
-                        }
                         selectedPlant = null;
                         state = State.Idle;
                     }
@@ -336,11 +424,11 @@ public class rabbitManagerScript : MonoBehaviour
         {
             for (int i = 0; i < foxNumber; i++)
             {
+                Debug.Log("Pozicio: " + positions[i]);
                 Vector3 escapeDirection = transform.position - positions[i];
                 escapeDirection.Normalize();
 
                 escapeDestination = positions[i] + (escapeDirection * 2 * radius);
-                //Debug.Log("Escape dest: " + escapeDestination);
                 Debug.DrawRay(escapeDestination, Vector3.up, Color.blue, 5f);
                 agent.SetDestination(escapeDestination);
             }
@@ -353,8 +441,8 @@ public class rabbitManagerScript : MonoBehaviour
             // Megkeressük a legközelebbi róka pozícióját a nyúlhoz
             for (int i = 0; i < foxNumber; i++)
             {
+                Debug.Log("Pozicio: " + positions[i]);
                 float distanceToFox = Vector3.Distance(transform.position, positions[i]);
-                //Debug.Log("Dist to fox: " + distanceToFox);
                 if (distanceToFox < closestFoxDistance)
                 {
                     closestFoxDistance = distanceToFox;
@@ -386,29 +474,24 @@ public class rabbitManagerScript : MonoBehaviour
             {
                 detectedFoxes++;
                 foxPositions.Add(detectedObject.transform.position); // Store fox positions
-                //Debug.Log(detectedFoxes);
             }
         }
         if (detectedFoxes > 0)
         {
-            if(hungerMinimum < hungerLevel){
-                state = State.Escape;
-                EscapeMovement(detectedFoxes, foxPositions);
-                detectedFoxes = 0;
-                foxPositions.Clear();
-            }
-            else{
-                state = State.Idle;
-            }
+            state = State.Escape;
+            detectedPredators = true;
+            EscapeMovement(detectedFoxes, foxPositions);
+            detectedFoxes = 0;
+            foxPositions.Clear();
         }
         else
         {
             if(currentState != State.Escape){
                 state = currentState;
-                //Debug.Log(currentState);
             }
             else{
                 state = State.Idle;
+                detectedPredators = false;
             }
         }
     }
@@ -441,10 +524,9 @@ public class rabbitManagerScript : MonoBehaviour
 
 
    #if UNITY_EDITOR
-    private void OnDrawGizmos()
+   void OnDrawGizmos()
     {
        Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360, radius);
     }
    #endif
-
 }

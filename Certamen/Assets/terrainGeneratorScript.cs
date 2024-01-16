@@ -24,6 +24,8 @@ public class terrainGeneratorScript : MonoBehaviour
     public int height;
     Color[] colors;
     
+
+    public bool randomSeed = true;
     public int seed = 10;
 
     private float xOffset;
@@ -92,7 +94,9 @@ public class terrainGeneratorScript : MonoBehaviour
 
 
     void Start(){
-        //seed = Random.Range(1, 100000);
+        if(randomSeed){
+            seed = Random.Range(1, 100000);
+        }
         minTerrainHeight = 0f;
         maxTerrainHeight = 0f;
 

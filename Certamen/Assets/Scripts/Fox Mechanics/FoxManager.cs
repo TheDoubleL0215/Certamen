@@ -26,6 +26,7 @@ public class FoxManager : MonoBehaviour
     public float pregnancyTime;
     public bool isPregnant = false;
     private float elapsedTime = 0.0f;
+    public float matingCooldown = 0f;
 
     [Header("Components")]
 
@@ -44,7 +45,7 @@ public class FoxManager : MonoBehaviour
     public float hungerMax = 100f;
     public float baseHungerMax;
     public float rabbitHungerLimit = 50f;
-    public float criticalpercent = 0.2f;
+    //public float criticalpercent = 0.2f;
 
     [Header("Movement")]
     public float speed = 15f;
@@ -52,6 +53,7 @@ public class FoxManager : MonoBehaviour
     public float range = 2.5f;
     public float radius = 20f;
     public float baseRadius;
+
     [Header("Scale")]
     public float scaleValue;
     public float adultScale;
@@ -85,10 +87,10 @@ public class FoxManager : MonoBehaviour
         maturity = 0f;
 
         if(fatherId == 0){
-            foxName = "F" + GetRandomLetter();
+            foxName = "F - " + GetRandomLetter();
 
             fertility = Random.Range(2, 4);
-            maturityLimit = Random.Range(35f, 45f);
+            maturityLimit = Random.Range(20f, 25f);
             maturity = Random.Range(0f, maturityLimit);
 
             hungerMax = Random.Range(90f, 110f);
@@ -99,7 +101,8 @@ public class FoxManager : MonoBehaviour
             speed = Random.Range(15f, 20f);
             radius = Random.Range(30f, 40f);
         
-            pregnancyTime = Random.Range(10f, 15f);
+            pregnancyTime = Random.Range(5f, 10f);
+            gender = genderList[Random.Range(0, genderList.Count)];
         }
 
         // These will come handy at "ontogeny"
@@ -123,7 +126,6 @@ public class FoxManager : MonoBehaviour
 
         gender = genderList[Random.Range(0, genderList.Count)];
 
-        agent.speed = speed;
         gameObject.name = foxName;
     }
 
@@ -137,6 +139,10 @@ public class FoxManager : MonoBehaviour
 
         hungerLevel -= Time.deltaTime * hungerLoss;
         age += Time.deltaTime;
+
+        if(matingCooldown > 0){
+            matingCooldown -= Time.deltaTime;
+        }
 
         if(state != State.Reproduction){
             if(hungerLevel <= hungerLimit){
@@ -163,9 +169,14 @@ public class FoxManager : MonoBehaviour
 
         if (maturity  >= maturityLimit)
         {
-            if (selectedFox == null)
-            {
-                DetectMate();
+            if(matingCooldown <= 0){
+                if (selectedFox == null)
+                {
+                    DetectMate();
+                }
+                else{
+                    state = State.Reproduction;
+                }
             }
         }
         else{
@@ -173,9 +184,9 @@ public class FoxManager : MonoBehaviour
             scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
             //Increasing attributes based on maturity
-            hungerMax = baseHungerMax * (0.6f + maturity/100);
-            radius = baseRadius * (0.6f + maturity/100);
-            speed = baseSpeed * (0.6f + maturity/100);
+            hungerMax = baseHungerMax * (0.8f + maturity/100);
+            radius = baseRadius * (0.8f + maturity/100);
+            speed = baseSpeed * (0.8f + maturity/100);
             agent.speed = speed;
             
             maturity += Time.deltaTime;
@@ -187,10 +198,12 @@ public class FoxManager : MonoBehaviour
             {   
                 for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
                 {
-                    Reproduction();
                     isPregnant = false;
-                    Debug.Log("Szülés: "+gameObject.name);
+                    Reproduction();
                 }
+                isPregnant = false;
+                matingCooldown = 15f;
+                state = State.Scout;
             }
             else{
                 elapsedTime += Time.deltaTime;
@@ -223,51 +236,51 @@ public class FoxManager : MonoBehaviour
             if (detectedFox.CompareTag("Fox"))
             {
                 FoxManager detFoxScript = detectedFox.GetComponent<FoxManager>();
-                if(detFoxScript.maturity >= detFoxScript.maturityLimit && detFoxScript.state != State.Reproduction)
+
+                if(detFoxScript.maturity >= detFoxScript.maturityLimit && detFoxScript.state != State.Reproduction && detFoxScript.matingCooldown <= 0f)
                 {
                     if(detFoxScript.gender != gender)
                     {
                         selectedFox = detectedFox;
                         detFoxScript.selectedFox = gameObject;
                         state = State.Reproduction;
-                        //Debug.Log(gameObject.name);
                     }
             
                 }
             }
+            detectedFox = null;
         }
     }
     void ReproductionMovement()
     {
         if (agent.enabled)
         {
-            if (agent.remainingDistance <= agent.stoppingDistance) //még nem érte el
+            if (agent.remainingDistance <= agent.stoppingDistance) 
             {
                 agent.SetDestination(selectedFox.transform.position);
-                if (selectedFox.activeSelf && Vector3.Distance(transform.position, selectedFox.transform.position) < 5f)
+                Debug.DrawRay(selectedFox.transform.position, Vector3.up, Color.green, 5.0f);
+                float distanceToFox = Vector3.Distance(transform.position, selectedFox.transform.position);
+
+                if (distanceToFox < 10f)
                 {
-                    //Már elérte a párt
                     if (gender == "female")
                     {
                         mateScript = selectedFox.GetComponent<FoxManager>();
                         isPregnant = true;
-                        Debug.Log("Terhes lett: " + gameObject.name);
-                        maturity = 0;
-                        state = State.Idle;
                     }
                     else
                     {
-                        maturity = 0;
-                        state = State.Idle;
+                        matingCooldown = 20;
                     }
-                    selectedFox = null;
+
+                    state = State.Scout;
+                    selectedRabbit = null;
                 }
-                else if (!selectedFox.activeSelf) // If the selected fox doesn't exist anymore
-                {
-                    selectedFox = null;
-                    state = State.Idle;
-                }
-            }                 
+            }
+            else{
+                selectedFox = null;
+                state = State.Scout;
+            }                
         }
     }
     void Reproduction()
@@ -293,21 +306,28 @@ public class FoxManager : MonoBehaviour
 
         // Az új egyed megörökli a szülő értékeit kisebb módosulásokkal
         FoxManager newFoxManager = newFox.GetComponent<FoxManager>();
-        newFoxManager.fatherId = id;
-        newFoxManager.foxName = foxName + GetRandomLetter();
-        Debug.Log("Gotya " + newFoxManager.foxName);
+
+        FoxManager sourceParent = Random.Range(0f, 1f) < 0.5f ? mateScript : this;
+
+        newFoxManager.gender = genderList[Random.Range(0, genderList.Count)];
+        if(newFoxManager.gender == "male"){
+            newFoxManager.foxName = mateScript.foxName + GetRandomLetter();
+        }
+        else{
+            newFoxManager.foxName = foxName + GetRandomLetter();
+        }
+        newFoxManager.fatherId = mateScript.id;
         newFoxManager.hungerLevel = 80f;
 
-        newFoxManager.fertility = newFoxManager.fertility += Random.Range(-1, 1);
-        newFoxManager.maturityLimit = newFoxManager.maturityLimit += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
-        newFoxManager.pregnancyTime = newFoxManager.pregnancyTime += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
+        newFoxManager.fertility = sourceParent.fertility + Random.Range(-1, 1);
+        newFoxManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-3f, 3f);
+        newFoxManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
 
-        newFoxManager.hungerLimit = newFoxManager.hungerLimit += Random.Range(-3f+pregnancyTime/10, 3f+pregnancyTime/10);
-        newFoxManager.hungerLoss = newFoxManager.hungerLoss += Random.Range(-3f+pregnancyTime/10, 3f+pregnancyTime/10);
-        newFoxManager.hungerMax = newFoxManager.hungerMax += Random.Range(-3f+pregnancyTime/10, 3f+pregnancyTime/10);
+        newFoxManager.hungerLimit = sourceParent.hungerLimit + Random.Range(-5f, 5f);
+        newFoxManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
 
-        newFoxManager.speed = newFoxManager.speed += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
-        newFoxManager.radius = newFoxManager.radius += Random.Range(-2f+pregnancyTime/10, 2f+pregnancyTime/10);
+        newFoxManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
+        newFoxManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7 * 2);
         
     }
 
@@ -317,7 +337,7 @@ public class FoxManager : MonoBehaviour
                 Vector3 point;
                 if (RandomPoint(centrePoint.position, radius, out point)) //pass in our centre point and radius of area
                 {
-                    Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
+                    Debug.DrawRay(point, Vector3.up, Color.black, 1.0f); //so you can see with gizmos
                     agent.SetDestination(point);
                 }
             }
@@ -362,8 +382,10 @@ public class FoxManager : MonoBehaviour
 
     void Chasing()
     {
-        Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
-        agent.SetDestination(selectedRabbit.transform.position);
+        if(selectedRabbit != null){
+            Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
+            agent.SetDestination(selectedRabbit.transform.position);
+        }
         if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
         {
             rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
