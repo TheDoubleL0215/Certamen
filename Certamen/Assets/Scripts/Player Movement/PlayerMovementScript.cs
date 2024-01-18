@@ -12,7 +12,7 @@ public class PlayerMovementScript : MonoBehaviour
     public float novekedesSebesseg = 20f; // a magass�g v�ltoz�s�nak sebess�ge
     public float smoothTime = 1.5f; // a "sprintel�s" �s "gyalogl�s" k�zti �tmenet m�rt�ke
     private float currentVelocity = 0.0f; // reference v�ltoz� a C#-nak
-    private float maxFlyHeight = 30f; // maximum magass�g
+    private float maxFlyHeight = 75f; // maximum magass�g
     private float currentSpeed; // sebess�g v�ltoz�
     private float smoothSpeed; // sim�tott gyorsul�s
     public CharacterController controller; // karakter ir�ny�t�ja
