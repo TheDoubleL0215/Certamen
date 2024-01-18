@@ -12,7 +12,7 @@ public class PlayerMovementScript : MonoBehaviour
     public float novekedesSebesseg = 20f; // a magasság változásának sebessége
     public float smoothTime = 1.5f; // a "sprintelés" és "gyaloglás" közti átmenet mértéke
     private float currentVelocity = 0.0f; // reference változó a C#-nak
-    private float maxFlyHeight = 90f; // maximum magasság
+    private float maxFlyHeight = 30f; // maximum magasság
     private float currentSpeed; // sebesség változó
     private float smoothSpeed; // simított gyorsulás
     public CharacterController controller; // karakter irányítója

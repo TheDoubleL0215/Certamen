@@ -424,7 +424,7 @@ public class rabbitManagerScript : MonoBehaviour
         {
             for (int i = 0; i < foxNumber; i++)
             {
-                Debug.Log("Pozicio: " + positions[i]);
+                //Debug.Log("Pozicio: " + positions[i]);
                 Vector3 escapeDirection = transform.position - positions[i];
                 escapeDirection.Normalize();
 
