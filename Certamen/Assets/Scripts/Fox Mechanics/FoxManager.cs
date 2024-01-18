@@ -91,7 +91,7 @@ public class FoxManager : MonoBehaviour
 
             fertility = Random.Range(2, 4);
             maturityLimit = Random.Range(20f, 25f);
-            maturity = Random.Range(0f, maturityLimit);
+            maturity = maturityLimit + 1f;
 
             hungerMax = Random.Range(90f, 110f);
             hungerLevel = Random.Range(70f, hungerMax);
@@ -316,6 +316,7 @@ public class FoxManager : MonoBehaviour
         else{
             newFoxManager.foxName = foxName + GetRandomLetter();
         }
+        Debug.Log(newFoxManager.foxName);
         newFoxManager.fatherId = mateScript.id;
         newFoxManager.hungerLevel = 80f;
 
