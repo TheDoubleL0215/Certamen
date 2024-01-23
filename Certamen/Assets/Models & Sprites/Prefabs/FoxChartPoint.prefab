@@ -9,15 +9,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3522444947141369241, guid: aa37f494d2836444d8cd28acfc938bb3, type: 3}
       propertyPath: m_Name
-      value: chartPointPrefab
+      value: FoxChartPoint
       objectReference: {fileID: 0}
     - target: {fileID: 5785292062421751040, guid: aa37f494d2836444d8cd28acfc938bb3, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5785292062421751040, guid: aa37f494d2836444d8cd28acfc938bb3, type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5785292062421751040, guid: aa37f494d2836444d8cd28acfc938bb3, type: 3}
       propertyPath: m_Color.r

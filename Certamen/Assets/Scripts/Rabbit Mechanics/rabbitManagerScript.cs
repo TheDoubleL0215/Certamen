@@ -97,8 +97,8 @@ public class rabbitManagerScript : MonoBehaviour
             rabbitName = "R - " + GetRandomLetter();
 
             fertility = Random.Range(3, 5);
-            maturityLimit = Random.Range(20, 25);
-            maturity = maturityLimit + 1f;
+            maturityLimit = Random.Range(20f, 25f);
+            maturity = Random.Range(15f, maturityLimit);
 
             hungerMax = Random.Range(145f, 155f);
             hungerLevel = Random.Range(120f, hungerMax);

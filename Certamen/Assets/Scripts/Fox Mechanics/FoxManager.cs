@@ -91,6 +91,7 @@ public class FoxManager : MonoBehaviour
 
             fertility = Random.Range(2, 4);
             maturityLimit = Random.Range(20f, 25f);
+            maturity = Random.Range(15f, maturityLimit);
             maturity = maturityLimit + 1f;
 
             hungerMax = Random.Range(90f, 110f);
