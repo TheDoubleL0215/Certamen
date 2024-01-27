@@ -45,7 +45,6 @@ public class FoxManager : MonoBehaviour
     public float baseHungerLimit;
     public float hungerMax = 100f;
     public float baseHungerMax;
-    public float rabbitSpeedLimit = 50f;
     //public float criticalpercent = 0.2f;
 
     [Header("Movement")]
@@ -92,14 +91,13 @@ public class FoxManager : MonoBehaviour
 
             fertility = Random.Range(2, 4);
             maturityLimit = Random.Range(20f, 25f);
-            maturity = Random.Range(15f, maturityLimit);
+            maturity = Random.Range(17f, maturityLimit);
 
-            hungerMax = Random.Range(90f, 110f);
-            hungerLevel = Random.Range(70f, hungerMax);
-            rabbitSpeedLimit = Random.Range(9f, 11f);
+            hungerMax = Random.Range(100f, 120f);
+            hungerLevel = Random.Range(100f, hungerMax);
 
-            speed = Random.Range(15f, 20f);
-            radius = Random.Range(30f, 40f);
+            speed = Random.Range(15f, 18f);
+            radius = Random.Range(25f, 35f);
         
             pregnancyTime = Random.Range(5f, 10f);
             gender = genderList[Random.Range(0, genderList.Count)];
@@ -112,7 +110,7 @@ public class FoxManager : MonoBehaviour
         baseHungerLimit = hungerLimit;
 
         //Computing hungerLoss based on attributes
-        hungerLoss = (hungerMax/25 + radius/10 + speed/8)/2;
+        hungerLoss = (hungerMax/30 + radius/8 + speed/6)/2;
 
         //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
@@ -138,7 +136,7 @@ public class FoxManager : MonoBehaviour
             hungerLoss = (hungerMax + 5)/maturityLimit;
         }
 
-        hungerLimit = hungerMax * 0.7f;
+        hungerLimit = hungerMax * 0.85f;
         hungerLevel -= Time.deltaTime * hungerLoss;
         age += Time.deltaTime;
 
@@ -314,8 +312,7 @@ public class FoxManager : MonoBehaviour
 
         newFoxManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
         newFoxManager.hungerLevel = newFoxManager.hungerMax;
-        newFoxManager.rabbitSpeedLimit = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
-
+        
         newFoxManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
         newFoxManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7 * 2);
         
@@ -356,10 +353,9 @@ public class FoxManager : MonoBehaviour
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
                             rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
-                            if(detRabbitScript.speed <= rabbitSpeedLimit){
-                                selectedRabbit = detectedRabbit;
-                                break;
-                            }
+                        
+                            selectedRabbit = detectedRabbit;
+                            break;
                         }
                     }
                 }
@@ -383,7 +379,7 @@ public class FoxManager : MonoBehaviour
         if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
         {
             rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
-            hungerLevel += rabbitScript.hungerLevel;
+            hungerLevel += rabbitScript.hungerLevel * 1.5f;
             if (hungerLevel > hungerMax)
             {
                 hungerLevel = hungerMax;

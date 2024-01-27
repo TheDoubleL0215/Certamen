@@ -99,7 +99,7 @@ public class rabbitManagerScript : MonoBehaviour
 
             fertility = Random.Range(3, 5);
             maturityLimit = Random.Range(20f, 25f);
-            maturity = Random.Range(15f, maturityLimit);
+            maturity = Random.Range(19f, maturityLimit);
 
             hungerMax = Random.Range(145f, 155f);
             hungerLevel = Random.Range(120f, hungerMax);
@@ -128,7 +128,7 @@ public class rabbitManagerScript : MonoBehaviour
         baseHungerLimit = hungerLimit;
 
         //Computing hungerLoss based on attributes
-        hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
+        hungerLoss = (hungerMax/30 + radius/8 + speed/6)/2;
 
         //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
