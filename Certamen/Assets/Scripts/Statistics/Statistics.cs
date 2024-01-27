@@ -22,7 +22,7 @@ public class Statistics : MonoBehaviour
     public GameObject fAttrChartPoint;
 
     [Header("Attributes")]
-    public List<string> attributeNames = new List<string> { "speed", "hungerLevel", "radius", "fertility", "hungerLoss", "hungerMax"};
+    public List<string> attributeNames = new List<string> { "baseSpeed", "baseHungerLevel", "baseRadius", "fertility", "hungerLoss", "baseHungerMax"};
 
 
     private int grassObjectCount = 0;

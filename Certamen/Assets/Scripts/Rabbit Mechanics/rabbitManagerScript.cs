@@ -43,6 +43,7 @@ public class rabbitManagerScript : MonoBehaviour
     public float hungerLevel = 100f;
     public float hungerLoss = 5f;
     public float hungerLimit = 100f;
+    public float baseHungerLimit;
     public float hungerMax = 150f;
     public float baseHungerMax;
     public float resourceFromGrass = 30f;
@@ -102,7 +103,6 @@ public class rabbitManagerScript : MonoBehaviour
 
             hungerMax = Random.Range(145f, 155f);
             hungerLevel = Random.Range(120f, hungerMax);
-            hungerLimit = Random.Range(95f, 85f);
 
             speed = Random.Range(8f, 12f);
             radius = Random.Range(18f, 22f);
@@ -120,10 +120,12 @@ public class rabbitManagerScript : MonoBehaviour
             GetComponent<Renderer>().material.color = Color.grey; // Set male color
         }
 
+
         // These will come handy at "ontogeny"
         baseHungerMax = hungerMax;
         baseRadius = radius;
         baseSpeed = speed;
+        baseHungerLimit = hungerLimit;
 
         //Computing hungerLoss based on attributes
         hungerLoss = (hungerMax/38 + radius/5 + speed/5)/2;
@@ -149,6 +151,7 @@ public class rabbitManagerScript : MonoBehaviour
             hungerLoss = (hungerMax + 5)/maturityLimit;
         }
 
+        hungerLimit = hungerMax * 0.7f;
         hungerLevel -= Time.deltaTime * hungerLoss;
         age += Time.deltaTime;
 
@@ -181,7 +184,9 @@ public class rabbitManagerScript : MonoBehaviour
             if(matingCooldown <= 0){
                 if (selectedRabbit == null)
                 {
-                    DetectMate();
+                    if (hungerLevel > hungerLimit * 0.5f){
+                        DetectMate();
+                    }
                 }
                 else{
                     state = State.Reproduction;
@@ -196,6 +201,7 @@ public class rabbitManagerScript : MonoBehaviour
             hungerMax = baseHungerMax * (0.8f + maturity/100);
             radius = baseRadius * (0.8f + maturity/100);
             speed = baseSpeed * (0.8f + maturity/100);
+            hungerLimit = baseHungerLimit * (0.8f + maturity/100);
             agent.speed = speed;
             
             maturity += Time.deltaTime;
@@ -211,8 +217,9 @@ public class rabbitManagerScript : MonoBehaviour
                     Reproduction();
                 }
                 isPregnant = false;
+                elapsedTime = 0f;
                 matingCooldown = 15f;
-                state = State.Hunger;
+                state = State.Idle;
             }
             else{
                 elapsedTime += Time.deltaTime;
@@ -254,7 +261,9 @@ public class rabbitManagerScript : MonoBehaviour
             {
                 rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
                 
-                if(detRabbitScript.maturity >= detRabbitScript.maturityLimit && detRabbitScript.state != State.Reproduction && detRabbitScript.matingCooldown <= 0f)
+                if(detRabbitScript.maturity >= detRabbitScript.maturityLimit 
+                && detRabbitScript.state != State.Reproduction && detRabbitScript.matingCooldown <= 0f 
+                && detRabbitScript.hungerLevel > detRabbitScript.hungerLimit * 0.5f)
                 {
                     if(detRabbitScript.gender != gender)
                     {
@@ -307,20 +316,6 @@ public class rabbitManagerScript : MonoBehaviour
         GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); 
         Random.InitState(System.DateTime.Now.Millisecond);
 
-        // Definiáld a pályaterület határait
-        float minX = -75f;
-        float maxX = 75f;
-        float minZ = -75f;
-        float maxZ = 75f;
-
-        Vector3 offset = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)); // Távolság a szülő rókától
-        Vector3 newPosition = transform.position + offset;
-
-        // Korlátozd a kis róka pozícióját a pálya határai között
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-        newPosition.z = Mathf.Clamp(newPosition.z, minZ, maxZ);
-
-        newRabbit.transform.position = newPosition;
 
 
         rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
@@ -336,7 +331,6 @@ public class rabbitManagerScript : MonoBehaviour
             newRabbitManager.rabbitName = rabbitName + GetRandomLetter();
         }
         newRabbitManager.fatherId = mateScript.id;
-        newRabbitManager.hungerLevel = 90f;
 
 
         // Apply mutations to the selected attributes
@@ -344,25 +338,33 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-3f, 3f);
         newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
 
-        newRabbitManager.hungerLimit = sourceParent.hungerLimit + Random.Range(-5f, 5f);
         newRabbitManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
+        
+        newRabbitManager.hungerLevel = hungerMax;
 
         newRabbitManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
         newRabbitManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7 * 2);
+        newRabbitManager.state = State.Idle;
     }
 
 
-    void IdleMovement(){
-        if(agent.remainingDistance <= agent.stoppingDistance) //done with path
-            {
-                Vector3 point;
-                if (RandomPoint(centrePoint.position, radius, out point)) //pass in our centre point and radius of area
-                {
-                    Debug.DrawRay(point, Vector3.up, Color.black, 1.0f); //so you can see with gizmos
-                    agent.SetDestination(point);
-                }
-            }
+   void IdleMovement()
+{
+    if (agent.remainingDistance <= agent.stoppingDistance) // done with path
+    {
+        Vector3 point;
+        if (RandomPoint(centrePoint.position, radius, out point)) // pass in our centre point and radius of area
+        {
+            Vector3 direction = (point - centrePoint.position).normalized;
+            float distance = scaleValue * 0.5f; // Set minDistance and maxDistance as needed
+            Vector3 newPosition = centrePoint.position + direction * distance;
+
+            Debug.DrawRay(newPosition, Vector3.up, Color.black, 1.0f); // so you can see with gizmos
+            agent.SetDestination(newPosition);
+        }
     }
+}
+
 
 
     void FoodMovement()
