@@ -20,10 +20,13 @@ public class Statistics : MonoBehaviour
     public GameObject fPopChartPoint;
     public GameObject rAttrChartPoint;
     public GameObject fAttrChartPoint;
+    private const int maxDataPoints = 1000; // Maximum number of data points to keep
+    private int currentDataPoints = 0;
 
     [Header("Attributes")]
-    public List<string> attributeNames = new List<string> { "baseSpeed", "baseHungerLevel", "baseRadius", "fertility", "hungerLoss", "baseHungerMax"};
-
+    float[,] rAttributeMatrix = new float[6, maxDataPoints];
+    float[,] fAttributeMatrix = new float[6, maxDataPoints];
+    public int choosenAttribute = 0;
 
     private int grassObjectCount = 0;
     private int rabbitObjectCount = 0;
@@ -37,9 +40,8 @@ public class Statistics : MonoBehaviour
     private float interval = 0.5f; // Store data interval
     private float timer = 0.0f;
     public float attrDivider = 40f;
-    public float attrSubtrahend = 750f;
+    public float Subtrahend = 500f;
     public float popDivider = 10f;
-    public float popSubtrahend = 500f;
 
     private List<GameObject> rPopPointList = new List<GameObject>(); // Store chart points
     private List<GameObject> fPopPointList = new List<GameObject>(); // Store chart points
@@ -48,7 +50,6 @@ public class Statistics : MonoBehaviour
 
     private bool chartNeedsUpdate = false; // Flag to determine if the chart needs updating
 
-    private const int maxDataPoints = 1000; // Maximum number of data points to keep
 
     private bool showP = false;
 
@@ -106,15 +107,15 @@ public class Statistics : MonoBehaviour
         {
             foxObjectCount = GameObject.FindGameObjectsWithTag("Fox").Length;
             foxCountText.text = "Rókák száma: " + foxObjectCount;
-            UpdateFoxData(attributeNames[0]);
+            UpdateFoxData();
 
             rabbitObjectCount = GameObject.FindGameObjectsWithTag("Rabbit").Length;
             rabbitCountText.text = "Nyulak száma: " + rabbitObjectCount;
-            UpdateRabbitData(attributeNames[0]);
+            UpdateRabbitData();
         }
     }
 
-    private void UpdateRabbitData(string attributeName)
+    private void UpdateRabbitData()
     {
         //  stores the current number of rabbits
         rabbitEvolution.Add(rabbitObjectCount);
@@ -126,7 +127,12 @@ public class Statistics : MonoBehaviour
 
         GameObject[] rabbitObjects = GameObject.FindGameObjectsWithTag("Rabbit");
 
-        float totalXAttributes = 0f;
+        float overallSpeed = 0f;
+        float overallHungerLevel = 0f;
+        float overallRadius = 0f;
+        float overallFertility = 0f;
+        float overallHungerLoss = 0f;
+        float overallHungerMax = 0f;
 
         // Loop through all the rabbit objects
         foreach (GameObject rabbitObject in rabbitObjects)
@@ -136,31 +142,47 @@ public class Statistics : MonoBehaviour
 
             if (rabbitScript != null)
             {
-                System.Type rabbitType = rabbitScript.GetType();
-                System.Reflection.FieldInfo field = rabbitType.GetField(attributeName);
-
-                if (field != null)
-                {
-                    object attributeValue = field.GetValue(rabbitScript);
-                    totalXAttributes += (float)attributeValue;
-                }
+                overallSpeed += rabbitScript.baseSpeed;
+                overallHungerLevel += rabbitScript.hungerLevel;
+                overallRadius += rabbitScript.baseRadius;
+                overallFertility += rabbitScript.fertility;
+                overallHungerLoss += rabbitScript.hungerLoss;
+                overallHungerMax += rabbitScript.baseHungerMax;
             }
         }
 
-        float averageXAttribute = rabbitObjectCount > 0 ? totalXAttributes / rabbitObjectCount : 0f;
-
+        float averageSpeed = rabbitObjectCount > 0 ? overallSpeed / rabbitObjectCount : 0f;
+        float averageHungerLevel = rabbitObjectCount > 0 ? overallHungerLevel / rabbitObjectCount : 0f;
+        float averageRadius = rabbitObjectCount > 0 ? overallRadius / rabbitObjectCount : 0f;
+        float averageFertility = rabbitObjectCount > 0 ? overallFertility / rabbitObjectCount : 0f;
+        float averageHungerLoss = rabbitObjectCount > 0 ? overallHungerLoss / rabbitObjectCount : 0f;
+        float averageHungerMax = rabbitObjectCount > 0 ? overallHungerMax / rabbitObjectCount : 0f;
     
-        rabbitAttributeAverages.Add(averageXAttribute);
+        rAttributeMatrix[0, currentDataPoints] = averageSpeed;
+        rAttributeMatrix[1, currentDataPoints] = averageHungerLevel;
+        rAttributeMatrix[2, currentDataPoints] = averageRadius;
+        rAttributeMatrix[3, currentDataPoints] = averageFertility;
+        rAttributeMatrix[4, currentDataPoints] = averageHungerLoss;
+        rAttributeMatrix[5, currentDataPoints] = averageHungerMax;
 
-        if (rabbitAttributeAverages.Count > maxDataPoints)
+
+        if (rAttributeMatrix.GetLength(1) > maxDataPoints)
         {
-            rabbitAttributeAverages.RemoveAt(0);
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < maxDataPoints - 1; j++)
+                {
+                    rAttributeMatrix[i, j] = rAttributeMatrix[i, j + 1];
+                }
+            }
         }
-
+        else{
+            currentDataPoints += 1;
+        }
         chartNeedsUpdate = true;
     }
 
-    private void UpdateFoxData(string attributeName)
+    private void UpdateFoxData()
     {
         //  stores the current number of rabbits
         foxEvolution.Add(foxObjectCount);
@@ -172,7 +194,12 @@ public class Statistics : MonoBehaviour
 
         GameObject[] foxObjects = GameObject.FindGameObjectsWithTag("Fox");
 
-        float totalXAttributes = 0f;
+        float overallSpeed = 0f;
+        float overallHungerLevel = 0f;
+        float overallRadius = 0f;
+        float overallFertility = 0f;
+        float overallHungerLoss = 0f;
+        float overallHungerMax = 0f;
 
         // Loop through all the fox objects
         foreach (GameObject foxObject in foxObjects)
@@ -182,24 +209,38 @@ public class Statistics : MonoBehaviour
 
             if (foxScript != null)
             {
-                System.Type foxType = foxScript.GetType();
-                System.Reflection.FieldInfo field = foxType.GetField(attributeName);
-
-                if (field != null)
-                {
-                    object attributeValue = field.GetValue(foxScript);
-                    totalXAttributes += (float)attributeValue;
-                }
+                overallSpeed += foxScript.baseSpeed;
+                overallHungerLevel += foxScript.hungerLevel;
+                overallRadius += foxScript.baseRadius;
+                overallFertility += foxScript.fertility;
+                overallHungerLoss += foxScript.hungerLoss;
+                overallHungerMax += foxScript.baseHungerMax;
             }
         }
 
-        float averageXAttribute = foxObjectCount > 0 ? totalXAttributes / foxObjectCount : 0f;
+        float averageSpeed = foxObjectCount > 0 ? overallSpeed / foxObjectCount : 0f;
+        float averageHungerLevel = foxObjectCount > 0 ? overallHungerLevel / foxObjectCount : 0f;
+        float averageRadius = foxObjectCount > 0 ? overallRadius / foxObjectCount : 0f;
+        float averageFertility = foxObjectCount > 0 ? overallFertility / foxObjectCount : 0f;
+        float averageHungerLoss = foxObjectCount > 0 ? overallHungerLoss / foxObjectCount : 0f;
+        float averageHungerMax = foxObjectCount > 0 ? overallHungerMax / foxObjectCount : 0f;
 
-        foxAttributeAverages.Add(averageXAttribute);
+        fAttributeMatrix[0, currentDataPoints] = averageSpeed;
+        fAttributeMatrix[1, currentDataPoints] = averageHungerLevel;
+        fAttributeMatrix[2, currentDataPoints] = averageRadius;
+        fAttributeMatrix[3, currentDataPoints] = averageFertility;
+        fAttributeMatrix[4, currentDataPoints] = averageHungerLoss;
+        fAttributeMatrix[5, currentDataPoints] = averageHungerMax;
 
-        if (foxAttributeAverages.Count > maxDataPoints)
+        if (fAttributeMatrix.GetLength(1) > maxDataPoints)
         {
-            foxAttributeAverages.RemoveAt(0);
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < maxDataPoints - 1; j++)
+                {
+                    fAttributeMatrix[i, j] = fAttributeMatrix[i, j + 1];
+                }
+            }
         }
         chartNeedsUpdate = true;
     }
@@ -207,6 +248,18 @@ public class Statistics : MonoBehaviour
 
     void UpdateAttrChart()
     {
+        float highestValue = 0f;
+
+        for (int i = 0; i < currentDataPoints; i++){
+            if(rAttributeMatrix[choosenAttribute, i] > highestValue){
+                highestValue = rAttributeMatrix[choosenAttribute, i];
+            }
+            if(fAttributeMatrix[choosenAttribute, i] > highestValue){
+                highestValue = fAttributeMatrix[choosenAttribute, i];
+            }
+        }
+        
+        attrDivider = 750f/highestValue;
         //RABBITS
         // Clear all previous chart points and lines
         foreach (var chartPoint in rAttrPointList)
@@ -225,16 +278,15 @@ public class Statistics : MonoBehaviour
             }
         }
 
-        int totalPoints = rabbitAttributeAverages.Count;
-        float widthPerPoint = rAttrPanel.rect.width / Mathf.Max(totalPoints - 1, 1); // Calculate the width per data point
+        float widthPerPoint = rAttrPanel.rect.width / Mathf.Max(currentDataPoints - 1, 1); // Calculate the width per data point
 
         // Reduce the distance between points by a factor (for example, dividing by 2)
         widthPerPoint /= 1.07f;
 
-        for (int i = 0; i < totalPoints; i++)
+        for (int i = 0; i < currentDataPoints; i++)
         {
             float xPosition = i * widthPerPoint;
-            float yPosition = rabbitAttributeAverages[i] * attrDivider - attrSubtrahend;
+            float yPosition = rAttributeMatrix[choosenAttribute, i] * attrDivider - Subtrahend;
 
 
             // Draw lines between points (except for the first point)
@@ -250,7 +302,7 @@ public class Statistics : MonoBehaviour
                 lineImage.color = Color.white; // Set line color
 
                 // Position the line between two points
-                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rabbitAttributeAverages[i - 1] * attrDivider - attrSubtrahend);
+                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rAttributeMatrix[choosenAttribute, i-1] * attrDivider - Subtrahend);
                 Vector2 endPoint = new Vector2(xPosition - 900, yPosition);
 
                 lineRectTransform.anchoredPosition = Vector2.Lerp(startPoint, endPoint, 0.5f);
@@ -287,10 +339,10 @@ public class Statistics : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < totalPoints; i++)
+        for (int i = 0; i < currentDataPoints; i++)
         {
             float xPosition = i * widthPerPoint;
-            float yPosition = foxAttributeAverages[i] * attrDivider - attrSubtrahend;
+            float yPosition = fAttributeMatrix[choosenAttribute, i] * attrDivider - Subtrahend;
 
 
             // Draw lines between points (except for the first point)
@@ -306,7 +358,7 @@ public class Statistics : MonoBehaviour
                 lineImage.color = Color.red; // Set line color
 
                 // Position the line between two points
-                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, foxAttributeAverages[i - 1] * attrDivider - attrSubtrahend);
+                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, fAttributeMatrix[choosenAttribute, i-1] * attrDivider - Subtrahend);
                 Vector2 endPoint = new Vector2(xPosition - 900, yPosition);
 
                 lineRectTransform.anchoredPosition = Vector2.Lerp(startPoint, endPoint, 0.5f);
@@ -326,6 +378,20 @@ public class Statistics : MonoBehaviour
 
     void UpdatePopNumChart()
     {
+        float highestValue = 0f;
+
+        for (int i = 0; i < currentDataPoints; i++){
+            if(rabbitEvolution[i] > highestValue){
+                highestValue = rabbitEvolution[i];
+            }
+            if(foxEvolution[i] > highestValue){
+                highestValue = foxEvolution[i];
+            }
+        }
+        
+        popDivider = 750f/highestValue;
+
+
         //RABBIT CHART//
         // Clear all previous chart points and lines
         foreach (var chartPoint in rPopPointList)
@@ -344,16 +410,15 @@ public class Statistics : MonoBehaviour
             }
         }
 
-        int totalPoints = rabbitEvolution.Count;
-        float widthPerPoint = rPopPanel.rect.width / Mathf.Max(totalPoints - 1, 1); // Calculate the width per data point
+        float widthPerPoint = rPopPanel.rect.width / Mathf.Max(currentDataPoints - 1, 1); // Calculate the width per data point
 
         // Reduce the distance between points by a factor (for example, dividing by 2)
         widthPerPoint /= 1.07f;
 
-        for (int i = 0; i < totalPoints; i++)
+        for (int i = 0; i < currentDataPoints; i++)
         {
             float xPosition = i * widthPerPoint;
-            float yPosition = rabbitEvolution[i] * popDivider - popSubtrahend;
+            float yPosition = rabbitEvolution[i] * popDivider - Subtrahend;
 
 
             // Draw lines between points (except for the first point)
@@ -369,7 +434,7 @@ public class Statistics : MonoBehaviour
                 lineImage.color = Color.white; // Set line color
 
                 // Position the line between two points
-                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rabbitEvolution[i - 1] * popDivider - popSubtrahend);
+                Vector2 startPoint = new Vector2((i - 1) * widthPerPoint - 900, rabbitEvolution[i - 1] * popDivider - Subtrahend);
                 Vector2 endPoint = new Vector2(xPosition - 900, yPosition);
 
                 lineRectTransform.anchoredPosition = Vector2.Lerp(startPoint, endPoint, 0.5f);
@@ -406,10 +471,10 @@ public class Statistics : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < totalPoints; i++)
+        for (int i = 0; i < currentDataPoints; i++)
         {
             float foxXPosition = i * widthPerPoint;
-            float foxYPosition = foxEvolution[i] * popDivider - popSubtrahend;
+            float foxYPosition = foxEvolution[i] * popDivider - Subtrahend;
 
 
             // Draw lines between points (except for the first point)
@@ -425,7 +490,7 @@ public class Statistics : MonoBehaviour
                 foxLineImage.color = Color.red; // Set line color
 
                 // Position the line between two points
-                Vector2 foxStartPoint = new Vector2((i - 1) * widthPerPoint - 900, foxEvolution[i - 1] * popDivider - popSubtrahend);
+                Vector2 foxStartPoint = new Vector2((i - 1) * widthPerPoint - 900, foxEvolution[i - 1] * popDivider - Subtrahend);
                 Vector2 foxEndPoint = new Vector2(foxXPosition - 900, foxYPosition);
 
                 foxLineRectTransform.anchoredPosition = Vector2.Lerp(foxStartPoint, foxEndPoint, 0.5f);
