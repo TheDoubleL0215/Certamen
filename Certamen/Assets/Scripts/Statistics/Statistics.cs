@@ -20,6 +20,8 @@ public class Statistics : MonoBehaviour
     public GameObject fPopChartPoint;
     public GameObject rAttrChartPoint;
     public GameObject fAttrChartPoint;
+    public RectTransform attrHLP;
+    public RectTransform popHLP;
     private const int maxDataPoints = 1000; // Maximum number of data points to keep
     private int currentDataPoints = 0;
 
@@ -259,7 +261,7 @@ public class Statistics : MonoBehaviour
             }
         }
         
-        attrDivider = 750f/highestValue;
+        attrDivider =  750f/(highestValue + (10 - highestValue % 10));
         //RABBITS
         // Clear all previous chart points and lines
         foreach (var chartPoint in rAttrPointList)
@@ -374,6 +376,46 @@ public class Statistics : MonoBehaviour
             rectTransform.anchoredPosition = new Vector2(xPosition - 900, yPosition);
             fAttrPointList.Add(fChartPoint);
         }
+
+        RectTransform graphPanel = fAttrPanel;
+
+        var helpingLines = attrHLP.GetComponentsInChildren<Image>();
+        foreach (var line in helpingLines)
+        {
+            if (line.gameObject.name == "HelpingLine")
+            {
+                Destroy(line.gameObject);
+            }
+        }
+
+
+        // Set the spacing between lines
+        float lineSpacing = 10f;
+
+        // Calculate the number of lines needed
+        int numLines = Mathf.FloorToInt(highestValue / lineSpacing) + 1;
+
+        // Loop through and add lines at the specified intervals
+        for (int i = 0; i < numLines + 1; i++)
+        {
+            // Calculate the y position for the line
+            float yPosition = (i * lineSpacing) * attrDivider - Subtrahend;
+
+            // Create a GameObject for the line
+            GameObject line = new GameObject("HelpingLine");
+            line.transform.SetParent(attrHLP, false);
+
+            RectTransform lineRectTransform = line.AddComponent<RectTransform>();
+            lineRectTransform.sizeDelta = new Vector2(graphPanel.rect.width-75, 2f); // Set line length and thickness
+
+            // Position the line
+            lineRectTransform.anchoredPosition = new Vector2(0, yPosition);
+
+            Image lineImage = line.AddComponent<Image>();
+            lineImage.color = Color.grey; // Set line color
+        }
+
+
     }
 
     void UpdatePopNumChart()
@@ -389,8 +431,7 @@ public class Statistics : MonoBehaviour
             }
         }
         
-        popDivider = 750f/highestValue;
-
+        popDivider = 750f/(highestValue + (10 - highestValue % 10));
 
         //RABBIT CHART//
         // Clear all previous chart points and lines
@@ -451,8 +492,6 @@ public class Statistics : MonoBehaviour
             rPopPointList.Add(rChartPoint);
         }
 
-
-
         //FOX CHART//
         // Clear all previous chart points and lines
         foreach (var chartPoint in fPopPointList)
@@ -505,6 +544,44 @@ public class Statistics : MonoBehaviour
             RectTransform rectTransform = fChartPoint.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(foxXPosition - 900, foxYPosition);
             fPopPointList.Add(fChartPoint);
+        }
+
+        RectTransform graphPanel = fPopPanel;
+
+        var helpingLines = popHLP.GetComponentsInChildren<Image>();
+        foreach (var line in helpingLines)
+        {
+            if (line.gameObject.name == "HelpingLine")
+            {
+                Destroy(line.gameObject);
+            }
+        }
+
+
+        // Set the spacing between lines
+        float lineSpacing = 10f;
+
+        // Calculate the number of lines needed
+        int numLines = Mathf.FloorToInt(highestValue / lineSpacing) + 1;
+
+        // Loop through and add lines at the specified intervals
+        for (int i = 0; i < numLines + 1; i++)
+        {
+            // Calculate the y position for the line
+            float yPosition = (i * lineSpacing) * popDivider - Subtrahend;
+
+            // Create a GameObject for the line
+            GameObject line = new GameObject("HelpingLine");
+            line.transform.SetParent(popHLP, false);
+
+            RectTransform lineRectTransform = line.AddComponent<RectTransform>();
+            lineRectTransform.sizeDelta = new Vector2(graphPanel.rect.width-75, 2f); // Set line length and thickness
+
+            // Position the line
+            lineRectTransform.anchoredPosition = new Vector2(0, yPosition);
+
+            Image lineImage = line.AddComponent<Image>();
+            lineImage.color = Color.grey; // Set line color
         }
     }
 }

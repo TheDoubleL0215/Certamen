@@ -29,7 +29,7 @@ public class FoxManager : MonoBehaviour
     public float matingCooldown = 0f;
 
     [Header("Components")]
-
+    public Transform foxParentObject;
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedRabbit;
@@ -285,7 +285,7 @@ public class FoxManager : MonoBehaviour
     }
     void Reproduction()
     {            
-        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation); //klónozzuk a Rabbit objektumot
+        GameObject newFox = Instantiate(Fox, transform.position, transform.rotation, foxParentObject); //klónozzuk a Rabbit objektumot
 
         Random.InitState(System.DateTime.Now.Millisecond);
 

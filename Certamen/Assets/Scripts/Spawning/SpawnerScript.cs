@@ -112,10 +112,14 @@ public class SpawnerScript : MonoBehaviour
 
             if (Physics.Raycast(raycastStart, Vector3.down, out RaycastHit hit, Mathf.Infinity))
             {
-                if (hit.point.y > 12.5f)
+                // Check if the hit object is the ground plane
+                if (hit.transform.CompareTag("Ground"))
                 {
-                    Instantiate(Grass, new Vector3(tryPositionX, hit.point.y, tryPositionZ), Quaternion.identity, grassParentObj.transform);
-                    placed = true;
+                    if (hit.point.y > 12.5f)
+                    {
+                        Instantiate(Grass, new Vector3(tryPositionX, hit.point.y, tryPositionZ), Quaternion.identity, grassParentObj.transform);
+                        placed = true;
+                    }
                 }
             }
         }

@@ -30,7 +30,7 @@ public class rabbitManagerScript : MonoBehaviour
     public float matingCooldown = 0f;
 
     [Header("Components")]
-
+    public Transform rabbitParentObject;
     public NavMeshAgent agent;
     public Transform centrePoint; 
     [SerializeField] private GameObject selectedPlant;
@@ -47,7 +47,8 @@ public class rabbitManagerScript : MonoBehaviour
     public float hungerMax = 150f;
     public float baseHungerMax;
     public float resourceFromGrass = 30f;
-    //public float criticalpercent = 0.2f;
+    public int foodExpectation = 15;
+    public bool wantToExplore = false;
 
     [Header("Movement")]
 
@@ -103,6 +104,7 @@ public class rabbitManagerScript : MonoBehaviour
 
             hungerMax = Random.Range(145f, 155f);
             hungerLevel = Random.Range(120f, hungerMax);
+            foodExpectation = Random.Range(12, 16);
 
             speed = Random.Range(8f, 12f);
             radius = Random.Range(18f, 22f);
@@ -313,7 +315,7 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Reproduction()
     {
-        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation); 
+        GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation, rabbitParentObject); 
         Random.InitState(System.DateTime.Now.Millisecond);
 
 
@@ -339,9 +341,9 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
 
         newRabbitManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
+        newRabbitManager.foodExpectation = sourceParent.foodExpectation + Random.Range(-3, 3);
         
         newRabbitManager.hungerLevel = hungerMax;
-
         newRabbitManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
         newRabbitManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7 * 2);
         newRabbitManager.state = State.Idle;
@@ -355,8 +357,13 @@ public class rabbitManagerScript : MonoBehaviour
         Vector3 point;
         if (RandomPoint(centrePoint.position, radius, out point)) // pass in our centre point and radius of area
         {
+
             Vector3 direction = (point - centrePoint.position).normalized;
-            float distance = scaleValue * 0.5f; // Set minDistance and maxDistance as needed
+            float distance = 10f;
+            if (wantToExplore == true){
+                distance = scaleValue * 0.5f; // Set minDistance and maxDistance as needed
+                wantToExplore = false;
+            }
             Vector3 newPosition = centrePoint.position + direction * distance;
 
             Debug.DrawRay(newPosition, Vector3.up, Color.black, 1.0f); // so you can see with gizmos
@@ -376,7 +383,20 @@ public class rabbitManagerScript : MonoBehaviour
                 if (selectedPlant == null)
                 {
                     //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
+                    int grassNum = 0;
                     Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+                    for (int i = 0; i < colliders.Length; i++)
+                    {
+                        GameObject detectedPlant = colliders[i].gameObject;
+
+                        if (detectedPlant.CompareTag("Grass"))
+                        {
+                            grassNum += 1;
+                        }
+                    }
+                    if(grassNum < foodExpectation){
+                        wantToExplore = true;
+                    }
                     for (int i = 0; i < colliders.Length; i++)
                     {
                         if (selectedPlant == null)
