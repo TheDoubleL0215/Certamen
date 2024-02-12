@@ -18,7 +18,7 @@ public class FoxManager : MonoBehaviour
     public string foxName { get; set; }
 
     [Header("Reproduction")]
-    public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
+    public int fertility = 4; // ez határozza meg, hány kölyke lehet az állatnak
     public float maturity = 0f; // érettség, szaporodásban van szerepe
     public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
     public List<string> genderList  = new List<string>{"male", "female"};
@@ -45,7 +45,6 @@ public class FoxManager : MonoBehaviour
     public float baseHungerLimit;
     public float hungerMax = 100f;
     public float baseHungerMax;
-    //public float criticalpercent = 0.2f;
 
     [Header("Movement")]
     public float speed = 15f;
@@ -60,7 +59,7 @@ public class FoxManager : MonoBehaviour
     public float newbornScale;
 
     [Header("Other")]
-    public float age; // nyúl életkora
+    public float age;
     public enum State{
         Idle,
         Scout,
@@ -79,7 +78,6 @@ public class FoxManager : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
-        // Define radius
         state = State.Scout;
 
         id = Random.Range(10000, 99999);
@@ -128,7 +126,6 @@ public class FoxManager : MonoBehaviour
         gameObject.name = foxName;
     }
 
-    // Update is called once per frame
     void Update()
     {
         //To avoid too low hungarLoss and infinite energy
@@ -333,6 +330,7 @@ public class FoxManager : MonoBehaviour
                 }
             }
     }
+    // Felderíti a róka, hogy van-e nyúl a látótávolságán belül, ha van akkor kiszemeli és a Scouting fázisban üldözi
     void Scouting()
     {
         if (agent.enabled)
@@ -362,14 +360,13 @@ public class FoxManager : MonoBehaviour
                         
                 if (selectedRabbit == null)
                 {
-                    //Debug.Log("Nem érzékel nyulat");
                     IdleMovement();
                 }                   
             }
            
         }
     }
-
+    // üldözi a kiszemelt nyulat
     void Chasing()
     {
         if(selectedRabbit != null){
@@ -386,19 +383,16 @@ public class FoxManager : MonoBehaviour
             }
             Destroy(selectedRabbit);
             selectedRabbit = null;
-            //state = State.Idle;
         }
     }
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
 
-        Vector3 randomPoint = center + Random.insideUnitSphere * range; //random point in a sphere 
+        Vector3 randomPoint = center + Random.insideUnitSphere * range;
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas)) //documentation: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
+        if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
         { 
-            //the 1.0f is the max distance from the random point to a point on the navmesh, might want to increase if range is big
-            //or add a for loop like in the documentation
             result = hit.position;
             return true;
         }
@@ -409,7 +403,7 @@ public class FoxManager : MonoBehaviour
 
     char GetRandomLetter()
     {
-        const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // All possible letters
+        const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         System.Random random = new System.Random();
         int index = random.Next(letters.Length);
         return letters[index];

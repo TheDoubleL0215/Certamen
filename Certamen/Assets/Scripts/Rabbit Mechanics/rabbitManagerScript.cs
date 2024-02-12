@@ -12,22 +12,22 @@ public class rabbitManagerScript : MonoBehaviour
 {
     Rigidbody rb;
 
+    //TULAJDONSÁGOK//
     [Header("ID")]
     public int id; // egyéni azonosító
     public int fatherId; // örökölt azonosító
-    //public string name;
     public string rabbitName { get; set; }
 
     [Header("Reproduction")]
-    public int fertility = 4; // ez határozza meg, hány kölyke lehet a nyúlnak
-    public float maturity = 0f; // érettség, szaporodásban van szerepe
-    public float maturityLimit = 16; // ezt az értéket elérve, végbe megy a szaporodás
+    public int fertility; // ez határozza meg, hány kölyke lehet a nyúlnak
+    public float maturity; // érettség, szaporodásban van szerepe
+    public float maturityLimit; // ivarérettségi szint
     public List<string> genderList  = new List<string>{"male", "female"};
-    public string gender;
-    public float pregnancyTime;
+    public string gender; // állat neme
+    public float pregnancyTime; // vemhesség időtartama
     public bool isPregnant = false;
-    private float elapsedTime = 0f;
-    public float matingCooldown = 0f;
+    private float elapsedTime;
+    public float matingCooldown;
 
     [Header("Components")]
     public Transform rabbitParentObject;
@@ -40,37 +40,36 @@ public class rabbitManagerScript : MonoBehaviour
 
     [Header("Hunger")]
 
-    public float hungerLevel = 100f;
-    public float hungerLoss = 5f;
-    public float hungerLimit = 100f;
+    public float hungerLevel; // jelenlegi éhségi szint
+    public float hungerLoss; // másodpercenkénti éhezés
+    public float hungerLimit; // jóllakottsági érték
     public float baseHungerLimit;
-    public float hungerMax = 150f;
+    public float hungerMax; // maximális éhségi szint
     public float baseHungerMax;
-    public float resourceFromGrass = 30f;
-    public int foodExpectation = 15;
-    public bool wantToExplore = false;
+    public float resourceFromGrass;
+    public int foodExpectation;
+    public bool wantToExplore;
 
     [Header("Movement")]
 
-    public float speed = 10f;
+    public float speed; // sebesség
     public float baseSpeed;
-    public float range = 5f; //radius
-    public float radius = 20f;
+    public float radius; // látótávolság
     public float baseRadius;
 
     [Header("Escaping Mechanics")]
     public int detectedFoxes;
-    public bool detectedPredators = false;
+    public bool detectedPredators;
     private List<Vector3> foxPositions = new List<Vector3>();
 
-    [Header("Scale")]
+    [Header("Scale")] // méretezés
     public float scaleValue;
     public float adultScale;
     public float newbornScale;
 
     [Header("Other")]
     public float age; // nyúl életkora
-    public enum State
+    public enum State // fázisok
     {
         Idle,
         Hunger,
@@ -91,6 +90,7 @@ public class rabbitManagerScript : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         state = State.Hunger;
 
+        // Egyedi tulajdonságok kezdéskor
         id = Random.Range(10000, 99999);
         age = 0f;
         maturity = 0f;
@@ -115,24 +115,23 @@ public class rabbitManagerScript : MonoBehaviour
 
         if (gender == "female")
         {
-            GetComponent<Renderer>().material.color = Color.white; // Set female color
+            GetComponent<Renderer>().material.color = Color.white;
         }
         else
         {
-            GetComponent<Renderer>().material.color = Color.grey; // Set male color
+            GetComponent<Renderer>().material.color = Color.grey;
         }
 
 
-        // These will come handy at "ontogeny"
+        
         baseHungerMax = hungerMax;
         baseRadius = radius;
         baseSpeed = speed;
         baseHungerLimit = hungerLimit;
 
-        //Computing hungerLoss based on attributes
+        //hungerLoss kiszámolása
         hungerLoss = (hungerMax/30 + radius/8 + speed/6)/2;
 
-        //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             maturityLimit = hungerMax/hungerLoss + 1f;
         }
@@ -145,14 +144,12 @@ public class rabbitManagerScript : MonoBehaviour
         gameObject.name = rabbitName;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //To avoid too low hungarLoss and infinite energy
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
         }
-
+        // Éhség és életkor folyamatos növelése
         hungerLimit = hungerMax * 0.7f;
         hungerLevel -= Time.deltaTime * hungerLoss;
         age += Time.deltaTime;
@@ -161,7 +158,7 @@ public class rabbitManagerScript : MonoBehaviour
             matingCooldown -= Time.deltaTime;
         }
 
-
+        // Viselkedési fázis meghatározása
         if(state != State.Reproduction){
             if(hungerLevel <= hungerLimit){
                 state = State.Hunger;
@@ -180,7 +177,7 @@ public class rabbitManagerScript : MonoBehaviour
             Destroy(gameObject);
         }
 
-
+        // Szaporodással kapcsolatos ellenőrzések
         if (maturity  >= maturityLimit)
         {
             if(matingCooldown <= 0){
@@ -196,10 +193,10 @@ public class rabbitManagerScript : MonoBehaviour
             }
         }
         else{
-            //Inscreasing scale
+            // Méret növelése
             scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
-            //Increasing attributes based on maturity
+            // tulajdonságok növelése az ivarérettség függvényében
             hungerMax = baseHungerMax * (0.8f + maturity/100);
             radius = baseRadius * (0.8f + maturity/100);
             speed = baseSpeed * (0.8f + maturity/100);
@@ -213,7 +210,7 @@ public class rabbitManagerScript : MonoBehaviour
         {
             if (elapsedTime >= pregnancyTime)
             {   
-                for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt
+                for (int i = 0; i < fertility; i++) // "fertility" változó értékeszer meghívja a "Reproduction()" függvényt, kis nyulak születése
                 {
                     isPregnant = false;
                     Reproduction();
@@ -233,6 +230,7 @@ public class rabbitManagerScript : MonoBehaviour
             state = State.Escape;
         }
 
+        // Fázisok
         switch (state){
             case State.Idle:
                 IdleMovement();
@@ -252,6 +250,8 @@ public class rabbitManagerScript : MonoBehaviour
         }
 
     }
+
+    // Ha a látóterén belül található olyan nyúl, amely alkalmas pár lehet, kiválasztja magának
     void DetectMate()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
@@ -280,6 +280,7 @@ public class rabbitManagerScript : MonoBehaviour
         }
     }
 
+    // Ha van kiválasztott pár, akkor elkezd felé közelíteni és ha bizonyos távolságon belül vannak egymástól, megtermékenyül a nőstény
     void ReproductionMovement()
     {
         if (agent.enabled && selectedRabbit != null && selectedRabbit.activeSelf)
@@ -306,23 +307,19 @@ public class rabbitManagerScript : MonoBehaviour
         }
         else
         {
-            // If the selected rabbit doesn't exist anymore or is not active, reset the state
             selectedRabbit = null;
             state = State.Idle;
         }
     }
 
-
+    // Itt születik meg az új egyed és kapja meg kezdeti értékeit
     void Reproduction()
     {
         GameObject newRabbit = Instantiate(Rabbit, transform.position, transform.rotation, rabbitParentObject); 
         Random.InitState(System.DateTime.Now.Millisecond);
 
-
-
         rabbitManagerScript newRabbitManager = newRabbit.GetComponent<rabbitManagerScript>();
         
-        // Randomly choose between father and mother
         rabbitManagerScript sourceParent = Random.Range(0f, 1f) < 0.5f ? mateScript : this;
 
         newRabbitManager.gender = genderList[Random.Range(0, genderList.Count)];
@@ -335,7 +332,7 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.fatherId = mateScript.id;
 
 
-        // Apply mutations to the selected attributes
+        // Mutációk
         newRabbitManager.fertility = sourceParent.fertility + Random.Range(-1, 1);
         newRabbitManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-3f, 3f);
         newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
@@ -349,40 +346,39 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.state = State.Idle;
     }
 
-
+    // Véletlenszerűen lézeng ilyenkor az állat
    void IdleMovement()
-{
-    if (agent.remainingDistance <= agent.stoppingDistance) // done with path
     {
-        Vector3 point;
-        if (RandomPoint(centrePoint.position, radius, out point)) // pass in our centre point and radius of area
+        if (agent.remainingDistance <= agent.stoppingDistance)
         {
+            Vector3 point;
+            if (RandomPoint(centrePoint.position, radius, out point))
+            {
 
-            Vector3 direction = (point - centrePoint.position).normalized;
-            float distance = 10f;
-            if (wantToExplore == true){
-                distance = scaleValue * 0.5f; // Set minDistance and maxDistance as needed
-                wantToExplore = false;
+                Vector3 direction = (point - centrePoint.position).normalized;
+                float distance = 10f;
+                if (wantToExplore == true){
+                    distance = scaleValue * 0.5f;
+                    wantToExplore = false;
+                }
+                Vector3 newPosition = centrePoint.position + direction * distance;
+
+                Debug.DrawRay(newPosition, Vector3.up, Color.black, 1.0f);
+                agent.SetDestination(newPosition);
             }
-            Vector3 newPosition = centrePoint.position + direction * distance;
-
-            Debug.DrawRay(newPosition, Vector3.up, Color.black, 1.0f); // so you can see with gizmos
-            agent.SetDestination(newPosition);
         }
     }
-}
 
 
-
+    // Fűcsomók után kutat az állat és ha talált egyet a látóterületén belül, akkor elkezd felé haladni, majd megeszi
     void FoodMovement()
     {
         if (agent.enabled)
         {
-            if (agent.remainingDistance <= agent.stoppingDistance) //done with path
+            if (agent.remainingDistance <= agent.stoppingDistance)
             {
                 if (selectedPlant == null)
                 {
-                    //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
                     int grassNum = 0;
                     Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
                     for (int i = 0; i < colliders.Length; i++)
@@ -427,7 +423,7 @@ public class rabbitManagerScript : MonoBehaviour
                         selectedPlant = null;
                         state = State.Idle;
                     }
-                    else if (!selectedPlant.activeSelf) // If the selected rabbit doesn't exist anymore
+                    else if (!selectedPlant.activeSelf)
                     {
                         selectedPlant = null;
                         state = State.Idle;
@@ -437,11 +433,12 @@ public class rabbitManagerScript : MonoBehaviour
         }
     }
 
+    // Menekül az észlelt rókák elől
     void EscapeMovement(int foxNumber, List<Vector3> positions)
     {
         Vector3 escapeDestination = Vector3.zero;
 
-        // Ha csak egy róka van, akkor az összes nyúl meneküljön az ellenkező irányba
+        // Ha csak egy róka van, a nyúl meneküljön az ellenkező irányba
         if (foxNumber == 1)
         {
             for (int i = 0; i < foxNumber; i++)
@@ -454,12 +451,11 @@ public class rabbitManagerScript : MonoBehaviour
                 agent.SetDestination(escapeDestination);
             }
         }
-        else // Ha több róka van, a nyulak a legkevesebb róka felé meneküljenek
+        else
         {
             Vector3 closestFoxPosition = Vector3.zero;
             float closestFoxDistance = Mathf.Infinity;
-
-            // Megkeressük a legközelebbi róka pozícióját a nyúlhoz
+            
             for (int i = 0; i < foxNumber; i++)
             {
                 float distanceToFox = Vector3.Distance(transform.position, positions[i]);
@@ -470,7 +466,6 @@ public class rabbitManagerScript : MonoBehaviour
                 }
             }
 
-            // Az összes nyúl meneküljön a legközelebbi róka felé
             Vector3 escapeDirection = transform.position - closestFoxPosition;
             escapeDirection.Normalize();
 
@@ -480,9 +475,7 @@ public class rabbitManagerScript : MonoBehaviour
         }
     }
 
-
-
-
+    // Ez a fázis a menekülés kivételével minden fázisban meg van hívva és ellenőrzi, hogy van-e róka látótávon belül. Ha van akkor menkülés fázisba kapcsol
     void DetectingPredators(State currentState)
     {
         Collider[] objects = Physics.OverlapSphere(transform.position, radius);
@@ -516,7 +509,7 @@ public class rabbitManagerScript : MonoBehaviour
         }
     }
 
-
+    // Ennek a segítségével generálunk véletlenszerű pozíciókat, ha szükséges
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
 
@@ -534,6 +527,7 @@ public class rabbitManagerScript : MonoBehaviour
         return false;
     }
 
+    // Véletlen betű generátor, az állatok elnevezésénél használjuk
     char GetRandomLetter()
     {
         const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // All possible letters
