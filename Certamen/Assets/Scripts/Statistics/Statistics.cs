@@ -96,6 +96,29 @@ public class Statistics : MonoBehaviour
         }
     }
 
+    public void ChooseAttribute(int val)
+    {
+        if(val == 0){
+            choosenAttribute = 0;
+        }
+        if(val == 1){
+            choosenAttribute = 1;
+        }
+        if(val == 2 ){
+            choosenAttribute = 2;
+        }
+        if(val == 3){
+            choosenAttribute = 3;
+        }
+        if(val == 4 ){
+            choosenAttribute = 4;
+        }
+        if(val == 5 ){
+            choosenAttribute = 5;
+        }
+        UpdateAttrChart();
+    }
+
     private void UpdateStatistics()
     {
         // Only update the counts if necessary (when objects are added/removed)
@@ -115,8 +138,8 @@ public class Statistics : MonoBehaviour
             rabbitCountText.text = "Nyulak száma: " + rabbitObjectCount;
             UpdateRabbitData();
         }
-    }
 
+    }
     private void UpdateRabbitData()
     {
         //  stores the current number of rabbits
@@ -130,9 +153,9 @@ public class Statistics : MonoBehaviour
         GameObject[] rabbitObjects = GameObject.FindGameObjectsWithTag("Rabbit");
 
         float overallSpeed = 0f;
-        float overallHungerLevel = 0f;
         float overallRadius = 0f;
-        float overallFertility = 0f;
+        float overallMtrtyLMT = 0f;
+        float overallPregnancyTime = 0f;
         float overallHungerLoss = 0f;
         float overallHungerMax = 0f;
 
@@ -145,25 +168,25 @@ public class Statistics : MonoBehaviour
             if (rabbitScript != null)
             {
                 overallSpeed += rabbitScript.baseSpeed;
-                overallHungerLevel += rabbitScript.hungerLevel;
                 overallRadius += rabbitScript.baseRadius;
-                overallFertility += rabbitScript.fertility;
+                overallMtrtyLMT += rabbitScript.maturityLimit;
+                overallPregnancyTime += rabbitScript.pregnancyTime;
                 overallHungerLoss += rabbitScript.hungerLoss;
                 overallHungerMax += rabbitScript.baseHungerMax;
             }
         }
 
         float averageSpeed = rabbitObjectCount > 0 ? overallSpeed / rabbitObjectCount : 0f;
-        float averageHungerLevel = rabbitObjectCount > 0 ? overallHungerLevel / rabbitObjectCount : 0f;
         float averageRadius = rabbitObjectCount > 0 ? overallRadius / rabbitObjectCount : 0f;
-        float averageFertility = rabbitObjectCount > 0 ? overallFertility / rabbitObjectCount : 0f;
+        float averageMtrtyLMT = rabbitObjectCount > 0 ? overallMtrtyLMT / rabbitObjectCount : 0f;
+        float averagePregnancyTime = rabbitObjectCount > 0 ? overallPregnancyTime / rabbitObjectCount : 0f;
         float averageHungerLoss = rabbitObjectCount > 0 ? overallHungerLoss / rabbitObjectCount : 0f;
         float averageHungerMax = rabbitObjectCount > 0 ? overallHungerMax / rabbitObjectCount : 0f;
     
         rAttributeMatrix[0, currentDataPoints] = averageSpeed;
-        rAttributeMatrix[1, currentDataPoints] = averageHungerLevel;
-        rAttributeMatrix[2, currentDataPoints] = averageRadius;
-        rAttributeMatrix[3, currentDataPoints] = averageFertility;
+        rAttributeMatrix[1, currentDataPoints] = averageRadius;
+        rAttributeMatrix[2, currentDataPoints] = averageMtrtyLMT;
+        rAttributeMatrix[3, currentDataPoints] = averagePregnancyTime;
         rAttributeMatrix[4, currentDataPoints] = averageHungerLoss;
         rAttributeMatrix[5, currentDataPoints] = averageHungerMax;
 
@@ -197,9 +220,9 @@ public class Statistics : MonoBehaviour
         GameObject[] foxObjects = GameObject.FindGameObjectsWithTag("Fox");
 
         float overallSpeed = 0f;
-        float overallHungerLevel = 0f;
         float overallRadius = 0f;
-        float overallFertility = 0f;
+        float overallMtrtyLMT = 0f;
+        float overallPregnancyTime = 0f;
         float overallHungerLoss = 0f;
         float overallHungerMax = 0f;
 
@@ -212,25 +235,25 @@ public class Statistics : MonoBehaviour
             if (foxScript != null)
             {
                 overallSpeed += foxScript.baseSpeed;
-                overallHungerLevel += foxScript.hungerLevel;
                 overallRadius += foxScript.baseRadius;
-                overallFertility += foxScript.fertility;
+                overallMtrtyLMT += foxScript.maturityLimit;
+                overallPregnancyTime += foxScript.pregnancyTime;
                 overallHungerLoss += foxScript.hungerLoss;
                 overallHungerMax += foxScript.baseHungerMax;
             }
         }
 
         float averageSpeed = foxObjectCount > 0 ? overallSpeed / foxObjectCount : 0f;
-        float averageHungerLevel = foxObjectCount > 0 ? overallHungerLevel / foxObjectCount : 0f;
         float averageRadius = foxObjectCount > 0 ? overallRadius / foxObjectCount : 0f;
-        float averageFertility = foxObjectCount > 0 ? overallFertility / foxObjectCount : 0f;
+        float averageMtrtyLMT = foxObjectCount > 0 ? overallMtrtyLMT / foxObjectCount : 0f;
+        float averagePregnancyTime = foxObjectCount > 0 ? overallPregnancyTime / foxObjectCount : 0f;
         float averageHungerLoss = foxObjectCount > 0 ? overallHungerLoss / foxObjectCount : 0f;
         float averageHungerMax = foxObjectCount > 0 ? overallHungerMax / foxObjectCount : 0f;
 
         fAttributeMatrix[0, currentDataPoints] = averageSpeed;
-        fAttributeMatrix[1, currentDataPoints] = averageHungerLevel;
         fAttributeMatrix[2, currentDataPoints] = averageRadius;
-        fAttributeMatrix[3, currentDataPoints] = averageFertility;
+        fAttributeMatrix[1, currentDataPoints] = averageMtrtyLMT;
+        fAttributeMatrix[3, currentDataPoints] = averagePregnancyTime;
         fAttributeMatrix[4, currentDataPoints] = averageHungerLoss;
         fAttributeMatrix[5, currentDataPoints] = averageHungerMax;
 

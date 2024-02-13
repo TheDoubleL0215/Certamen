@@ -69,12 +69,15 @@ public class rabbitManagerScript : MonoBehaviour
 
     [Header("Other")]
     public float age; // nyúl életkora
+    private float dyingAge;
+    private bool isDead = false;
     public enum State // fázisok
     {
         Idle,
         Hunger,
         Escape,
-        Reproduction
+        Reproduction,
+        Death
     }
 
     [SerializeField] public State state;
@@ -100,7 +103,7 @@ public class rabbitManagerScript : MonoBehaviour
 
             fertility = Random.Range(3, 5);
             maturityLimit = Random.Range(20f, 25f);
-            maturity = Random.Range(19f, maturityLimit);
+            maturity = Random.Range(17f, maturityLimit);
 
             hungerMax = Random.Range(145f, 155f);
             hungerLevel = Random.Range(120f, hungerMax);
@@ -149,7 +152,6 @@ public class rabbitManagerScript : MonoBehaviour
         if(hungerMax/hungerLoss > maturityLimit){
             hungerLoss = (hungerMax + 5)/maturityLimit;
         }
-        // Éhség és életkor folyamatos növelése
         hungerLimit = hungerMax * 0.7f;
         hungerLevel -= Time.deltaTime * hungerLoss;
         age += Time.deltaTime;
@@ -172,10 +174,23 @@ public class rabbitManagerScript : MonoBehaviour
                 state = State.Idle;
             }
         }
-
-        if (hungerLevel <= 0){
-            Destroy(gameObject);
+        // Állat halála
+        if (hungerLevel <= 0 && isDead == true){
+            state = State.Death;
+            Death();
         }
+        if (hungerLevel <= 0 && isDead != true){
+           dyingAge = age;
+           isDead = true;
+           state = State.Death;
+           agent.speed = 0;
+           radius = 0;
+           if (selectedPlant != null){
+                selectedPlant.tag = "Grass";
+           }
+           Death();
+        }
+        
 
         // Szaporodással kapcsolatos ellenőrzések
         if (maturity  >= maturityLimit)
@@ -246,6 +261,9 @@ public class rabbitManagerScript : MonoBehaviour
             case State.Reproduction:
                 ReproductionMovement();
                 DetectingPredators(State.Reproduction);
+                break;
+            case State.Death:
+                Death();
                 break;
         }
 
@@ -334,7 +352,7 @@ public class rabbitManagerScript : MonoBehaviour
 
         // Mutációk
         newRabbitManager.fertility = sourceParent.fertility + Random.Range(-1, 1);
-        newRabbitManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-3f, 3f);
+        newRabbitManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-5f, 5f);
         newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
 
         newRabbitManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
@@ -379,7 +397,7 @@ public class rabbitManagerScript : MonoBehaviour
             {
                 if (selectedPlant == null)
                 {
-                    int grassNum = 0;
+                    List<GameObject> detectedGrass = new List<GameObject>();
                     Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
                     for (int i = 0; i < colliders.Length; i++)
                     {
@@ -387,28 +405,18 @@ public class rabbitManagerScript : MonoBehaviour
 
                         if (detectedPlant.CompareTag("Grass"))
                         {
-                            grassNum += 1;
+                            detectedGrass.Add(detectedPlant);;
                         }
                     }
-                    if(grassNum < foodExpectation){
+                    if(detectedGrass.Count < foodExpectation){
                         wantToExplore = true;
                     }
-                    for (int i = 0; i < colliders.Length; i++)
+                    if (detectedGrass.Count > 0)
                     {
-                        if (selectedPlant == null)
-                        {
-                            GameObject detectedPlant = colliders[i].gameObject;
-
-                            if (detectedPlant.CompareTag("Grass"))
-                            {
-                                selectedPlant = detectedPlant;
-                                break;
-                            }
-                        }
+                        selectedPlant = detectedGrass[0];
+                        selectedPlant.tag = "Untagged";
                     }
-
-                    if (selectedPlant == null)
-                    {
+                    else{
                         IdleMovement();
                     }
                 }
@@ -517,8 +525,7 @@ public class rabbitManagerScript : MonoBehaviour
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas)) //documentation: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
         { 
-            //the 1.0f is the max distance from the random point to a point on the navmesh, might want to increase if range is big
-            //or add a for loop like in the documentation
+            
             result = hit.position;
             return true;
         }
@@ -527,6 +534,12 @@ public class rabbitManagerScript : MonoBehaviour
         return false;
     }
 
+    void Death(){
+        if(age >= dyingAge + 5){
+            Destroy(gameObject);
+        }
+    }
+    
     // Véletlen betű generátor, az állatok elnevezésénél használjuk
     char GetRandomLetter()
     {

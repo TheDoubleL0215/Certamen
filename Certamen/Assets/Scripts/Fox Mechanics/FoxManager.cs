@@ -376,7 +376,12 @@ public class FoxManager : MonoBehaviour
         if (selectedRabbit.activeSelf && Vector3.Distance(transform.position, selectedRabbit.transform.position) < 5f)
         {
             rabbitManagerScript rabbitScript = selectedRabbit.GetComponent<rabbitManagerScript>();
-            hungerLevel += rabbitScript.hungerLevel * 1.5f;
+            if(rabbitScript.hungerLevel >= 30){
+                hungerLevel += rabbitScript.hungerLevel * 1.5f;
+            }
+            else{
+                hungerLevel += 30;
+            }
             if (hungerLevel > hungerMax)
             {
                 hungerLevel = hungerMax;

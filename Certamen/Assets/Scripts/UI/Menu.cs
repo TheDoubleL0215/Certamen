@@ -41,6 +41,8 @@ public class Menu : MonoBehaviour
                 Time.timeScale = 0.1f;
                 // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
                 WaitTime = 0.05f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
             // ...ha meg volt jelen�tve a men�, elt�nteti
             else
@@ -53,6 +55,8 @@ public class Menu : MonoBehaviour
                     Time.timeScale = 1f;
                     // V�rakoz�si id� megn�vekszik (az�rt 10x t�bb mint mikor meg�ll�tjuk, mert az id� is 10x gyorsabb)
                     WaitTime = 0.5f;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
                 }
             }
         }
@@ -71,6 +75,8 @@ public class Menu : MonoBehaviour
                 Time.timeScale = 0.1f;
                 // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
                 WaitTime = 0.05f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
             // ...ha meg volt jelen�tve a men�, elt�nteti
             else
@@ -85,6 +91,8 @@ public class Menu : MonoBehaviour
                     Time.timeScale = 1f;
                     // V�rakoz�si id� megn�vekszik (az�rt 10x t�bb mint mikor meg�ll�tjuk, mert az id� is 10x gyorsabb)
                     WaitTime = 0.5f;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
                 }
             }
         }
@@ -103,6 +111,8 @@ public class Menu : MonoBehaviour
                 Time.timeScale = 0.1f;
                 // Megn�veli a v�rakoz�s id�t, a bugok elker�l�se v�gett
                 WaitTime = 0.05f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
             // ...ha meg volt jelen�tve a men�, elt�nteti
             else
@@ -116,6 +126,8 @@ public class Menu : MonoBehaviour
                     Time.timeScale = 1f;
                     // V�rakoz�si id� megn�vekszik (az�rt 10x t�bb mint mikor meg�ll�tjuk, mert az id� is 10x gyorsabb)
                     WaitTime = 0.5f;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
                 }
             }
         }
