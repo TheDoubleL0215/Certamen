@@ -354,7 +354,7 @@ public class FoxManager : MonoBehaviour
                     {
                         GameObject detectedRabbit = colliders[i].gameObject;
 
-                        if (detectedRabbit.CompareTag("Rabbit"))
+                        if (detectedRabbit.CompareTag("Rabbit") || detectedRabbit.CompareTag("DeadRabbit"))
                         {
                             rabbitManagerScript detRabbitScript = detectedRabbit.GetComponent<rabbitManagerScript>();
                         

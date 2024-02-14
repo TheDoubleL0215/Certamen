@@ -183,13 +183,12 @@ public class rabbitManagerScript : MonoBehaviour
            dyingAge = age;
            isDead = true;
            state = State.Death;
-           agent.speed = 0f;
-           agent.acceleration = 0;
-           agent.angularSpeed = 0;
+           agent.SetDestination(gameObject.transform.position);
            radius = 0;
            if (selectedPlant != null){
                 selectedPlant.tag = "Grass";
            }
+           gameObject.tag = "DeadRabbit";
            gameObject.GetComponent<Renderer>().material.color = new Color32(20, 110, 35, 1);
            Death();
         }
