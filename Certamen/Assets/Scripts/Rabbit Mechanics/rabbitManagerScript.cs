@@ -103,7 +103,7 @@ public class rabbitManagerScript : MonoBehaviour
 
             fertility = Random.Range(3, 5);
             maturityLimit = Random.Range(20f, 25f);
-            maturity = Random.Range(17f, maturityLimit);
+            maturity = Random.Range(3f, maturityLimit);
 
             hungerMax = Random.Range(145f, 155f);
             hungerLevel = Random.Range(120f, hungerMax);
@@ -118,11 +118,11 @@ public class rabbitManagerScript : MonoBehaviour
 
         if (gender == "female")
         {
-            GetComponent<Renderer>().material.color = Color.white;
+            gameObject.GetComponent<Renderer>().material.color = new Color32(246, 246, 246, 1);;
         }
         else
         {
-            GetComponent<Renderer>().material.color = Color.grey;
+            gameObject.GetComponent<Renderer>().material.color = new Color32(100, 100, 100, 1);
         }
 
 
@@ -183,11 +183,14 @@ public class rabbitManagerScript : MonoBehaviour
            dyingAge = age;
            isDead = true;
            state = State.Death;
-           agent.speed = 0;
+           agent.speed = 0f;
+           agent.acceleration = 0;
+           agent.angularSpeed = 0;
            radius = 0;
            if (selectedPlant != null){
                 selectedPlant.tag = "Grass";
            }
+           gameObject.GetComponent<Renderer>().material.color = new Color32(20, 110, 35, 1);
            Death();
         }
         
@@ -283,7 +286,8 @@ public class rabbitManagerScript : MonoBehaviour
                 
                 if(detRabbitScript.maturity >= detRabbitScript.maturityLimit 
                 && detRabbitScript.state != State.Reproduction && detRabbitScript.matingCooldown <= 0f 
-                && detRabbitScript.hungerLevel > detRabbitScript.hungerLimit * 0.5f)
+                && detRabbitScript.hungerLevel > detRabbitScript.hungerLimit * 0.5f
+                && detRabbitScript.state != State.Death)
                 {
                     if(detRabbitScript.gender != gender)
                     {
@@ -353,14 +357,14 @@ public class rabbitManagerScript : MonoBehaviour
         // Mutációk
         newRabbitManager.fertility = sourceParent.fertility + Random.Range(-1, 1);
         newRabbitManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-5f, 5f);
-        newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
+        newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-3f, 3f);
 
-        newRabbitManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
+        newRabbitManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7.5f * 3);
         newRabbitManager.foodExpectation = sourceParent.foodExpectation + Random.Range(-3, 3);
         
         newRabbitManager.hungerLevel = hungerMax;
-        newRabbitManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
-        newRabbitManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7 * 2);
+        newRabbitManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7.5f * 2);
+        newRabbitManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7.5f * 2);
         newRabbitManager.state = State.Idle;
     }
 
@@ -535,7 +539,7 @@ public class rabbitManagerScript : MonoBehaviour
     }
 
     void Death(){
-        if(age >= dyingAge + 5){
+        if(age >= dyingAge + 10f){
             Destroy(gameObject);
         }
     }

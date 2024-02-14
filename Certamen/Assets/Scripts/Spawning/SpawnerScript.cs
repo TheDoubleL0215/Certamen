@@ -40,6 +40,7 @@ public class SpawnerScript : MonoBehaviour
     // Ett�l f�gg, h�ny nyul spawnol a legelej�n.
     public int foxStartAmount;
     // Megadjuk a kordin�t�kat, amin bel�l spawnol a f�
+    public float foxDelay;
 
     [Header("Positioning")]
     public float lowestX;
@@ -55,6 +56,7 @@ public class SpawnerScript : MonoBehaviour
 
     [Header("Timer")]
     private float grassTimer = 0;
+    private float foxTimer;
     void Start()
     {
         // 'startAmount'-szor spawnol egy f�vet a 'spawnGrass()' f�ggv�nyt megh�vva
@@ -68,12 +70,6 @@ public class SpawnerScript : MonoBehaviour
             for (int i = 0; i < rabbitStartAmount; i++)
             {
                 spawnRabbit();
-            }
-        }
-        if(spawningOfFox){
-            for (int i = 0; i < foxStartAmount; i++)
-            {
-                spawnFox();
             }
         }
     }
@@ -94,6 +90,18 @@ public class SpawnerScript : MonoBehaviour
             else
             {
                 grassTimer = grassTimer + Time.deltaTime;
+            }
+        }
+        if(spawningOfFox){
+            if(foxTimer >= foxDelay){
+                for (int i = 0; i < foxStartAmount; i++)
+                {
+                    spawnFox();
+                }
+                spawningOfFox = false;
+            }
+            else{
+                foxTimer = foxTimer + Time.deltaTime;
             }
         }
     }
@@ -153,7 +161,6 @@ public class SpawnerScript : MonoBehaviour
 
     void spawnFox()
     {
-
         bool placed = false;
 
         while (!placed)

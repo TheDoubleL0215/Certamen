@@ -89,12 +89,12 @@ public class FoxManager : MonoBehaviour
 
             fertility = Random.Range(2, 4);
             maturityLimit = Random.Range(20f, 25f);
-            maturity = Random.Range(17f, maturityLimit);
+            maturity = Random.Range(3f, maturityLimit);
 
             hungerMax = Random.Range(100f, 120f);
             hungerLevel = Random.Range(100f, hungerMax);
 
-            speed = Random.Range(15f, 18f);
+            speed = Random.Range(20f, 25f);
             radius = Random.Range(25f, 35f);
         
             pregnancyTime = Random.Range(5f, 10f);
@@ -122,6 +122,15 @@ public class FoxManager : MonoBehaviour
         
 
         gender = genderList[Random.Range(0, genderList.Count)];
+
+        if (gender == "female")
+        {
+            gameObject.GetComponent<Renderer>().material.color = new Color32(115, 0, 0, 1);;
+        }
+        else
+        {
+            gameObject.GetComponent<Renderer>().material.color = new Color32(255, 120, 0, 1);
+        }
 
         gameObject.name = foxName;
     }
@@ -305,13 +314,13 @@ public class FoxManager : MonoBehaviour
 
         newFoxManager.fertility = sourceParent.fertility + Random.Range(-1, 1);
         newFoxManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-3f, 3f);
-        newFoxManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-2f, 2f);
+        newFoxManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-3f, 3f);
 
-        newFoxManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7 * 3);
+        newFoxManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7.5f * 3);
         newFoxManager.hungerLevel = newFoxManager.hungerMax;
         
-        newFoxManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7 * 2);
-        newFoxManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7 * 2);
+        newFoxManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7.5f * 2);
+        newFoxManager.radius = sourceParent.radius + Random.Range(-2f, 2f) - 2 + (pregnancyTime / 7.5f * 2);
         
     }
 
@@ -337,8 +346,6 @@ public class FoxManager : MonoBehaviour
         {
             if (agent.remainingDistance <= agent.stoppingDistance) //done with path
             {
-                //Debug.Log("Nincs kiválasztott nyúl.");
-                //int ignoreDetectionLayerMask = ~LayerMask.GetMask("Ignore Detect");
                 Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
 
                 for (int i = 0; i < colliders.Length; i++)
@@ -346,7 +353,6 @@ public class FoxManager : MonoBehaviour
                     if (selectedRabbit == null)
                     {
                         GameObject detectedRabbit = colliders[i].gameObject;
-                        //Debug.Log(detectedRabbit);
 
                         if (detectedRabbit.CompareTag("Rabbit"))
                         {
