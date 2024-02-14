@@ -184,6 +184,9 @@ public class rabbitManagerScript : MonoBehaviour
            isDead = true;
            state = State.Death;
            agent.SetDestination(gameObject.transform.position);
+           speed = 0;
+           agent.speed = 0;
+           agent.acceleration = 0;
            radius = 0;
            if (selectedPlant != null){
                 selectedPlant.tag = "Grass";
@@ -223,7 +226,7 @@ public class rabbitManagerScript : MonoBehaviour
             maturity += Time.deltaTime;
         }
 
-        if (isPregnant == true)
+        if (isPregnant == true && isDead == false)
         {
             if (elapsedTime >= pregnancyTime)
             {   
