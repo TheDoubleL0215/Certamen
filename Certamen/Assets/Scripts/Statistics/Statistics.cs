@@ -26,8 +26,8 @@ public class Statistics : MonoBehaviour
     private int currentDataPoints = 0;
 
     [Header("Attributes")]
-    float[,] rAttributeMatrix = new float[6, maxDataPoints+1];
-    float[,] fAttributeMatrix = new float[6, maxDataPoints+1];
+    float[,] rAttributeMatrix = new float[6, maxDataPoints];
+    float[,] fAttributeMatrix = new float[6, maxDataPoints];
     public int choosenAttribute = 0;
 
     private int grassObjectCount = 0;
@@ -171,7 +171,7 @@ public class Statistics : MonoBehaviour
                 overallRadius += rabbitScript.baseRadius;
                 overallMtrtyLMT += rabbitScript.maturityLimit;
                 overallPregnancyTime += rabbitScript.pregnancyTime;
-                overallHungerLoss += rabbitScript.hungerLoss;
+                overallHungerLoss += rabbitScript.baseHungerLoss;
                 overallHungerMax += rabbitScript.baseHungerMax;
             }
         }
