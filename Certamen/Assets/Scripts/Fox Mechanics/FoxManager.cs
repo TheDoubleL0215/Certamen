@@ -41,6 +41,7 @@ public class FoxManager : MonoBehaviour
 
     public float hungerLevel = 75f;
     public float hungerLoss = 5f;
+    public float baseHungerLoss;
     public float hungerLimit = 75f;
     public float baseHungerLimit;
     public float hungerMax = 100f;
@@ -88,14 +89,15 @@ public class FoxManager : MonoBehaviour
             foxName = "F - " + GetRandomLetter();
 
             fertility = Random.Range(2, 4);
-            maturityLimit = Random.Range(20f, 25f);
+            maturityLimit = Random.Range(40f, 45f);
             maturity = Random.Range(3f, maturityLimit);
 
-            hungerMax = Random.Range(100f, 120f);
-            hungerLevel = Random.Range(100f, hungerMax);
+            hungerMax = Random.Range(80f, 90f);
+            hungerLimit = Random.Range(65f, hungerMax);
+            hungerLevel = Random.Range(60f, hungerMax);
 
-            speed = Random.Range(20f, 25f);
-            radius = Random.Range(25f, 35f);
+            speed = Random.Range(10f, 15f);
+            radius = Random.Range(20f, 25f);
         
             pregnancyTime = Random.Range(5f, 10f);
             gender = genderList[Random.Range(0, genderList.Count)];
@@ -109,10 +111,11 @@ public class FoxManager : MonoBehaviour
 
         //Computing hungerLoss based on attributes
         hungerLoss = (hungerMax/30 + radius/8 + speed/6)/2;
+        baseHungerLoss = hungerLoss;
 
         //To avoid too low hungarLoss and infinite energy
-        if(hungerMax/hungerLoss > maturityLimit){
-            maturityLimit = hungerMax/hungerLoss + 1f;
+        if(baseHungerMax/(hungerLoss * 0.8f) > maturityLimit){
+            maturityLimit = baseHungerMax/(hungerLoss * 0.8f) + 1f;
         }
 
         //Scales
@@ -138,8 +141,8 @@ public class FoxManager : MonoBehaviour
     void Update()
     {
         //To avoid too low hungarLoss and infinite energy
-        if(hungerMax/hungerLoss > maturityLimit){
-            hungerLoss = (hungerMax + 5)/maturityLimit;
+        if(baseHungerMax/(hungerLoss * 0.8f) > maturityLimit){
+            maturityLimit = baseHungerMax/(hungerLoss * 0.8f) + 1f;
         }
 
         hungerLimit = hungerMax * 0.85f;
@@ -190,9 +193,9 @@ public class FoxManager : MonoBehaviour
             scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
             //Increasing attributes based on maturity
-            hungerMax = baseHungerMax * (0.8f + maturity/100);
-            radius = baseRadius * (0.8f + maturity/100);
-            speed = baseSpeed * (0.8f + maturity/100);
+            hungerMax = baseHungerMax * (0.7875f + maturity/200);
+            radius = baseRadius * (0.7875f + maturity/200);
+            speed = baseSpeed * (0.7875f + maturity/200);
             agent.speed = speed;
             
             maturity += Time.deltaTime;
@@ -261,6 +264,7 @@ public class FoxManager : MonoBehaviour
     }
     void ReproductionMovement()
     {
+        hungerLoss = baseHungerLoss;
         if (agent.enabled && selectedFox != null && selectedFox.activeSelf)
         {
             agent.SetDestination(selectedFox.transform.position);
@@ -313,10 +317,11 @@ public class FoxManager : MonoBehaviour
         newFoxManager.fatherId = mateScript.id;
 
         newFoxManager.fertility = sourceParent.fertility + Random.Range(-1, 1);
-        newFoxManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-3f, 3f);
+        newFoxManager.maturityLimit = sourceParent.maturityLimit + Random.Range(-5f, 5f);
         newFoxManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-3f, 3f);
 
         newFoxManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7.5f * 3);
+        newFoxManager.hungerLimit = sourceParent.hungerLimit + Random.Range(-6f, 6f);
         newFoxManager.hungerLevel = newFoxManager.hungerMax;
         
         newFoxManager.speed = sourceParent.speed + Random.Range(-4f, 4f) - 2 + (pregnancyTime / 7.5f * 2);
@@ -325,6 +330,7 @@ public class FoxManager : MonoBehaviour
     }
 
     void IdleMovement(){
+        hungerLoss = baseHungerLoss * 0.8f;
         if(agent.remainingDistance <= agent.stoppingDistance) //done with path
             {
                 Vector3 point;
@@ -342,6 +348,7 @@ public class FoxManager : MonoBehaviour
     // Felderíti a róka, hogy van-e nyúl a látótávolságán belül, ha van akkor kiszemeli és a Scouting fázisban üldözi
     void Scouting()
     {
+        hungerLoss = baseHungerLoss;
         if (agent.enabled)
         {
             if (agent.remainingDistance <= agent.stoppingDistance) //done with path
@@ -375,6 +382,7 @@ public class FoxManager : MonoBehaviour
     // üldözi a kiszemelt nyulat
     void Chasing()
     {
+        hungerLoss = baseHungerLoss;
         if(selectedRabbit != null){
             Debug.DrawRay(selectedRabbit.transform.position, Vector3.up, Color.red, 3.0f);
             agent.SetDestination(selectedRabbit.transform.position);

@@ -125,7 +125,11 @@ public class SpawnerScript : MonoBehaviour
                 {
                     if (hit.point.y > 12.5f)
                     {
-                        Instantiate(Grass, new Vector3(tryPositionX, hit.point.y, tryPositionZ), Quaternion.identity, grassParentObj.transform);
+                        GameObject grassObj = Instantiate(Grass, new Vector3(tryPositionX, hit.point.y, tryPositionZ), Quaternion.identity, grassParentObj.transform);
+                    
+                        // Set the scale of the grass to the desired size
+                        Vector3 desiredSize = new Vector3(0.5f, 0.5f, 0.5f); // Set the desired size here
+                        grassObj.transform.localScale = desiredSize;
                         placed = true;
                     }
                 }

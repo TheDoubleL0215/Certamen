@@ -42,6 +42,7 @@ public class rabbitManagerScript : MonoBehaviour
 
     public float hungerLevel; // jelenlegi éhségi szint
     public float hungerLoss; // másodpercenkénti éhezés
+    public float baseHungerLoss;
     public float hungerLimit; // jóllakottsági érték
     public float baseHungerLimit;
     public float hungerMax; // maximális éhségi szint
@@ -102,15 +103,16 @@ public class rabbitManagerScript : MonoBehaviour
             rabbitName = "R - " + GetRandomLetter();
 
             fertility = Random.Range(3, 5);
-            maturityLimit = Random.Range(20f, 25f);
+            maturityLimit = Random.Range(40f, 45f);
             maturity = Random.Range(3f, maturityLimit);
 
-            hungerMax = Random.Range(145f, 155f);
-            hungerLevel = Random.Range(120f, hungerMax);
+            hungerMax = Random.Range(110f, 120f);
+            hungerLimit = Random.Range(90f, hungerMax);
+            hungerLevel = Random.Range(100f, hungerMax);
             foodExpectation = Random.Range(12, 16);
 
-            speed = Random.Range(8f, 12f);
-            radius = Random.Range(18f, 22f);
+            speed = Random.Range(7f, 11f);
+            radius = Random.Range(15f, 20f);
             
             pregnancyTime = Random.Range(5f, 10f);
             gender = genderList[Random.Range(0, genderList.Count)];
@@ -134,9 +136,10 @@ public class rabbitManagerScript : MonoBehaviour
 
         //hungerLoss kiszámolása
         hungerLoss = (hungerMax/30 + radius/8 + speed/6)/2;
+        baseHungerLoss = hungerLoss;
 
-        if(hungerMax/hungerLoss > maturityLimit){
-            maturityLimit = hungerMax/hungerLoss + 1f;
+        if(baseHungerMax/(hungerLoss * 0.8f) > maturityLimit){
+            maturityLimit = baseHungerMax/(hungerLoss * 0.8f) + 1f;
         }
 
         //Scales
@@ -149,10 +152,9 @@ public class rabbitManagerScript : MonoBehaviour
 
     void Update()
     {
-        if(hungerMax/hungerLoss > maturityLimit){
-            hungerLoss = (hungerMax + 5)/maturityLimit;
+        if(baseHungerMax/(hungerLoss * 0.8f) > maturityLimit){
+            maturityLimit = baseHungerMax/(hungerLoss * 0.8f) + 1f;
         }
-        hungerLimit = hungerMax * 0.7f;
         hungerLevel -= Time.deltaTime * hungerLoss;
         age += Time.deltaTime;
 
@@ -217,10 +219,10 @@ public class rabbitManagerScript : MonoBehaviour
             scaleValue = newbornScale + ((adultScale - newbornScale) / maturityLimit) * maturity;
             transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
             // tulajdonságok növelése az ivarérettség függvényében
-            hungerMax = baseHungerMax * (0.8f + maturity/100);
-            radius = baseRadius * (0.8f + maturity/100);
-            speed = baseSpeed * (0.8f + maturity/100);
-            hungerLimit = baseHungerLimit * (0.8f + maturity/100);
+            hungerMax = baseHungerMax * (0.7875f + maturity/200);
+            radius = baseRadius * (0.7875f + maturity/200);
+            speed = baseSpeed * (0.7875f + maturity/200);
+            hungerLimit = baseHungerLimit * (0.7875f + maturity/200);
             agent.speed = speed;
             
             maturity += Time.deltaTime;
@@ -307,6 +309,7 @@ public class rabbitManagerScript : MonoBehaviour
     // Ha van kiválasztott pár, akkor elkezd felé közelíteni és ha bizonyos távolságon belül vannak egymástól, megtermékenyül a nőstény
     void ReproductionMovement()
     {
+        hungerLoss = baseHungerLoss;
         if (agent.enabled && selectedRabbit != null && selectedRabbit.activeSelf)
         {
             agent.SetDestination(selectedRabbit.transform.position);
@@ -362,6 +365,7 @@ public class rabbitManagerScript : MonoBehaviour
         newRabbitManager.pregnancyTime = sourceParent.pregnancyTime + Random.Range(-3f, 3f);
 
         newRabbitManager.hungerMax = sourceParent.hungerMax + Random.Range(-6f, 6f) - 3 + (pregnancyTime / 7.5f * 3);
+        newRabbitManager.hungerLimit = sourceParent.hungerLimit + Random.Range(-6f, 6f);
         newRabbitManager.foodExpectation = sourceParent.foodExpectation + Random.Range(-3, 3);
         
         newRabbitManager.hungerLevel = hungerMax;
@@ -373,6 +377,7 @@ public class rabbitManagerScript : MonoBehaviour
     // Véletlenszerűen lézeng ilyenkor az állat
    void IdleMovement()
     {
+        hungerLoss = baseHungerLoss * 0.8f;
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
             Vector3 point;
@@ -397,6 +402,7 @@ public class rabbitManagerScript : MonoBehaviour
     // Fűcsomók után kutat az állat és ha talált egyet a látóterületén belül, akkor elkezd felé haladni, majd megeszi
     void FoodMovement()
     {
+        hungerLoss = baseHungerLoss;
         if (agent.enabled)
         {
             if (agent.remainingDistance <= agent.stoppingDistance)
@@ -450,6 +456,7 @@ public class rabbitManagerScript : MonoBehaviour
     // Menekül az észlelt rókák elől
     void EscapeMovement(int foxNumber, List<Vector3> positions)
     {
+        hungerLoss = baseHungerLoss;
         Vector3 escapeDestination = Vector3.zero;
 
         // Ha csak egy róka van, a nyúl meneküljön az ellenkező irányba
